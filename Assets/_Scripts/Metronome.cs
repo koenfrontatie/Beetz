@@ -1,0 +1,145 @@
+using UnityEngine;
+using UnityEngine.Events;
+public class Metronome : MonoBehaviour
+{
+    public static Metronome Instance { get; private set; }
+
+    private float lastBeatTime;
+    private float nextBeatTime;
+    private float timeSinceLastPause;
+    private float lastBPM;
+    private bool lastHalftime;
+    private float stepProgression;
+    private float lastStepProgression;
+    private float beatInterval;
+
+    public float BPM = 100f;
+    public bool Halftime;
+    public bool ToggleHalfTime;
+    public float BeatProgression { get; private set; }
+    public bool TempoActive { get; private set; }
+
+    // time division
+    public int BeatsPerBar;
+    public int StepsPerBeat;
+   
+    public static UnityAction OnBeat;
+    public static UnityAction OnStep;
+
+    public static UnityAction OnResetMetronome;
+    public static UnityAction<bool> OnPlayPause;
+    public static UnityAction OnTogglePlayPause;
+    public static UnityAction OnTempoChange;
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+    private void OnEnable()
+    {
+        OnTempoChange += ResetMetronome;
+        OnTogglePlayPause += PlayPauseMetronome;
+        OnPlayPause += SetPlayPauseMetronome;
+        OnResetMetronome += ResetMetronome;
+    }
+    private void OnDisable()
+    {
+        OnTempoChange -= ResetMetronome;
+        OnTogglePlayPause -= PlayPauseMetronome;
+        OnPlayPause -= SetPlayPauseMetronome;
+        OnResetMetronome  -= ResetMetronome;
+    }
+
+    void Start()
+    {
+        ResetMetronome();
+    }
+
+    void Update()
+    {
+        if (TempoActive)
+        {
+            if (Time.time >= nextBeatTime)
+            {
+                //Debug.Log("Beat!");
+                OnBeat?.Invoke();
+                lastBeatTime = Time.time;
+                nextBeatTime = lastBeatTime + beatInterval;
+
+                if (ToggleHalfTime)
+                {
+                    Halftime = !Halftime;
+                    ToggleHalfTime = false;
+                }
+            }
+
+            BeatProgression = Mathf.Clamp01((Time.time - lastBeatTime) / beatInterval);
+            stepProgression = BeatProgression * StepsPerBeat % 1f;
+            if (lastStepProgression > stepProgression) OnStep?.Invoke();
+            lastStepProgression = stepProgression;
+        }
+
+        TempoCheck();
+    }
+
+    public void ResetMetronome()
+    {
+        BeatProgression = 0;
+        lastBeatTime = Time.time;
+        beatInterval = Halftime ? 120f / BPM : 60f / BPM;
+        nextBeatTime = lastBeatTime + beatInterval;
+    }
+
+    public void PlayPauseMetronome()
+    {
+        if (TempoActive == false)
+        {
+
+            lastBeatTime = Time.time - timeSinceLastPause;
+            nextBeatTime = lastBeatTime + beatInterval;
+            TempoActive = true;
+        }
+
+        else
+        {
+            timeSinceLastPause = Time.time - lastBeatTime;
+            TempoActive = false;
+        }
+    }
+
+    public void SetPlayPauseMetronome(bool b)
+    {
+        if (b)
+        {
+
+            lastBeatTime = Time.time - timeSinceLastPause;
+            nextBeatTime = lastBeatTime + beatInterval;
+            TempoActive = true;
+        }
+
+        else
+        {
+            timeSinceLastPause = Time.time - lastBeatTime;
+            TempoActive = false;
+        }
+    }
+
+    void TempoCheck()
+    {
+        if (BPM != lastBPM || Halftime != lastHalftime)
+        {
+            OnTempoChange?.Invoke();
+        }
+
+        lastBPM = BPM;
+        lastHalftime = Halftime;
+    }
+}
+
