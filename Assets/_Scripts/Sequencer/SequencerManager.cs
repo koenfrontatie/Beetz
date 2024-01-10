@@ -19,9 +19,10 @@ public class SequencerManager : MonoBehaviour
         }
     }
 
+    
     private void Start()
     {
-        InputManager.Instance.OnLocationClicked += BuildSequencerAtPosition;
+        InputController.Instance.OnLocationClicked += BuildSequencerAtPosition;
     }
 
     private void BuildSequencer(int stepAmount)

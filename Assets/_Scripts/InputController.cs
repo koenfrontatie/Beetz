@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
-public class InputManager : MonoBehaviour
+public class InputController : MonoBehaviour
 {
-    public static InputManager Instance;
+    public static InputController Instance;
     public GameObject TargetedObject;
     public UnityAction<Vector3> OnLocationClicked;
 
@@ -26,7 +27,7 @@ public class InputManager : MonoBehaviour
     void MouseInteraction()
     {
 
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && !IsMouseOverUI())
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -63,6 +64,11 @@ public class InputManager : MonoBehaviour
         {
             return false;
         }
+    }
+
+    private bool IsMouseOverUI()
+    {
+        return EventSystem.current.IsPointerOverGameObject();
     }
 }
 
