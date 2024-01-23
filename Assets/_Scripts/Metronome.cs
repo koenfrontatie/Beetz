@@ -42,21 +42,6 @@ public class Metronome : MonoBehaviour
             Instance = this;
         }
     }
-    private void OnEnable()
-    {
-        OnTempoChange += ResetMetronome;
-        OnTogglePlayPause += PlayPauseMetronome;
-        OnPlayPause += SetPlayPauseMetronome;
-        OnResetMetronome += ResetMetronome;
-    }
-    private void OnDisable()
-    {
-        OnTempoChange -= ResetMetronome;
-        OnTogglePlayPause -= PlayPauseMetronome;
-        OnPlayPause -= SetPlayPauseMetronome;
-        OnResetMetronome  -= ResetMetronome;
-    }
-
     void Start()
     {
         ResetMetronome();
@@ -68,7 +53,6 @@ public class Metronome : MonoBehaviour
         {
             if (Time.time >= nextBeatTime)
             {
-                //Debug.Log("Beat!");
                 OnBeat?.Invoke();
                 lastBeatTime = Time.time;
                 nextBeatTime = lastBeatTime + beatInterval;
@@ -95,6 +79,7 @@ public class Metronome : MonoBehaviour
         lastBeatTime = Time.time;
         beatInterval = Halftime ? 120f / BPM : 60f / BPM;
         nextBeatTime = lastBeatTime + beatInterval;
+        OnResetMetronome?.Invoke();
     }
 
     public void PlayPauseMetronome()
@@ -112,6 +97,8 @@ public class Metronome : MonoBehaviour
             timeSinceLastPause = Time.time - lastBeatTime;
             TempoActive = false;
         }
+
+        OnTogglePlayPause?.Invoke();
     }
 
     public void SetPlayPauseMetronome(bool b)

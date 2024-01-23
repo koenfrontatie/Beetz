@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +9,7 @@ public class SampleLoader : MonoBehaviour
 {
     [SerializeField] private string BaseSampleDirectory;
     public List<AudioClip> BaseSamples = new List<AudioClip>();
-    private void Start()
+    private void Awake()
     {
         BaseSampleDirectory = $"{Application.streamingAssetsPath}{Path.DirectorySeparatorChar}Samples";
         UpdatePaths();
@@ -27,16 +26,16 @@ public class SampleLoader : MonoBehaviour
             {
                 if (file.Name.EndsWith(".wav"))
                 {
-                    StartCoroutine(LoadAudio(file.FullName));
+                    StartCoroutine(LoadAudio(file.FullName, file.Name));
                 }
             }
         }
     }
 
-    private IEnumerator LoadAudio(string path)
+    private IEnumerator LoadAudio(string path, string name)
     {
-        Debug.Log("RELOADING AUDIO");
-        Debug.Log(path);
+        //Debug.Log("RELOADING AUDIO");
+        //Debug.Log(path);
         using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.WAV))
         {
             yield return www.SendWebRequest();
@@ -47,7 +46,9 @@ public class SampleLoader : MonoBehaviour
             }
             else
             {
-                BaseSamples.Add(DownloadHandlerAudioClip.GetContent(www));
+                AudioClip clip = DownloadHandlerAudioClip.GetContent(www);
+                clip.name = name;
+                BaseSamples.Add(clip);
             }
         }
     }

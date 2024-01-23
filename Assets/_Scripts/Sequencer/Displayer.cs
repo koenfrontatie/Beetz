@@ -11,7 +11,7 @@ public abstract class Displayer : MonoBehaviour
         Metronome.OnStep += UpdateMaterials;
         Metronome.OnResetMetronome += UpdateMaterials;
     }
-    private void Disable()
+    private void OnDisable()
     {
         Metronome.OnStep -= UpdateMaterials;
         Metronome.OnResetMetronome -= UpdateMaterials;
@@ -37,4 +37,10 @@ public abstract class Displayer : MonoBehaviour
             }
         }
     }
+}
+
+public enum DisplayType
+{
+    Linear,
+    Circular
 }

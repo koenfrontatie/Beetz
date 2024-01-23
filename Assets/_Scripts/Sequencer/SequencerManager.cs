@@ -6,6 +6,7 @@ public class SequencerManager : MonoBehaviour
 {
     public static SequencerManager Instance;
     public List<Sequencer> ActiveSequencers = new List<Sequencer>();
+    public DisplayType DisplayType;
 
     private void Awake()
     {
@@ -19,10 +20,9 @@ public class SequencerManager : MonoBehaviour
         }
     }
 
-    
     private void Start()
     {
-        InputController.Instance.OnLocationClicked += BuildSequencerAtPosition;
+        InputController.OnLocationClicked += BuildSequencerAtPosition;
     }
 
     private void BuildSequencer(int stepAmount)
@@ -34,6 +34,8 @@ public class SequencerManager : MonoBehaviour
     private void BuildSequencerAtPosition(Vector3 position)
     {
         Sequencer s = Instantiate(Prefabs.Instance.Sequencer, position, Quaternion.identity, transform);
+        if (DisplayType == DisplayType.Linear) s.GetComponent<CircularDisplay>().enabled = false;
+        if (DisplayType == DisplayType.Circular) s.GetComponent<GridDisplay>().enabled = false;
         s.SetSteps(16);
     }
 }

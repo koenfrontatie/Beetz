@@ -11,12 +11,12 @@ public class EditorMetronome : Editor
 
         if (GUILayout.Button("Play/Pause"))
         {
-            Metronome.OnTogglePlayPause?.Invoke();
+            metronome.PlayPauseMetronome();
         }
 
         if (GUILayout.Button("Reset"))
         {
-            Metronome.OnResetMetronome?.Invoke();
+            metronome.ResetMetronome();
         }
     }
 }

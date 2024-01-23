@@ -36,6 +36,7 @@ public class Sequencer : MonoBehaviour
 
     void CalculateStepPosition()
     {
+        if (StepAmount == 0) return;
         CurrentStep = (CurrentStep % StepAmount) + 1;
     }
 

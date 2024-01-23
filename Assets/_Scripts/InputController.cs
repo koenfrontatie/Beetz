@@ -6,7 +6,7 @@ public class InputController : MonoBehaviour
 {
     public static InputController Instance;
     public GameObject TargetedObject;
-    public UnityAction<Vector3> OnLocationClicked;
+    public static UnityAction<Vector3> OnLocationClicked;
 
     private void Awake()
     {
