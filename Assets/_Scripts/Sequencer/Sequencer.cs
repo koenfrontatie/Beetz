@@ -6,6 +6,15 @@ public class Sequencer : MonoBehaviour
     public int StepAmount { get; private set; }
     public int CurrentBeat { get; private set; }
     public int CurrentBar { get; private set; }
+    public DisplayType DisplayType { get; private set; }
+    public Vector3 Position { get; private set; }
+
+    public void Init(Vector3 position, int stepAmount, DisplayType type) {
+    
+        this.Position = position;
+        this.StepAmount = stepAmount;
+        this.DisplayType = type;
+    }
 
     private void OnEnable()
     {
@@ -22,6 +31,15 @@ public class Sequencer : MonoBehaviour
     
     void Start()
     {
+        switch(DisplayType)
+        {
+            case DisplayType.Linear:
+                gameObject.AddComponent<GridDisplay>(); 
+                break;
+            case DisplayType.Circular:
+                gameObject.AddComponent<CircularDisplay>();
+                break;
+        }
 
         SequencerManager.Instance.ActiveSequencers.Add(this);
         ResetSequencerPlayback();

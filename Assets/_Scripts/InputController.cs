@@ -4,21 +4,8 @@ using UnityEngine.EventSystems;
 
 public class InputController : MonoBehaviour
 {
-    public static InputController Instance;
     public GameObject TargetedObject;
-    public static UnityAction<Vector3> OnLocationClicked;
 
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-        }
-    }
     void LateUpdate()
     {
         MouseInteraction();
@@ -36,7 +23,7 @@ public class InputController : MonoBehaviour
                 if (hit.transform.gameObject != null)
                 {
                     TargetedObject = hit.transform.gameObject;
-                    OnLocationClicked?.Invoke(hit.point);
+                    Events.OnLocationClicked?.Invoke(hit.point);
                     //TargetedObject = hit.transform.parent.transform.parent.gameObject; // the base object is the parent's parent < geometry < targetobject
                 }
             }

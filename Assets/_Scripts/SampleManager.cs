@@ -5,12 +5,23 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class SampleLoader : MonoBehaviour
+public class SampleManager : MonoBehaviour
 {
-    [SerializeField] private string BaseSampleDirectory;
+    public static SampleManager Instance;
+    private string BaseSampleDirectory;
     public List<AudioClip> BaseSamples = new List<AudioClip>();
+
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+
         BaseSampleDirectory = $"{Application.streamingAssetsPath}{Path.DirectorySeparatorChar}Samples";
         UpdatePaths();
     }

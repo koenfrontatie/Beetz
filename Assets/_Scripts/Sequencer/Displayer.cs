@@ -23,7 +23,7 @@ public abstract class Displayer : MonoBehaviour
     }
 
     abstract public void PositionSteps();
-
+    //abstract public void ChangeSizing();
     public void UpdateMaterials()
     {
         for(int i = 0; i < steps.Count; i++)

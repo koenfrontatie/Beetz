@@ -17,7 +17,7 @@ public class Metronome : MonoBehaviour
     public bool Halftime;
     public bool ToggleHalfTime;
     public float BeatProgression { get; private set; }
-    public bool TempoActive { get; private set; }
+    public bool Playing { get; private set; }
 
     // time division
     public int BeatsPerBar;
@@ -49,7 +49,7 @@ public class Metronome : MonoBehaviour
 
     void Update()
     {
-        if (TempoActive)
+        if (Playing)
         {
             if (Time.time >= nextBeatTime)
             {
@@ -84,18 +84,18 @@ public class Metronome : MonoBehaviour
 
     public void PlayPauseMetronome()
     {
-        if (TempoActive == false)
+        if (Playing == false)
         {
 
             lastBeatTime = Time.time - timeSinceLastPause;
             nextBeatTime = lastBeatTime + beatInterval;
-            TempoActive = true;
+            Playing = true;
         }
 
         else
         {
             timeSinceLastPause = Time.time - lastBeatTime;
-            TempoActive = false;
+            Playing = false;
         }
 
         OnTogglePlayPause?.Invoke();
@@ -108,13 +108,13 @@ public class Metronome : MonoBehaviour
 
             lastBeatTime = Time.time - timeSinceLastPause;
             nextBeatTime = lastBeatTime + beatInterval;
-            TempoActive = true;
+            Playing = true;
         }
 
         else
         {
             timeSinceLastPause = Time.time - lastBeatTime;
-            TempoActive = false;
+            Playing = false;
         }
     }
 

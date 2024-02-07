@@ -13,7 +13,7 @@ public class UIManager : MonoBehaviour
     }
     void SetHotbarText()
     {
-        var loader = FindObjectOfType<SampleLoader>();
+        var loader = FindObjectOfType<SampleManager>();
         if (loader != null)
         {
             for (int i = 0; i < loader.BaseSamples.Count; i++)
