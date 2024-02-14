@@ -4,13 +4,7 @@ using UnityEngine;
 
 public class SampleObject : MonoBehaviour
 {
-    public struct SampleInfo
-    {
-        public string id;
-        public string name;
-        public string url;
-        public BaseModel baseModel;
-    }
+    [SerializeField] SampleInfo sampleInfo;
 
     void Start()
     {
@@ -24,8 +18,11 @@ public class SampleObject : MonoBehaviour
     }
 }
 
-public enum BaseModel
+[System.Serializable]
+public struct SampleInfo
 {
-    Orange,
-    Verdebloom
+    public int template;
+    public string id;
+    public string name;
+    public string url;
 }

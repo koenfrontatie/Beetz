@@ -13,6 +13,9 @@ public class Prefabs : MonoBehaviour
     public Material Blue;
     public Material DarkBlue;
 
+    public List<SampleObject> BaseObjects = new List<SampleObject>();
+
+
     private void Awake()
     {
         if (Instance != null && Instance != this)

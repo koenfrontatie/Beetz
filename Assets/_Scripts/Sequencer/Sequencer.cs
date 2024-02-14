@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class Sequencer : MonoBehaviour
@@ -19,12 +20,14 @@ public class Sequencer : MonoBehaviour
     private void OnEnable()
     {
         Metronome.OnBeat += CalculateBeatPosition;
+        Metronome.OnBeat += CalculateBarPosition;
         Metronome.OnStep += CalculateStepPosition;
         Metronome.OnResetMetronome += ResetSequencerPlayback;
     }
     private void OnDisable()
     {
         Metronome.OnBeat -= CalculateBeatPosition;
+        Metronome.OnBeat -= CalculateBarPosition;
         Metronome.OnStep -= CalculateStepPosition;
         Metronome.OnResetMetronome -= ResetSequencerPlayback;
     }
@@ -34,7 +37,7 @@ public class Sequencer : MonoBehaviour
         switch(DisplayType)
         {
             case DisplayType.Linear:
-                gameObject.AddComponent<GridDisplay>(); 
+                gameObject.AddComponent<LinearDisplay>(); 
                 break;
             case DisplayType.Circular:
                 gameObject.AddComponent<CircularDisplay>();
@@ -45,17 +48,20 @@ public class Sequencer : MonoBehaviour
         ResetSequencerPlayback();
     }
 
-    void CalculateBeatPosition()
-    {
-        CurrentBeat = (CurrentBeat % Metronome.Instance.BeatsPerBar) + 1;
-        if ((CurrentBeat - 1) % Metronome.Instance.BeatsPerBar == 0) CurrentBar++;
-        if (CurrentBar > StepAmount / Metronome.Instance.BeatsPerBar) CurrentBar = 1;
-    }
-
     void CalculateStepPosition()
     {
         if (StepAmount == 0) return;
         CurrentStep = (CurrentStep % StepAmount) + 1;
+    }
+    void CalculateBeatPosition()
+    {
+        CurrentBeat = (CurrentBeat % Metronome.Instance.BeatsPerBar) + 1;
+    }
+    void CalculateBarPosition()
+    {
+        var stepsPerBar = Metronome.Instance.StepsPerBeat * Metronome.Instance.BeatsPerBar;
+        var barsPerLoop = StepAmount / stepsPerBar;
+        CurrentBar = (int)(Mathf.Floor(CurrentStep / stepsPerBar) % (barsPerLoop)) + 1;
     }
 
     void ResetSequencerPlayback()
@@ -68,10 +74,5 @@ public class Sequencer : MonoBehaviour
     void OnDestroy()
     {
         SequencerManager.Instance.ActiveSequencers.Remove(this);
-    }
-
-    public void SetSteps(int amt)
-    {
-        StepAmount = amt;
     }
 }

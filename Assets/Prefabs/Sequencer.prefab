@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5016859328250569983}
   - component: {fileID: 5016859328250569982}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Sequencer
   m_TagString: Untagged
   m_Icon: {fileID: 0}

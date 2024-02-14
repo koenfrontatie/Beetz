@@ -9,7 +9,7 @@ public class Hotbar : MonoBehaviour
     public int LastClicked;
     private List<Button> buttons = new List<Button>();
     private List<TextMeshProUGUI> text = new List<TextMeshProUGUI>();
-    public static event UnityAction<int> OnHotbarClicked;
+
     void Awake()
     {
         foreach(Transform child in transform)
@@ -17,7 +17,7 @@ public class Hotbar : MonoBehaviour
             if(child.TryGetComponent<Button>(out Button b)) 
             {
                 buttons.Add(b);
-                b.onClick.AddListener(() => { LastClicked = buttons.IndexOf(b); OnHotbarClicked?.Invoke(LastClicked); });
+                b.onClick.AddListener(() => { LastClicked = buttons.IndexOf(b); Events.OnHotbarClicked?.Invoke(LastClicked); });
                 text.Add(b.GetComponentInChildren<TextMeshProUGUI>());
             }
         }

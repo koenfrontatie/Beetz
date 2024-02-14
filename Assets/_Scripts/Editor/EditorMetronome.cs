@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEditor;
+
+#if UNITY_EDITOR
 [CustomEditor(typeof(Metronome))]
 public class EditorMetronome : Editor
 {
@@ -20,3 +22,4 @@ public class EditorMetronome : Editor
         }
     }
 }
+#endif

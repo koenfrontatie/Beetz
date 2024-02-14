@@ -8,8 +8,10 @@ using UnityEngine.Networking;
 public class SampleManager : MonoBehaviour
 {
     public static SampleManager Instance;
-    private string BaseSampleDirectory;
+    private string BaseSampleDirectory;    
     public List<AudioClip> BaseSamples = new List<AudioClip>();
+
+    public AudioClip SelectedSample;
 
     private void Awake()
     {
@@ -24,6 +26,11 @@ public class SampleManager : MonoBehaviour
 
         BaseSampleDirectory = $"{Application.streamingAssetsPath}{Path.DirectorySeparatorChar}Samples";
         UpdatePaths();
+    }
+
+    private void Start()
+    {
+        Events.OnHotbarClicked += (i) => SelectedSample = BaseSamples[i];
     }
 
     void UpdatePaths()

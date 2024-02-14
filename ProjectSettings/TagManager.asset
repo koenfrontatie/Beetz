@@ -8,11 +8,11 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Sequencer
   - Water
   - UI
-  - 
-  - 
+  - Grid
+  - Overlay
   - 
   - 
   - 

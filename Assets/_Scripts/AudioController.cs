@@ -9,7 +9,7 @@ public class AudioController : MonoBehaviour
     void Start()
     {
         source = GetComponent<AudioSource>();
-        Hotbar.OnHotbarClicked += PlayHotbarSound;
+        Events.OnHotbarClicked += PlayHotbarSound;
     }
 
     void PlayClip(AudioClip clip)
