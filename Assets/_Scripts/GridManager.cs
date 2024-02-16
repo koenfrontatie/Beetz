@@ -7,54 +7,52 @@ public class GridManager : MonoBehaviour
     public static GridManager Instance { get; private set; }
 
     public float CellSize;
-    public Vector3 CellPosition;
+    public Vector3 CellCoords;
 
+    [SerializeField] private Grid grid;
 
     [SerializeField] private Transform indicator;
     [SerializeField] private float animTime;
-    [SerializeField] private Grid grid;
 
     private Vector3 lastCellPosition;
     
-
     private void Awake()
     {
         Instance = this;   
     }
+    private void OnEnable()
+    {
+        Events.OnMouseRaycastMove += UpdateCellPosition;
+        Events.OnGameStateChanged += ToggleIndicator;
+    }
     void Start()
     {
         grid.cellSize = new Vector3(CellSize, CellSize, CellSize);
-
-        Events.OnMouseRaycastGrid += UpdateCellPosition;
-        Events.OnGameStateChanged += ToggleIndicator;
     }
 
-    async void UpdateCellPosition(Vector3 mouseWorldPosition)
+    private async void UpdateCellPosition(Vector3 mouseWorldPosition)
     {
-        CellPosition = WorldPositionToCell(mouseWorldPosition);
+        CellCoords = WorldPositionToCell(mouseWorldPosition);
 
-        if (CellPosition != lastCellPosition)
+        if (CellCoords != lastCellPosition)
         {
-            await Utils.LerpToTarget(indicator.gameObject, GetCellCenter(CellPosition * CellSize), animTime);
-            lastCellPosition = CellPosition;
+            await Utils.LerpToTarget(indicator.gameObject, GetCenter(), animTime);
+            lastCellPosition = CellCoords;
         }
     }
 
-    void ToggleIndicator(GameState state)
+    private void ToggleIndicator(GameState state)
     {
         //cellPosition = lastCellPosition = WorldPositionToCell(mouseWorldPosition);
-        indicator.transform.position = CellPosition;
+        indicator.transform.position = CellCoords;
         indicator.gameObject.SetActive(state == GameState.Placing ? true : false);
     }
     public Vector3 GetCenter()
     {
-        return new Vector3(CellPosition.x * CellSize + CellSize * .5f, 0f, CellPosition.y * CellSize + CellSize * .5f);
+        return new Vector3(CellCoords.x * CellSize + CellSize * .5f, 0f, CellCoords.y * CellSize + CellSize * .5f);
     }
-    public Vector3 GetCellCenter(Vector3 cellPosition)
-    {
-        return new Vector3(cellPosition.x + CellSize * .5f, 0, cellPosition.y + CellSize * .5f);
-    }
-    Vector3 WorldPositionToCell(Vector3 worldPosition)
+    
+    public Vector3 WorldPositionToCell(Vector3 worldPosition)
     {
         return grid.WorldToCell(worldPosition);
     }

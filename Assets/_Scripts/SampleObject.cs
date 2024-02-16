@@ -1,28 +1,24 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SampleObject : MonoBehaviour
 {
-    [SerializeField] SampleInfo sampleInfo;
+    [SerializeField] public SampleInfo Info;
 
-    void Start()
+    public string ID;
+    public string Name;
+    public int Template;
+
+    void Awake()
     {
-        
+        ID = Info.ID; Name = Info.Name; Template = Info.Template;
     }
 
-    
     void Update()
     {
         
     }
 }
 
-[System.Serializable]
-public struct SampleInfo
-{
-    public int template;
-    public string id;
-    public string name;
-    public string url;
-}
