@@ -8,10 +8,10 @@ using UnityEngine.Networking;
 public class SampleManager : MonoBehaviour
 {
     public static SampleManager Instance;
-    private string BaseSampleDirectory;    
-    public List<AudioClip> BaseSamples = new List<AudioClip>();
 
-    public AudioClip SelectedSample;
+    public List<AudioClip> BaseSamples = new List<AudioClip>();
+    public List<string> BaseSamplePaths = new List<string>();
+    public SampleObject SelectedSample;
 
     private void Awake()
     {
@@ -24,29 +24,38 @@ public class SampleManager : MonoBehaviour
             Instance = this;
         }
 
-        BaseSampleDirectory = $"{Application.streamingAssetsPath}{Path.DirectorySeparatorChar}Samples";
-        UpdatePaths();
+        SearchDirectories();
     }
 
     private void Start()
     {
-        Events.OnHotbarClicked += (i) => SelectedSample = BaseSamples[i];
+        Events.OnHotbarClicked += (i) => SelectedSample = Prefabs.Instance.BaseObjects[i];
     }
 
-    void UpdatePaths()
+    private void SearchDirectories()
     {
-        if (Directory.Exists(BaseSampleDirectory))
+        if (Directory.Exists(Utils.BaseSamplesPath))
         {
-            DirectoryInfo info = new DirectoryInfo(BaseSampleDirectory);
+            DirectoryInfo info = new DirectoryInfo(Utils.BaseSamplesPath);
 
             FileInfo[] files = info.GetFiles().OrderBy(p => p.Name).ToArray();
-            foreach (FileInfo file in files)
+            
+            for(int i = 0; i < files.Length; i++)
             {
-                if (file.Name.EndsWith(".wav"))
+                if (files[i].Name.EndsWith(".wav"))
                 {
-                    StartCoroutine(LoadAudio(file.FullName, file.Name));
+                    StartCoroutine(LoadAudio(files[i].FullName, files[i].Name));
+                    Debug.Log(files[i].Name);
+                    BaseSamplePaths.Add(files[i].FullName);
                 }
             }
+            //foreach (FileInfo file in files)
+            //{
+            //    if (file.Name.EndsWith(".wav"))
+            //    {
+            //        StartCoroutine(LoadAudio(file.FullName, file.Name));
+            //    }
+            //}
         }
     }
 
@@ -66,8 +75,11 @@ public class SampleManager : MonoBehaviour
             {
                 AudioClip clip = DownloadHandlerAudioClip.GetContent(www);
                 clip.name = name;
+                //clip.loadType = AudioClipLoadType.Streaming;
                 BaseSamples.Add(clip);
             }
         }
     }
+
+
 }

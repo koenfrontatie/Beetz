@@ -9,14 +9,16 @@ public class InputController : MonoBehaviour
     public GameObject TargetedObject;
     public Vector3 MouseWorldPosition;
 
-    private Camera mainCamera;
-    private Vector3 lastMousePosition;
+    [SerializeField] private List<string> _raycastLayers;
 
-    [SerializeField] List<string> raycastLayers;
-    private LayerMask layerMask;
+    private Camera _mainCamera;
+    private Vector3 _lastMousePosition;
+    private LayerMask _layerMask;
+    private Ray _mouseRay;
+    private RaycastHit _mouseHit;
 
-    private Ray mouseRay;
-    private RaycastHit mouseHit;
+
+
 
     private void OnEnable()
     {
@@ -24,10 +26,10 @@ public class InputController : MonoBehaviour
     }
     void Start()
     {
-        mainCamera = Camera.main;
-        foreach(string s in raycastLayers)
+        _mainCamera = Camera.main;
+        foreach(string s in _raycastLayers)
         {
-            layerMask += LayerMask.GetMask(s);
+            _layerMask += LayerMask.GetMask(s);
         }
     }
 
@@ -39,23 +41,23 @@ public class InputController : MonoBehaviour
 
         
         if (!IsRaycasting) return;
-        
+
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             RaycastMouse();
-            Events.OnLocationClicked?.Invoke(MouseWorldPosition);
         }
 
         if (!MouseMoving()) return;
 
         RaycastMouse();
+        Events.OnMouseRaycastMove?.Invoke(MouseWorldPosition);
     }
 
     bool MouseMoving()
     {
-        if (lastMousePosition != Input.mousePosition)
+        if (_lastMousePosition != Input.mousePosition)
         {
-            lastMousePosition = Input.mousePosition;
+            _lastMousePosition = Input.mousePosition;
             return true;
         }
         else
@@ -66,23 +68,38 @@ public class InputController : MonoBehaviour
 
     void RaycastMouse()
     {
-        mouseRay = mainCamera.ScreenPointToRay(Input.mousePosition);
+        _mouseRay = _mainCamera.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(mouseRay, out mouseHit, Mathf.Infinity, layerMask))
+        if (Physics.Raycast(_mouseRay, out _mouseHit, Mathf.Infinity, _layerMask))
         {
-            MouseWorldPosition = mouseHit.point;
+            MouseWorldPosition = _mouseHit.point;
+           
 
-            var layer = mouseHit.transform.gameObject.layer;
+            int layer = _mouseHit.transform.gameObject.layer;
 
             switch (LayerMask.LayerToName(layer))
             {
                 case "Grid":
-                    Events.OnMouseRaycastGrid?.Invoke(MouseWorldPosition);
+                    if (!Input.GetKeyDown(KeyCode.Mouse0)) return;
+            
+                    Events.OnGridClicked?.Invoke();
+
+
                     break;
+                
                 case "Sequencer":
-                    Events.OnMouseRaycastGrid?.Invoke(MouseWorldPosition);
+                    if (!Input.GetKeyDown(KeyCode.Mouse0)) return;
+                    
+                    if (_mouseHit.transform.parent.TryGetComponent<Sequencer>(out var seq))
+                    {
+
+                        var step = _mouseHit.transform.GetSiblingIndex() + 1;
+                        Events.OnSequencerClicked?.Invoke(seq, step);
+                    }
+
                     break;
             }
+            
         }
 
         //Debug.DrawLine(mouseRay.origin, mouseRay.direction * 100, Color.red);

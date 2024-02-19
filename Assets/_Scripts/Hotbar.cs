@@ -2,7 +2,6 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.Events;
 
 public class Hotbar : MonoBehaviour
 {
@@ -12,9 +11,19 @@ public class Hotbar : MonoBehaviour
 
     void Awake()
     {
-        foreach(Transform child in transform)
+        //foreach(Transform child in transform)
+        //{
+        //    if(child.TryGetComponent<Button>(out Button b)) 
+        //    {
+        //        buttons.Add(b);
+        //        b.onClick.AddListener(() => { LastClicked = buttons.IndexOf(b); Events.OnHotbarClicked?.Invoke(LastClicked); });
+        //        text.Add(b.GetComponentInChildren<TextMeshProUGUI>());
+        //    }
+        //}
+
+        for(int i = 0; i < transform.childCount; i++)
         {
-            if(child.TryGetComponent<Button>(out Button b)) 
+            if (transform.GetChild(i).TryGetComponent<Button>(out Button b))
             {
                 buttons.Add(b);
                 b.onClick.AddListener(() => { LastClicked = buttons.IndexOf(b); Events.OnHotbarClicked?.Invoke(LastClicked); });

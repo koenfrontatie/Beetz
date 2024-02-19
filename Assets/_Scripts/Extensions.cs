@@ -10,18 +10,18 @@ public static class Extensions
             throw new ArgumentException("T must be an enumerated type");
         }
 
-        // Get array of enum values
         T[] values = (T[])Enum.GetValues(typeof(T));
 
-        // Find current index
         int currentIndex = Array.IndexOf(values, current);
 
-        // Calculate next index
         int nextIndex = (currentIndex + 1) % values.Length;
 
         return values[nextIndex];
     }
-
+    public static float Remap(this float value, float from1, float to1, float from2, float to2)
+    {
+        return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
+    }
     public static bool Includes(this LayerMask mask, int layer)
     {
         return (mask.value & 1 << layer) > 0;
