@@ -13,6 +13,9 @@ public class SampleManager : MonoBehaviour
     public List<string> BaseSamplePaths = new List<string>();
     public SampleObject SelectedSample;
 
+    private int _loadingSamplesCount = 0;
+
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -44,18 +47,13 @@ public class SampleManager : MonoBehaviour
             {
                 if (files[i].Name.EndsWith(".wav"))
                 {
+                    _loadingSamplesCount++;
                     StartCoroutine(LoadAudio(files[i].FullName, files[i].Name));
                     Debug.Log(files[i].Name);
                     BaseSamplePaths.Add(files[i].FullName);
                 }
             }
-            //foreach (FileInfo file in files)
-            //{
-            //    if (file.Name.EndsWith(".wav"))
-            //    {
-            //        StartCoroutine(LoadAudio(file.FullName, file.Name));
-            //    }
-            //}
+            
         }
     }
 
@@ -77,6 +75,13 @@ public class SampleManager : MonoBehaviour
                 clip.name = name;
                 //clip.loadType = AudioClipLoadType.Streaming;
                 BaseSamples.Add(clip);
+            }
+
+            _loadingSamplesCount--; 
+            if (_loadingSamplesCount == 0) 
+            {
+                Events.OnBaseSamplesLoaded?.Invoke();
+                Debug.Log("All base samples are loaded");
             }
         }
     }

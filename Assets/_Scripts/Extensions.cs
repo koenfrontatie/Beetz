@@ -26,4 +26,12 @@ public static class Extensions
     {
         return (mask.value & 1 << layer) > 0;
     }
+
+    public static void DestroyChildren(this Transform t)
+    {
+        foreach(Transform child in t)
+        {
+            UnityEngine.Object.Destroy(child.gameObject);
+        }
+    }
 }

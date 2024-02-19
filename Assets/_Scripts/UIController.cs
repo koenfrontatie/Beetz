@@ -6,10 +6,16 @@ using UnityEngine;
 public class UIController : MonoBehaviour
 {
     [SerializeField] private Hotbar sampleHotbar;
-    private void Start()
+    private void OnEnable()
     {
         //if (Input.GetKey(KeyCode.Tab)) 
-            SetHotbarText();
+            Events.OnBaseSamplesLoaded += SetHotbarText;
+    }
+
+    private void OnDisable()
+    {
+        //if (Input.GetKey(KeyCode.Tab)) 
+        Events.OnBaseSamplesLoaded -= SetHotbarText;
     }
     void SetHotbarText()
     {

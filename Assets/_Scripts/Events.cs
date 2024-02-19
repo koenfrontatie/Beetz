@@ -17,5 +17,5 @@ public static class Events
    public static Action<GameState> OnGameStateChanged;
     //public static Action<Vector3Int> OnNewGridTarget;
     public static UnityAction<string> OnSampleTrigger;
-    public static UnityAction<string> OnSampleTriggerUrl;
+    public static UnityAction OnBaseSamplesLoaded;
 }

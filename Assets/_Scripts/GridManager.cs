@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class GridManager : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class GridManager : MonoBehaviour
         Events.OnGameStateChanged += ToggleIndicator;
     }
 
-    private void DisEnable()
+    private void OnDisable()
     {
         Events.OnMouseRaycastMove -= UpdateCellPosition;
         Events.OnGameStateChanged -= ToggleIndicator;
@@ -34,6 +35,18 @@ public class GridManager : MonoBehaviour
     void Start()
     {
         grid.cellSize = new Vector3(CellSize, CellSize, CellSize);
+    }
+
+    private void Update()
+    {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            if (indicator.gameObject.activeSelf) indicator.gameObject.SetActive(false);
+        }
+        else
+        {
+            if (!indicator.gameObject.activeSelf) indicator.gameObject.SetActive(true);
+        }
     }
 
     private async void UpdateCellPosition(Vector3 mouseWorldPosition)

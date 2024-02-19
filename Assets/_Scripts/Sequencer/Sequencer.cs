@@ -70,6 +70,14 @@ public class Sequencer : MonoBehaviour
 
         if(transform.GetChild(step - 1).TryGetComponent<Step>(out Step selectedStep))
         {
+            //if(selectedStep.transform.childCount > 0)
+            //{
+            //    selectedStep.transform.DestroyChildren();
+            //    Destroy(selectedStep.GetComponent<Step>());
+            //    selectedStep.gameObject.AddComponent<Step>();
+            //} else
+            //{
+
             var sample = Instantiate(selectedSample, selectedStep.transform);
             
             selectedStep.AssignSample(sample);
@@ -84,7 +92,7 @@ public class Sequencer : MonoBehaviour
             }
 
             positionData.Position = new Vector2(1, step); 
-            Samples.Add(positionData);
+            Samples.Add(positionData);   
         }
     }
 
