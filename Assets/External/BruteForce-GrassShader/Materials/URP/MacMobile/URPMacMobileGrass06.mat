@@ -10,8 +10,10 @@ Material:
   m_Name: URPMacMobileGrass06
   m_Shader: {fileID: 4800000, guid: bf1b67d8223379749a0a88d47d0a7154, type: 3}
   m_ValidKeywords:
+  - USE_RT
   - USE_S
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _RTEFFECT_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -46,17 +48,17 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _GrassTex:
-        m_Texture: {fileID: 2800000, guid: 5ddef0977dde72343992a79d27da33fe, type: 3}
+        m_Texture: {fileID: 2800000, guid: 85ea986c7f0510e498b3ddeeaba62ead, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _GroundTex:
-        m_Texture: {fileID: 2800000, guid: 85ea986c7f0510e498b3ddeeaba62ead, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7f969087a2b5cf840bdda1c1d1e3a930, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 4e1d764fa7e47f34eae88e37253c2542, type: 3}
         m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Offset: {x: 0, y: 0.46}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -77,54 +79,70 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _ShadowMapTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _FadeDistanceEnd: 26
-    - _FadeDistanceStart: 16
+    - _FadeDistanceEnd: 40
+    - _FadeDistanceStart: 20
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _GrassCut: 0
-    - _GrassSaturation: 2.43
-    - _GrassShading: 0.27
-    - _GrassThinness: 0.993
-    - _GrassThinnessIntersection: 0.01
+    - _GrassSaturation: 4.42
+    - _GrassShading: 0
+    - _GrassThinness: 1.4
+    - _GrassThinnessIntersection: 0.13
     - _Metallic: 0
     - _Mode: 0
-    - _NoisePower: 1.5
+    - _NoisePower: 1
+    - _NumberOfStacks: 0
     - _OcclusionStrength: 1
+    - _OffsetValue: 2.5
     - _Parallax: 0.02
     - _ProceduralDistance: 5.5
     - _ProceduralStrength: 1.5
+    - _RTEffect: 1
+    - _RimMax: 0.62
+    - _RimMin: 0.241
+    - _RimPower: 3.15
+    - _ShadowFuziness: 1
+    - _ShadowMax: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _TilingN1: 11.24
+    - _TilingN1: 7.78
     - _TilingN2: 0.05
-    - _TilingN3: 0.65
+    - _TilingN3: 0.5
     - _UVSec: 0
     - _UseAmbientLight: 0
     - _UsePR: 0
-    - _UseRT: 0
+    - _UseRT: 1
     - _UseShadow: 1
     - _UseShadowCast: 0
     - _UseTP: 0
     - _UseVP: 0
     - _UseVR: 0
     - _UseWC: 0
-    - _WindForce: 0.11
-    - _WindMovement: 0.15
+    - _WindForce: 0.2
+    - _WindMovement: 0.3
     - _WorldRotation: 0
     - _WorldScale: 10
     - _ZWrite: 1
+    - __NumberOfStacks: 17
     m_Colors:
-    - _Color: {r: 0.42576757, g: 0.6603774, b: 0.28969383, a: 1}
+    - _Color: {r: 0.5505159, g: 0.8584906, b: 0.33610713, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _GroundColor: {r: 0.5660378, g: 0.4030875, b: 0, a: 1}
-    - _ProjectedShadowColor: {r: 0.078431346, g: 0.24705878, b: 0.054901943, a: 1}
-    - _SelfShadowColor: {r: 0.1348361, g: 0.21698111, b: 0.015352435, a: 1}
+    - _GroundColor: {r: 0.95699996, g: 0.8818866, b: 0.69860995, a: 1}
+    - _OffsetVector: {r: 0, g: 0, b: 0, a: 0}
+    - _PJShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ProjectedShadowColor: {r: 0.45283014, g: 0.42296264, b: 0.04485581, a: 1}
+    - _RimColor: {r: 0.14566667, g: 0.184, b: 0.09008333, a: 1}
+    - _SelfShadowColor: {r: 0.567, g: 0.5224089, b: 0.24947998, a: 1}
   m_BuildTextureStacks: []

@@ -25,6 +25,12 @@ public class GridManager : MonoBehaviour
         Events.OnMouseRaycastMove += UpdateCellPosition;
         Events.OnGameStateChanged += ToggleIndicator;
     }
+
+    private void DisEnable()
+    {
+        Events.OnMouseRaycastMove -= UpdateCellPosition;
+        Events.OnGameStateChanged -= ToggleIndicator;
+    }
     void Start()
     {
         grid.cellSize = new Vector3(CellSize, CellSize, CellSize);

@@ -13,6 +13,7 @@ public class Metronome : MonoBehaviour
     private float lastStepProgression;
     private float beatInterval;
 
+
     public float BPM = 100f;
     public bool Halftime;
     public bool ToggleHalfTime;
@@ -51,23 +52,28 @@ public class Metronome : MonoBehaviour
     {
         if (Playing)
         {
-            if (Time.time >= nextBeatTime)
+            if (Time.time >= nextBeatTime) 
             {
+                // nextBeatTime is reached
                 OnBeat?.Invoke();
                 lastBeatTime = Time.time;
                 nextBeatTime = lastBeatTime + beatInterval;
-
-                if (ToggleHalfTime)
-                {
-                    Halftime = !Halftime;
-                    ToggleHalfTime = false;
-                }
             }
 
+            // calculate beat progress
             BeatProgression = Mathf.Clamp01((Time.time - lastBeatTime) / beatInterval);
+            
+            // calculate step progress
             stepProgression = BeatProgression * StepsPerBeat % 1f;
+
             if (lastStepProgression > stepProgression) OnStep?.Invoke();
             lastStepProgression = stepProgression;
+        }
+
+        if (ToggleHalfTime)
+        {
+            Halftime = !Halftime;
+            ToggleHalfTime = false;
         }
 
         TempoCheck();
@@ -76,9 +82,10 @@ public class Metronome : MonoBehaviour
     public void ResetMetronome()
     {
         BeatProgression = 0;
+        stepProgression = 0;
         lastBeatTime = Time.time;
         beatInterval = Halftime ? 120f / BPM : 60f / BPM;
-        nextBeatTime = lastBeatTime + beatInterval;
+
         OnResetMetronome?.Invoke();
     }
 

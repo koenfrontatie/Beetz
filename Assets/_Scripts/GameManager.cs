@@ -1,5 +1,7 @@
-
+using System;
+using System.Reflection;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,6 +14,11 @@ public class GameManager : MonoBehaviour
         Instance = this;
     }
 
+    private void OnEnable()
+    {
+        //Metronome.OnStep += StepLog;
+        //Metronome.OnBeat += BeatLog;
+    }
     public void UpdateState(GameState state)
     {
         State = state;
@@ -29,6 +36,14 @@ public class GameManager : MonoBehaviour
         Events.OnGameStateChanged?.Invoke(State);
     }
 
+   
+    void StepLog() {
+        Debug.Log("Step");
+    }
+    void BeatLog()
+    {
+        Debug.Log("Beat");
+    }
     public void UpdateState(int state)
     {
         State = (GameState)state;

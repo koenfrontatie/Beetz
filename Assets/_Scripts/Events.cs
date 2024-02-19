@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public static class Events
 {
@@ -14,5 +15,7 @@ public static class Events
    public static Action<int> OnHotbarClicked;
    public static Action<SampleObject> OnSampleSelection;
    public static Action<GameState> OnGameStateChanged;
-   //public static Action<Vector3Int> OnNewGridTarget;
+    //public static Action<Vector3Int> OnNewGridTarget;
+    public static UnityAction<string> OnSampleTrigger;
+    public static UnityAction<string> OnSampleTriggerUrl;
 }

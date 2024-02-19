@@ -75,10 +75,16 @@ public class Sequencer : MonoBehaviour
             selectedStep.AssignSample(sample);
             // TODO save this data
         
-            var pair = new PositionSamplePair();
-            pair.ID = selectedSample.Info.ID;
-            pair.Position = new Vector2(1, step); 
-            Samples.Add(pair);
+            var positionData = new PositionSamplePair();
+            positionData.ID = selectedSample.Info.ID;
+            
+            if (string.IsNullOrEmpty(selectedSample.Info.ID))
+            {
+                positionData.ID = selectedSample.Info.Template.ToString();
+            }
+
+            positionData.Position = new Vector2(1, step); 
+            Samples.Add(positionData);
         }
     }
 

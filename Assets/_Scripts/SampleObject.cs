@@ -7,18 +7,19 @@ public class SampleObject : MonoBehaviour
 {
     [SerializeField] public SampleInfo Info;
 
-    public string ID;
-    public string Name;
-    public int Template;
+    private AudioSource _audioSource;
 
-    void Awake()
+    void Start()
     {
-        ID = Info.ID; Name = Info.Name; Template = Info.Template;
+        _audioSource = GetComponent<AudioSource>();
+
+        if(Info.ID.Length < 5)   _audioSource.clip = SampleManager.Instance.BaseSamples[Info.Template];
+        // TODO: else find unique clip
     }
 
-    void Update()
+    public void PlayAudio()
     {
-        
+        _audioSource.Play();
     }
 }
 
