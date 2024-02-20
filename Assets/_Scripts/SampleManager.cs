@@ -78,13 +78,13 @@ public class SampleManager : MonoBehaviour
             }
 
             _loadingSamplesCount--; 
-            if (_loadingSamplesCount == 0) 
-            {
-                Events.OnBaseSamplesLoaded?.Invoke();
-                Debug.Log("All base samples are loaded");
-            }
+           
+        }
+
+        if (_loadingSamplesCount == 0)
+        {
+            Events.OnBaseSamplesLoaded?.Invoke();
+            //Debug.Log("All base samples are loaded");
         }
     }
-
-
 }
