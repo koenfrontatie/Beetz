@@ -2,7 +2,8 @@
     "name": "KVDW.Core",
     "rootNamespace": "",
     "references": [
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "com.csound.unity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

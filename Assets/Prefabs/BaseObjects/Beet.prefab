@@ -630,6 +630,7 @@ GameObject:
   - component: {fileID: 16720421417761914}
   - component: {fileID: 326816431190379300}
   - component: {fileID: -740106925477601202}
+  - component: {fileID: 5470212909234389681}
   m_Layer: 0
   m_Name: Beet
   m_TagString: Untagged
@@ -765,3 +766,15 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5470212909234389681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8750075140079006400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59a8fe28dad94c242a1247863c2ffd42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Step : MonoBehaviour
 {
     [SerializeField] private MeshRenderer _meshRenderer;
@@ -30,7 +31,8 @@ public class Step : MonoBehaviour
 
         if(_sequencer.CurrentStep == transform.GetSiblingIndex() + 1)
         {
-            _sampleObject.PlayAudio();
+            //_sampleObject.PlayAudio();
+            SendScoreEvent();
         }
     }
 
@@ -40,4 +42,31 @@ public class Step : MonoBehaviour
 
         CheckForPlayBack();
     }
+
+    void SendScoreEvent()
+    {
+        CsoundController.Instance.CsoundUnity.SendScoreEvent($"i {(int)(_sampleObject.Info.Template + 1)} 0 6");
+        //print($"i {(int)(_sampleObject.Info.Template + 1)} 0 6");
+    }
 }
+
+
+//using System.Collections;
+//using System.Collections.Generic;
+//using UnityEngine;
+
+//public class CsoundEventSender : MonoBehaviour
+//{
+//    [SerializeField] SampleObject _so;
+//    [SerializeField] CsoundUnity _cSound;
+
+//    void Start()
+//    {
+
+//    }
+
+//    void SendEvent(string template)
+//    {
+//        _cSound.SendScoreEvent($"i {_so.Info.Template - 1} 0 6");
+//    }
+//}
