@@ -7,7 +7,7 @@ public class GridManager : MonoBehaviour
 {
     public static GridManager Instance { get; private set; }
 
-    public float CellSize;
+    //public float CellSize;
     public Vector3 CellCoords;
 
     [SerializeField] private Grid grid;
@@ -34,7 +34,7 @@ public class GridManager : MonoBehaviour
     }
     void Start()
     {
-        grid.cellSize = new Vector3(CellSize, CellSize, CellSize);
+        grid.cellSize = new Vector3(Config.CellSize, Config.CellSize, Config.CellSize);
     }
 
     private void Update()
@@ -68,7 +68,7 @@ public class GridManager : MonoBehaviour
     }
     public Vector3 GetCenter()
     {
-        return new Vector3(CellCoords.x * CellSize + CellSize * .5f, 0f, CellCoords.y * CellSize + CellSize * .5f);
+        return new Vector3(CellCoords.x * Config.CellSize + Config.CellSize * .5f, 0f, CellCoords.y * Config.CellSize + Config.CellSize * .5f);
     }
     
     public Vector3 WorldPositionToCell(Vector3 worldPosition)

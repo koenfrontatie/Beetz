@@ -15,7 +15,7 @@ public class LinearDisplay : Displayer
             //Step step = Instantiate(Prefabs.Instance.Step, new Vector3(x - (width / 2f), 0f, transform.localPosition.z), Quaternion.identity, transform);
             Step step = Instantiate(Prefabs.Instance.Step, new Vector3(x, 0f, transform.localPosition.z), Quaternion.identity, transform);
             base.steps.Add(step);
-            x += GridManager.Instance.CellSize ;
+            x += Config.CellSize ;
         }
 
         base.UpdateMaterials();

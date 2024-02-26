@@ -34,4 +34,12 @@ public static class Extensions
             UnityEngine.Object.Destroy(child.gameObject);
         }
     }
+
+    public static void DestroyChildrenImmediate(this Transform t)
+    {
+        foreach (Transform child in t)
+        {
+            UnityEngine.Object.DestroyImmediate(child.gameObject);
+        }
+    }
 }

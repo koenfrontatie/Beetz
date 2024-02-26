@@ -24,7 +24,7 @@ public class TerrainMaskDrawer : MonoBehaviour
         for (int i = 0; i < _sequencerDimension.x; i ++)
         {
             var pixel = Instantiate(_drawPixel, transform);
-            pixel.position = _indicator.position + new Vector3(i * GridManager.Instance.CellSize, 0, 0);
+            pixel.position = _indicator.position + new Vector3(i * Config.CellSize, 0, 0);
         }
         //_renderCam.targetTexture = _RT;
         _renderCam.Render();
