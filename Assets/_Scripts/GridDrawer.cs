@@ -7,13 +7,10 @@ public class GridDrawer : MonoBehaviour
     [SerializeField] private int _xAmt;
     [SerializeField] private int _yAmt;
 
-    private float _cellSize = Config.CellSize;
+    private float _cellSize;
 
     [SerializeField] private LineMesh _lineMesh;
 
-    void Start()
-    {
-    }
 
     public void UpdateGridMesh() {
 
@@ -22,6 +19,8 @@ public class GridDrawer : MonoBehaviour
 #else
         transform.DestroyChildren();
 #endif
+        _cellSize = Config.CellSize;
+
         for (int i = 0; i < _xAmt; i++)
         {
             var line = Instantiate(_lineMesh, transform, false);

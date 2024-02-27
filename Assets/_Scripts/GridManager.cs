@@ -35,6 +35,7 @@ public class GridManager : MonoBehaviour
     void Start()
     {
         grid.cellSize = new Vector3(Config.CellSize, Config.CellSize, Config.CellSize);
+        indicator.transform.localScale = grid.cellSize;
     }
 
     private void Update()
@@ -74,5 +75,10 @@ public class GridManager : MonoBehaviour
     public Vector3 WorldPositionToCell(Vector3 worldPosition)
     {
         return grid.WorldToCell(worldPosition);
+    }
+
+    public Vector3 CellPositionToWorld(Vector2 cell)
+    {
+        return grid.CellToWorld(new Vector3Int((int)cell.x, (int)cell.y, 0));
     }
 }

@@ -33,7 +33,7 @@ public class Sequencer : MonoBehaviour
         this.DisplayType = SequencerInfo.Type;
         this.InstancePosition = position;
         //this.Samples = SequencerInfo.Samples;
-        this.RowAmount = 1;
+        this.RowAmount = (int)SequencerInfo.Dimensions.y;
     }
 
     /// <summary>
