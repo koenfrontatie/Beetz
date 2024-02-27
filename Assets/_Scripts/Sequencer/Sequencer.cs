@@ -10,6 +10,7 @@ public class Sequencer : MonoBehaviour
     public List<PositionSamplePair> Samples;
     public int CurrentStep { get; private set; }
     public int StepAmount { get; private set; }
+    public int RowAmount { get; private set; }
     public int CurrentBeat { get; private set; }
     public int CurrentBar { get; private set; }
     public DisplayType DisplayType { get; private set; }
@@ -32,6 +33,7 @@ public class Sequencer : MonoBehaviour
         this.DisplayType = SequencerInfo.Type;
         this.InstancePosition = position;
         //this.Samples = SequencerInfo.Samples;
+        this.RowAmount = 1;
     }
 
     /// <summary>
