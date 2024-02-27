@@ -29,7 +29,7 @@ public class Step : MonoBehaviour
     {
         if (_sampleObject == null || _sequencer == null) return;
 
-        if(_sequencer.CurrentStep == transform.GetSiblingIndex() + 1)
+        if(_sequencer.CurrentStep == transform.GetSiblingIndex()) // not + 1 because of soil as child no1
         {
             //_sampleObject.PlayAudio();
             SendScoreEvent();
