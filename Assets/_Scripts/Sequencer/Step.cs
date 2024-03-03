@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 
@@ -23,6 +24,18 @@ public class Step : MonoBehaviour
     public void AssignSample(SampleObject so)
     {
         _sampleObject = so;
+    }
+
+    public void UnAssignSample()
+    {
+        if (_sampleObject == null) return;
+        Destroy(_sampleObject.gameObject);
+        _sampleObject = null;
+    }
+
+    public bool HasSampleObject()
+    {
+        return (_sampleObject != null) ?  true : false;
     }
 
     void CheckForPlayBack()

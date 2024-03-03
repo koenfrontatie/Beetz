@@ -49,9 +49,9 @@ iSkip   init     0           ; inskip into file (in seconds)
 iLoop   init     0           ; looping switch (0=off 1=on)
 ; read audio from disk using diskin2 opcode
 a1      diskin2  "5SNARE.wav", kSpeed, iSkip, iLoop
-        ;out      a1          ; send audio to outputs
-		aL, aR  freeverb a1, a1, 0.9, 0.7, sr, 0
-		outs a1 + aL, a1 + aR
+        out      a1          ; send audio to outputs
+		;aL, aR  freeverb a1, a1, 0.9, 0.7, sr, 0
+		;outs a1 + aL, a1 + aR
   endin
 </CsInstruments>
 

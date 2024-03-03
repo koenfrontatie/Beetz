@@ -8,10 +8,10 @@ public class InputController : MonoBehaviour
     public bool IsRaycasting;
     public GameObject TargetedObject;
     public Vector3 MouseWorldPosition;
-
+    [SerializeField] private Camera _mainCamera;
     [SerializeField] private List<string> _raycastLayers;
 
-    private Camera _mainCamera;
+   
     private Vector3 _lastMousePosition;
     private LayerMask _layerMask;
     private Ray _mouseRay;
@@ -22,11 +22,11 @@ public class InputController : MonoBehaviour
 
     private void OnEnable()
     {
-        Events.OnGameStateChanged += (GameState state) => { RaycastMouse(); IsRaycasting = state == GameState.Placing ? true : false; };
+        Events.OnGameStateChanged += (GameState state) => { RaycastMouse(); IsRaycasting = state == GameState.Patching ? true : false; };
     }
     void Start()
     {
-        _mainCamera = Camera.main;
+        //_mainCamera = Camera.main;
         foreach(string s in _raycastLayers)
         {
             _layerMask += LayerMask.GetMask(s);
@@ -152,7 +152,7 @@ public class InputController : MonoBehaviour
     }
     private void OnDisable()
     {
-        Events.OnGameStateChanged -= (GameState state) => { IsRaycasting = state == GameState.Placing ? true : false; };
+        Events.OnGameStateChanged -= (GameState state) => { IsRaycasting = state == GameState.Patching ? true : false; };
     }
 }
 

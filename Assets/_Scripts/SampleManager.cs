@@ -49,7 +49,7 @@ public class SampleManager : MonoBehaviour
                 {
                     _loadingSamplesCount++;
                     StartCoroutine(LoadAudio(files[i].FullName, files[i].Name));
-                    Debug.Log(files[i].Name);
+                    //Debug.Log(files[i].Name);
                     BaseSamplePaths.Add(files[i].FullName);
                 }
             }

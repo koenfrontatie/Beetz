@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.UIElements;
 using UnityEngine;
 
 public class UIController : MonoBehaviour
@@ -19,12 +18,12 @@ public class UIController : MonoBehaviour
     }
     void SetHotbarText()
     {
-        var loader = FindObjectOfType<SampleManager>();
+        var loader = FindObjectOfType<AndroidSampleFinder>();
         if (loader != null)
         {
-            for (int i = 0; i < loader.BaseSamples.Count; i++)
+            for (int i = 0; i < loader.BaseSampleNames.Count; i++)
             {
-                sampleHotbar.SetButtonText(i, loader.BaseSamples[i].name);
+                sampleHotbar.SetButtonText(i, loader.BaseSampleNames[i]);
             }
         }
     }

@@ -72,6 +72,22 @@ public class Sequencer : MonoBehaviour
 
         if(transform.GetChild(step - 1).TryGetComponent<Step>(out Step selectedStep))
         {
+            if (selectedStep.HasSampleObject())
+            {
+                
+
+                foreach(PositionSamplePair pair in Samples)
+                {
+                    if(pair.Position.x == 1 && pair.Position.y == step)
+                    {
+                        Samples.RemoveAt(Samples.IndexOf(pair));
+                        break;
+                    }
+                }
+                
+                selectedStep.UnAssignSample();
+                return;
+            }
             //if(selectedStep.transform.childCount > 0)
             //{
             //    selectedStep.transform.DestroyChildren();

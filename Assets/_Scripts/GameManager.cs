@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
             case GameState.Viewing:
                 
                 break;
-            case GameState.Placing:
+            case GameState.Patching:
                 
             break;
         }
@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
             case GameState.Viewing:
 
                 break;
-            case GameState.Placing:
+            case GameState.Patching:
 
                 break;
         }
@@ -65,5 +65,5 @@ public class GameManager : MonoBehaviour
 public enum GameState
 {
     Viewing,
-    Placing
+    Patching
 }

@@ -65,7 +65,7 @@ public class GridManager : MonoBehaviour
     {
         //cellPosition = lastCellPosition = WorldPositionToCell(mouseWorldPosition);
         indicator.transform.position = CellCoords;
-        indicator.gameObject.SetActive(state == GameState.Placing ? true : false);
+        indicator.gameObject.SetActive(state == GameState.Patching ? true : false);
     }
     public Vector3 GetCenter()
     {
