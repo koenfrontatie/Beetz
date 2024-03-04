@@ -6,35 +6,37 @@ public class SoilDrawer : MonoBehaviour
 {
     [SerializeField] private Transform _quadTransform;
 
-    [SerializeField] private Vector2 _position;
+    [SerializeField] private Vector3 _positionWorld;
 
-    [SerializeField] private Vector2 _shape;
+    [SerializeField] private Vector2 _dimensions;
+
+    private Grid _grid;
 
     void Start()
     {
+        //if(FindObjectOfType<Grid>());
         if (transform.parent.TryGetComponent<Sequencer>(out var seq))
         {
-            var cellPos = GridManager.Instance.WorldPositionToCell(seq.gameObject.transform.position);
-            Debug.Log(cellPos);
-            InitFromSequencer(seq.transform.position, seq.SequencerInfo.Dimensions);
+            DrawQuad(seq.transform.position, seq.SequencerInfo.Dimensions);
+            _quadTransform.position -= new Vector3(Config.CellSize * .5f, 0f, Config.CellSize * .5f);
         }
     }
 
-
+    #region
     public void Init()
     {
         //initializes from cell position
         var halfCell = Config.CellSize * .5f;
-        var worldPos = new Vector3(halfCell + _position.x * Config.CellSize, 0f, halfCell + _position.y * Config.CellSize);
+        var worldPos = new Vector3(halfCell + _positionWorld.x * Config.CellSize, 0f, halfCell + _positionWorld.y * Config.CellSize);
         var parentOffset = new Vector3(worldPos.x * Config.CellSize, 0f, worldPos.y * Config.CellSize + Config.CellSize);
-        var quadOffset = new Vector3(-halfCell + Config.CellSize * _shape.x * .5f, 0f, Config.CellSize * _shape.y * -.5f + halfCell);
+        var quadOffset = new Vector3(-halfCell + Config.CellSize * _dimensions.x * .5f, 0f, Config.CellSize * _dimensions.y * -.5f + halfCell);
         var quadScaleFactor = Config.CellSize;
 
         transform.position = parentOffset; // set parent to top left corner
 
         _quadTransform.position = worldPos + quadOffset;
 
-        _quadTransform.localScale = new Vector3(_shape.x * quadScaleFactor, _shape.y * quadScaleFactor, 1f);
+        _quadTransform.localScale = new Vector3(_dimensions.x * quadScaleFactor, _dimensions.y * quadScaleFactor, 1f);
 
     }
 
@@ -49,9 +51,26 @@ public class SoilDrawer : MonoBehaviour
 
         _quadTransform.position = pos + quadOffset;
 
-        _quadTransform.localScale = new Vector3(shape.x * quadScaleFactor, shape.y * quadScaleFactor , 1f);
+        _quadTransform.localScale = new Vector3(shape.x * quadScaleFactor, shape.y * quadScaleFactor, 1f);
 
-        _position = GridManager.Instance.WorldPositionToCell(pos);
-        _shape = shape;
+        _positionWorld = GridController.Instance.CellFromWorld(pos);
+        _dimensions = shape;
+    }
+    #endregion
+
+    public void DrawQuad(Vector3 pos, Vector2 dimensions)
+    {
+        //var parentOffset = new Vector3(pos.x, 0f, pos.y);
+        
+        
+        var quadOffset = new Vector3( Config.CellSize * dimensions.x * .5f, 0f, (Config.CellSize * dimensions.y * -.5f) + Config.CellSize); // this allows quad to compensate for scaling (half of dimensions)
+
+        _quadTransform.localPosition = quadOffset;
+
+        transform.position = pos; // after calculating quad offset, set to top left corner for scaling, relative to child quad
+
+        _quadTransform.localScale = new Vector3(dimensions.x * Config.CellSize, dimensions.y * Config.CellSize, 1f);
+        
+        _dimensions = dimensions;
     }
 }

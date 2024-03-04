@@ -10,12 +10,14 @@ public class LinearDisplay : Displayer
         //float width = stepDist * (base.sequencer.StepAmount - 1);
         float x = transform.localPosition.x;
 
-        for (int i = 0; i < base.sequencer.StepAmount; i++)
+        for (int r = 0; r < base.sequencer.RowAmount; r++)
         {
-            //Step step = Instantiate(Prefabs.Instance.Step, new Vector3(x - (width / 2f), 0f, transform.localPosition.z), Quaternion.identity, transform);
-            Step step = Instantiate(Prefabs.Instance.Step, new Vector3(x, 0f, transform.localPosition.z), Quaternion.identity, transform);
-            base.steps.Add(step);
-            x += Config.CellSize ;
+            for (int i = 0; i < base.sequencer.StepAmount; i++)
+            {
+                //Step step = Instantiate(Prefabs.Instance.Step, new Vector3(x - (width / 2f), 0f, transform.localPosition.z), Quaternion.identity, transform);
+                Step step = Instantiate(Prefabs.Instance.Step, new Vector3(x + Config.CellSize * i, 0f, transform.localPosition.z - r * Config.CellSize), Quaternion.identity, transform.GetChild(0));
+                base.steps.Add(step);
+            }
         }
 
         base.UpdateMaterials();

@@ -14,15 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   k_AssetVersion: 3
   m_RenderingLayerNames:
+  - UI
   - Overlay
   - Light Layer default
+  - Light Layer 1
   - Light Layer 2
   - Light Layer 3
   - Light Layer 4
   - Light Layer 5
   - Light Layer 6
-  - Light Layer 7
-  m_ValidRenderingLayers: 255
+  m_ValidRenderingLayers: 511
   lightLayerName0: Overlay
   lightLayerName1: Light Layer default
   lightLayerName2: Light Layer 2

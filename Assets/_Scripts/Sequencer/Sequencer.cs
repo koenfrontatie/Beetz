@@ -18,20 +18,40 @@ public class Sequencer : MonoBehaviour
 
 
 
+    ///// <summary>
+    ///// Initialize
+    ///// an empty sequencer.
+    ///// </summary>
+    ///// <param name="position">Grid position of sequencer instance</param>
+    ///// <param name="info">Serialized data</param>
+    //public void Init(Vector3 position, DisplayType type) {
+    
+    //    SequencerInfo = DataManager.Instance.CreateNewSequencerInfo();
+    //    SequencerInfo.Type = type;
+
+    //    this.StepAmount = (int)SequencerInfo.Dimensions.x;
+    //    this.DisplayType = SequencerInfo.Type;
+    //    this.InstancePosition = position;
+    //    //this.Samples = SequencerInfo.Samples;
+    //    this.RowAmount = (int)SequencerInfo.Dimensions.y;
+    //}
+
     /// <summary>
     /// Initialize
     /// an empty sequencer.
     /// </summary>
-    /// <param name="position">Grid position of sequencer instance</param>
-    /// <param name="info">Serialized data</param>
-    public void Init(Vector3 position, DisplayType type) {
-    
+    /// <param name="position">World position of sequencer instance</param>
+    /// <param name="dimensions">Dimensions of new sequencer</param>
+    public void Init(Vector3 worldPos, Vector3 dimensions)
+    {
+
         SequencerInfo = DataManager.Instance.CreateNewSequencerInfo();
-        SequencerInfo.Type = type;
+        SequencerInfo.Type = DisplayType.Linear;
+        SequencerInfo.Dimensions = dimensions;
 
         this.StepAmount = (int)SequencerInfo.Dimensions.x;
         this.DisplayType = SequencerInfo.Type;
-        this.InstancePosition = position;
+        this.InstancePosition = worldPos;
         //this.Samples = SequencerInfo.Samples;
         this.RowAmount = (int)SequencerInfo.Dimensions.y;
     }

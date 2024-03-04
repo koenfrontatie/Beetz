@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Unity.TextMeshPro",
-        "com.csound.unity"
+        "com.csound.unity",
+        "LeanTouch"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
