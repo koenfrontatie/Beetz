@@ -4,9 +4,9 @@ public class Metronome : MonoBehaviour
 {
     public static Metronome Instance { get; private set; }
 
-    private float lastBeatTime;
-    private float nextBeatTime;
-    private float timeSinceLastPause;
+    private double lastBeatTime;
+    private double nextBeatTime;
+    private double timeSinceLastPause;
     private float lastBPM;
     private bool lastHalftime;
     private float stepProgression;
@@ -52,16 +52,16 @@ public class Metronome : MonoBehaviour
     {
         if (Playing)
         {
-            if (Time.time >= nextBeatTime) 
+            if (AudioSettings.dspTime >= nextBeatTime) 
             {
                 // nextBeatTime is reached
                 OnBeat?.Invoke();
-                lastBeatTime = Time.time;
+                lastBeatTime = AudioSettings.dspTime;
                 nextBeatTime = lastBeatTime + beatInterval;
             }
 
             // calculate beat progress
-            BeatProgression = Mathf.Clamp01((Time.time - lastBeatTime) / beatInterval);
+            BeatProgression = Mathf.Clamp01((float)(AudioSettings.dspTime - lastBeatTime) / beatInterval);
             
             // calculate step progress
             stepProgression = BeatProgression * StepsPerBeat % 1f;
@@ -83,7 +83,7 @@ public class Metronome : MonoBehaviour
     {
         BeatProgression = 0;
         stepProgression = 0;
-        lastBeatTime = Time.time;
+        lastBeatTime = AudioSettings.dspTime;
         beatInterval = Halftime ? 120f / BPM : 60f / BPM;
 
         OnResetMetronome?.Invoke();
@@ -94,14 +94,14 @@ public class Metronome : MonoBehaviour
         if (Playing == false)
         {
 
-            lastBeatTime = Time.time - timeSinceLastPause;
+            lastBeatTime = AudioSettings.dspTime - timeSinceLastPause;
             nextBeatTime = lastBeatTime + beatInterval;
             Playing = true;
         }
 
         else
         {
-            timeSinceLastPause = Time.time - lastBeatTime;
+            timeSinceLastPause = AudioSettings.dspTime - lastBeatTime;
             Playing = false;
         }
 
@@ -113,14 +113,14 @@ public class Metronome : MonoBehaviour
         if (b)
         {
 
-            lastBeatTime = Time.time - timeSinceLastPause;
+            lastBeatTime = AudioSettings.dspTime - timeSinceLastPause;
             nextBeatTime = lastBeatTime + beatInterval;
             Playing = true;
         }
 
         else
         {
-            timeSinceLastPause = Time.time - lastBeatTime;
+            timeSinceLastPause = AudioSettings.dspTime - lastBeatTime;
             Playing = false;
         }
     }

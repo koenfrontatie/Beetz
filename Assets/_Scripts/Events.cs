@@ -19,4 +19,6 @@ public static class Events
     //public static Action<Vector3Int> OnNewGridTarget;
     public static UnityAction<string> OnSampleTrigger;
     public static UnityAction OnBaseSamplesLoaded;
+
+    public static Action<GameObject> OnScaleBounce;
 }

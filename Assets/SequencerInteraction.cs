@@ -37,7 +37,7 @@ public class SequencerInteraction : MonoBehaviour
         if (Physics.Raycast(_cam.ScreenPointToRay(v2), out var hit, Mathf.Infinity, _layerMask))
         {
 
-            if (hit.transform.parent.transform.parent.TryGetComponent<Sequencer>(out var seq))
+            if (hit.transform.parent.parent.TryGetComponent<Sequencer>(out var seq))
             {
 
                 var step = hit.transform.GetSiblingIndex() + 1;

@@ -90,7 +90,7 @@ public class Sequencer : MonoBehaviour
         
         if (SampleManager.Instance.SelectedSample == null) return;
 
-        if(transform.GetChild(step - 1).TryGetComponent<Step>(out Step selectedStep))
+        if(transform.GetChild(0).GetChild(step - 1).TryGetComponent<Step>(out Step selectedStep))
         {
             if (selectedStep.HasSampleObject())
             {

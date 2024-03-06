@@ -4,7 +4,8 @@
 </CsOptions>
 <CsInstruments>
 sr 	= 	44100
-ksmps 	= 	32
+kr = 100
+ksmps 	= 	441
 nchnls 	= 	1	
 
   instr	1 ; play audio from disk

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 public abstract class Displayer : MonoBehaviour
 {
-    public Sequencer sequencer { get; private set; }
-    public List<Step> steps = new List<Step>();
-
+    public Sequencer Sequencer { get; private set; }
+    public List<Step> Steps = new List<Step>();
     private void OnEnable()
     {
         Metronome.OnStep += UpdateMaterials;
@@ -18,7 +17,7 @@ public abstract class Displayer : MonoBehaviour
     }
     void Start()
     {
-        sequencer = GetComponent<Sequencer>();
+        Sequencer = GetComponent<Sequencer>();
         PositionSteps();
     }
 
@@ -26,14 +25,21 @@ public abstract class Displayer : MonoBehaviour
     //abstract public void ChangeSizing();
     public void UpdateMaterials()
     {
-        for(int i = 0; i < steps.Count; i++)
+
+        for(int r = 0; r < Sequencer.RowAmount; r++)
         {
-            if (i == sequencer.CurrentStep - 1)
+            for(int c = 0; c < Sequencer.StepAmount; c++)
             {
-                steps[i].SetMat(Prefabs.Instance.Blue);
-            } else
-            {
-                steps[i].SetMat(Prefabs.Instance.White);
+                var beatIndex = Steps[(r * Sequencer.StepAmount) + c].transform.GetSiblingIndex() % Sequencer.StepAmount;
+
+                if (c == ((Sequencer.CurrentStep - 1) % Sequencer.StepAmount))
+                {
+                    Steps[(r * Sequencer.StepAmount) + c].SetMat(Prefabs.Instance.Blue);
+                }
+                else
+                {
+                    Steps[(r * Sequencer.StepAmount) + c].SetMat(Prefabs.Instance.White);
+                }
             }
         }
     }

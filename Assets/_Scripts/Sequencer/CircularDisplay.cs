@@ -9,9 +9,9 @@ public class CircularDisplay : Displayer
         //float width = stepDist * (base.sequencer.StepAmount - 1);
         //float x = transform.localPosition.x;
 
-        float angleStep = (360 / (float)base.sequencer.StepAmount);
+        float angleStep = (360 / (float)base.Sequencer.StepAmount);
 
-        for (int i = 0; i < base.sequencer.StepAmount; i++)
+        for (int i = 0; i < base.Sequencer.StepAmount; i++)
         {
             float angle = -angleStep * i;
             float radians = Mathf.Deg2Rad * -angle;
@@ -22,7 +22,7 @@ public class CircularDisplay : Displayer
             Step step = Instantiate(Prefabs.Instance.Step, transform);
             step.transform.localPosition = spawnPos;
             step.transform.localRotation = spawnRot;
-            base.steps.Add(step);
+            base.Steps.Add(step);
         }
 
         base.UpdateMaterials();
