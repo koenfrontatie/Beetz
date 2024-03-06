@@ -14,13 +14,23 @@ public class GridController : MonoBehaviour
 
     public Grid Grid { get; private set; }
 
+    public PlaylistInformation PlaylistInformation { get; private set; }
+
     private void Awake()
     {
-        Instance = this;
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
     }
     void Start()
     {
         Grid = GetComponentInChildren<Grid>();
+        PlaylistInformation = GetComponent<PlaylistInformation>();
         Grid.cellSize = new Vector3(Config.CellSize, Config.CellSize, Config.CellSize);
     }
     public Vector3 GetCenter()
@@ -46,5 +56,10 @@ public class GridController : MonoBehaviour
     {
         var cellPos = new Vector3Int((int)cell.x, (int)cell.y, 0);
         return Grid.CellToWorld(cellPos);
+    }
+
+    public void AddSequencerInformation(Sequencer sequencer)
+    {
+        PlaylistInformation.Add(sequencer);
     }
 }

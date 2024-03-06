@@ -7,7 +7,7 @@ public class DataManager : MonoBehaviour
 {
     public static DataManager Instance;
 
-    private void Start()
+    private void Awake()
     {
         if (Instance != null && Instance != this)
         {
@@ -31,6 +31,15 @@ public class DataManager : MonoBehaviour
         var info = new SequencerInfo();
         info.ID = Guid.NewGuid().ToString();
         info.Dimensions = new Vector2(16, 1);
+        return info;
+    }
+
+    public PlaylistInfo CreateNewPlaylistInfo()
+    {
+        var info = new PlaylistInfo();
+        info.ID = Guid.NewGuid().ToString();
+        info.SequencerPositions = new List<PositionIDPair>();
+        info.SequencerCorners = new List<V2Pair>();
         return info;
     }
 
@@ -61,19 +70,25 @@ public struct SequencerInfo
 public struct PlaylistInfo
 {
     public string ID;
-    public string Name;
-    public List<Vector2> FreeCells;
-    public List<Tuple<Vector2, string>> Samples;
+    public List<PositionIDPair> SequencerPositions;
+    public List<V2Pair> SequencerCorners;
 }
 
 // instantiation structs
 
 [System.Serializable]
-public struct PositionSamplePair
+public struct PositionIDPair
 {
     public Vector2 Position;
     public string ID;
 }
+[System.Serializable]
+public struct V2Pair
+{
+    public Vector2 one;
+    public Vector2 two;
+}
+
 
 
 //public PlanetInfo CreateNewInfo(PlanetType planetType = PlanetType.Rhythmic, int segments = 4, int beatsPerSegment = 4)

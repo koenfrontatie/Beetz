@@ -7,7 +7,7 @@ public class Sequencer : MonoBehaviour
 {
     public SequencerInfo SequencerInfo;
     //public List<Tuple<Vector2, string>> Samples;
-    public List<PositionSamplePair> Samples;
+    public List<PositionIDPair> Samples;
     public int CurrentStep { get; private set; }
     public int StepAmount { get; private set; }
     public int RowAmount { get; private set; }
@@ -15,6 +15,8 @@ public class Sequencer : MonoBehaviour
     public int CurrentBar { get; private set; }
     public DisplayType DisplayType { get; private set; }
     public Vector3 InstancePosition { get; private set; }
+
+    public Vector2 InstanceCellPosition { get; private set; }
 
 
 
@@ -25,7 +27,7 @@ public class Sequencer : MonoBehaviour
     ///// <param name="position">Grid position of sequencer instance</param>
     ///// <param name="info">Serialized data</param>
     //public void Init(Vector3 position, DisplayType type) {
-    
+
     //    SequencerInfo = DataManager.Instance.CreateNewSequencerInfo();
     //    SequencerInfo.Type = type;
 
@@ -42,7 +44,7 @@ public class Sequencer : MonoBehaviour
     /// </summary>
     /// <param name="position">World position of sequencer instance</param>
     /// <param name="dimensions">Dimensions of new sequencer</param>
-    public void Init(Vector3 worldPos, Vector3 dimensions)
+    public void Init(Vector2 cell, Vector3 dimensions)
     {
 
         SequencerInfo = DataManager.Instance.CreateNewSequencerInfo();
@@ -51,7 +53,10 @@ public class Sequencer : MonoBehaviour
 
         this.StepAmount = (int)SequencerInfo.Dimensions.x;
         this.DisplayType = SequencerInfo.Type;
-        this.InstancePosition = worldPos;
+        
+        this.InstancePosition = GridController.Instance.GetCenterFromCell(cell); // this is not necessary
+        this.InstanceCellPosition = cell;
+        ;
         //this.Samples = SequencerInfo.Samples;
         this.RowAmount = (int)SequencerInfo.Dimensions.y;
     }
@@ -62,15 +67,15 @@ public class Sequencer : MonoBehaviour
     /// </summary>
     /// <param name="position">Grid position of sequencer instance</param>
     /// <param name="info">Serialized data</param>
-    public void Init(Vector3 position, SequencerInfo info)
-    {
-        SequencerInfo = info;
+    //public void Init(Vector3 position, SequencerInfo info)
+    //{
+    //    SequencerInfo = info;
 
-        this.StepAmount = (int)SequencerInfo.Dimensions.x;
-        this.DisplayType = SequencerInfo.Type;
-        this.InstancePosition = position;
-        //this.Samples = SequencerInfo.Samples;
-    }
+    //    this.StepAmount = (int)SequencerInfo.Dimensions.x;
+    //    this.DisplayType = SequencerInfo.Type;
+    //    this.InstancePosition = position;
+    //    //this.Samples = SequencerInfo.Samples;
+    //}
 
     private void OnEnable()
     {
@@ -96,7 +101,7 @@ public class Sequencer : MonoBehaviour
             {
                 
 
-                foreach(PositionSamplePair pair in Samples)
+                foreach(PositionIDPair pair in Samples)
                 {
                     if(pair.Position.x == 1 && pair.Position.y == step)
                     {
@@ -121,7 +126,7 @@ public class Sequencer : MonoBehaviour
             selectedStep.AssignSample(sample);
             // TODO save this data
         
-            var positionData = new PositionSamplePair();
+            var positionData = new PositionIDPair();
             positionData.ID = selectedSample.Info.ID;
             
             if (string.IsNullOrEmpty(selectedSample.Info.ID))

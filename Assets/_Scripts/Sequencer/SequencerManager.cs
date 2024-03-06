@@ -8,8 +8,6 @@ public class SequencerManager : MonoBehaviour
     public List<Sequencer> ActiveSequencers = new List<Sequencer>();
     public DisplayType DisplayType;
 
-    private GridController _gridController;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -24,7 +22,7 @@ public class SequencerManager : MonoBehaviour
 
     private void Start()
     {
-        _gridController = FindObjectOfType<GridController>();
+        //GridController.Instance = FindObjectOfType<GridController>();
         Events.OnNewSequencer += BuildSequencer;
     }
 
@@ -36,9 +34,10 @@ public class SequencerManager : MonoBehaviour
 
     public void BuildSequencer(Vector2 cell, Vector2 dimensions)
     {
-        var spawnPos = _gridController.GetCenterFromCell(cell);
-        var s = Instantiate(Prefabs.Instance.Sequencer, spawnPos, Quaternion.identity, transform);
-        s.Init(spawnPos, dimensions);
+        var spawnPos = GridController.Instance.GetCenterFromCell(cell);
+        var newSequencer = Instantiate(Prefabs.Instance.Sequencer, spawnPos, Quaternion.identity, transform);
+        newSequencer.Init(cell, dimensions);
+        GridController.Instance.AddSequencerInformation(newSequencer);
     }
 
     public void ChangeDisplayType() => DisplayType = DisplayType.NextEnumValue();
