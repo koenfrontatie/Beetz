@@ -7,16 +7,16 @@ public class SequencerDisplayer : MonoBehaviour
     private Sequencer sequencer;
     private List<Step> steps = new List<Step>();
 
-    private void OnEnable()
-    {
-        Metronome.OnStep += UpdateMaterials;
-        Metronome.OnResetMetronome += UpdateMaterials;
-    }
-    private void Disable()
-    {
-        Metronome.OnStep -= UpdateMaterials;
-        Metronome.OnResetMetronome -= UpdateMaterials;
-    }
+    //private void OnEnable()
+    //{
+    //    Metronome.OnStep += UpdateMaterials;
+    //    Metronome.OnResetMetronome += UpdateMaterials;
+    //}
+    //private void Disable()
+    //{
+    //    Metronome.OnStep -= UpdateMaterials;
+    //    Metronome.OnResetMetronome -= UpdateMaterials;
+    //}
     void Start()
     {
         sequencer = GetComponent<Sequencer>();
@@ -35,20 +35,20 @@ public class SequencerDisplayer : MonoBehaviour
             x += stepDist;
         }
 
-        UpdateMaterials();
+        //UpdateMaterials();
     }
 
-    void UpdateMaterials()
-    {
-        for(int i = 0; i < steps.Count; i++)
-        {
-            if (i == sequencer.CurrentStep - 1)
-            {
-                steps[i].SetMat(Prefabs.Instance.Blue);
-            } else
-            {
-                steps[i].SetMat(Prefabs.Instance.White);
-            }
-        }
-    }
+    //void UpdateMaterials()
+    //{
+    //    for(int i = 0; i < steps.Count; i++)
+    //    {
+    //        if (i == sequencer.CurrentStep - 1)
+    //        {
+    //            steps[i].SetMat(Prefabs.Instance.Blue);
+    //        } else
+    //        {
+    //            steps[i].SetMat(Prefabs.Instance.White);
+    //        }
+    //    }
+    //}
 }

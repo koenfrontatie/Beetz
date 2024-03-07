@@ -5,15 +5,16 @@ using UnityEngine;
 
 public class Step : MonoBehaviour
 {
-    [SerializeField] private MeshRenderer _meshRenderer;
     [SerializeField] private SampleObject _sampleObject;
     private Sequencer _sequencer;
+    private PlaylistPlayback _playback;
     private int _beatIndex;
+    private Material _mat;
 
     private void OnEnable()
     {
         transform.parent.parent.TryGetComponent<Sequencer>(out _sequencer);
-
+        transform.parent.parent.TryGetComponent<PlaylistPlayback>(out _playback);
         Metronome.OnStep += CheckForPlayBack;
         Metronome.OnTogglePlayPause += PlayPauseHandler;
     }
@@ -23,15 +24,24 @@ public class Step : MonoBehaviour
         Metronome.OnStep -= CheckForPlayBack;
         Metronome.OnTogglePlayPause -= PlayPauseHandler;
     }
+    private void Awake()
+    {
+        _mat = transform.GetChild(0).GetComponent<MeshRenderer>().material;
+    }
 
     private void Start()
     {
         transform.parent.parent.TryGetComponent<Sequencer>(out _sequencer);
         _beatIndex = transform.GetSiblingIndex() % _sequencer.StepAmount;
     }
-    public void SetMat(Material mat)
+    //public void SetMat(Material mat)
+    //{
+    //    _meshRenderer.material = mat;
+    //}
+
+    public void SetColor(Color c)
     {
-        _meshRenderer.material = mat;
+        _mat.color = c;
     }
     public void AssignSample(SampleObject so)
     {
@@ -55,12 +65,18 @@ public class Step : MonoBehaviour
         if (_sampleObject == null || _sequencer == null) return;
         //Debug.Log($"step:{_sequencer.CurrentStep} sibling+1:{transform.GetSiblingIndex() + 1} rowamt:{_sequencer.RowAmount} s1%amt:{(_sequencer.CurrentStep) % _sequencer.StepAmount}");
         bool shouldPlay = _sequencer.CurrentStep - 1 == _beatIndex;
-        if (shouldPlay) 
+        if(GridController.Instance.PlaylistPlaybackEnabled)
         {
-            //_sampleObject.PlayAudio();
+            shouldPlay = false;
+            if(_playback.PlaylistStep == _beatIndex )
+            {
+                shouldPlay = true;
+            }
+        }
+
+        if (!shouldPlay) return;
             SendScoreEvent();
             SendAnimEvent();
-        }
     }
 
     void PlayPauseHandler()

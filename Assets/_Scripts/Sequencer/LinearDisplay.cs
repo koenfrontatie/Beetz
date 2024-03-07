@@ -20,6 +20,6 @@ public class LinearDisplay : Displayer
             }
         }
 
-        base.UpdateMaterials();
+        //base.UpdateMaterials();
     }
 }

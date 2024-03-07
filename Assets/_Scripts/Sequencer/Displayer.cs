@@ -19,6 +19,7 @@ public abstract class Displayer : MonoBehaviour
     {
         Sequencer = GetComponent<Sequencer>();
         PositionSteps();
+        UpdateMaterials();
     }
 
     abstract public void PositionSteps();
@@ -34,11 +35,11 @@ public abstract class Displayer : MonoBehaviour
 
                 if (c == ((Sequencer.CurrentStep - 1) % Sequencer.StepAmount))
                 {
-                    Steps[(r * Sequencer.StepAmount) + c].SetMat(Prefabs.Instance.Blue);
+                    Steps[(r * Sequencer.StepAmount) + c].SetColor(Config.ActiveStep);
                 }
                 else
                 {
-                    Steps[(r * Sequencer.StepAmount) + c].SetMat(Prefabs.Instance.White);
+                    Steps[(r * Sequencer.StepAmount) + c].SetColor(Config.PassiveStep);
                 }
             }
         }

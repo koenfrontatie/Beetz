@@ -15,6 +15,9 @@ public class GridController : MonoBehaviour
     public Grid Grid { get; private set; }
 
     public PlaylistInformation PlaylistInformation { get; private set; }
+    public GridCounter GridCounter { get; private set; }
+
+    public bool PlaylistPlaybackEnabled;
 
     private void Awake()
     {
@@ -30,6 +33,7 @@ public class GridController : MonoBehaviour
     void Start()
     {
         Grid = GetComponentInChildren<Grid>();
+        GridCounter = GetComponent<GridCounter>();
         PlaylistInformation = GetComponent<PlaylistInformation>();
         Grid.cellSize = new Vector3(Config.CellSize, Config.CellSize, Config.CellSize);
     }

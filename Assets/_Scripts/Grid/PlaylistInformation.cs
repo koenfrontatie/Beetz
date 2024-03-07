@@ -39,6 +39,6 @@ public class PlaylistInformation : MonoBehaviour
           
         _playlistInfo.SequencerPositions.Add(sp);
         _playlistInfo.SequencerCorners.Add(sc);
-        Debug.Log(sp);
+        //Debug.Log(sp);
     }
 }
