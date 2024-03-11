@@ -7,13 +7,17 @@ public class GridInteraction : MonoBehaviour
 {
     public GridState State;
 
-    [SerializeField] private SoilDrawer _drawPrefab;
+    [SerializeField] private SoilDrawer _soilDrawPrefab;
+    [SerializeField] private BarDrawer _barDrawPrefab;
     [SerializeField] private GameObject _gridDisplay;
+    [SerializeField] private RectTransform _dragger;
 
     private Vector2 _startCell, _currentCell, lastCellPosition, _drawerDimensions;
     private GridController _gridController;
     private bool _isDragging;
+    
     private SoilDrawer _drawInstance;
+    //private BarDrawer _dragBarInstance;
     private Camera _cam;
     private LayerMask _layerMask;
     private LeanFinger _finger;
@@ -29,12 +33,19 @@ public class GridInteraction : MonoBehaviour
     {
         LeanTouch.OnFingerDown += FingerDownHandler;
         LeanTouch.OnFingerUp += FingerUpHandler;
+        LeanTouch.OnFingerTap += FingerTapHandler;
+        Events.OnSequencerHeld += SpawnDragBar;
+        //Events.OnSequencerHeld += RemoveHeldSequencer;
+        //Events.OnGridClicked += () => { if (_dragBarInstance != null) Destroy(_dragBarInstance.gameObject); };
     }
 
     private void OnDisable()
     {
         LeanTouch.OnFingerDown -= FingerDownHandler;
         LeanTouch.OnFingerUp -= FingerUpHandler;
+        Events.OnSequencerHeld -= SpawnDragBar;
+        Events.OnSequencerHeld -= RemoveHeldSequencer;
+        //Events.OnGridClicked -= () => { if (_dragBarInstance != null) Destroy(_dragBarInstance.gameObject); };
     }
 
     private void Update()
@@ -59,7 +70,7 @@ public class GridInteraction : MonoBehaviour
     /// </summary>
     void FingerDownHandler(LeanFinger finger)
     {
-        if (State == GridState.Default) return;
+        if (State != GridState.Patching) return;
         if (finger.IsOverGui) return;
         if (_isDragging) return;
         
@@ -67,7 +78,7 @@ public class GridInteraction : MonoBehaviour
         
         _startCell = RaycastFingerToCell(finger.ScreenPosition);
         
-        _drawInstance = Instantiate(_drawPrefab, transform);
+        _drawInstance = Instantiate(_soilDrawPrefab, transform);
         UpdateDrawInstance();
 
         _isDragging = true;
@@ -78,11 +89,21 @@ public class GridInteraction : MonoBehaviour
     /// </summary>
     void FingerUpHandler(LeanFinger finger)
     {
-        if (State == GridState.Default || finger.IsOverGui) return;
+        if (State != GridState.Patching || finger.IsOverGui) return;
         Events.OnNewSequencer?.Invoke(_startCell, _drawerDimensions);
         if (_drawInstance != null) Destroy(_drawInstance.gameObject);
         if (_isDragging) _isDragging = false;
         SetState(GridState.Default);
+    }
+
+    void FingerTapHandler(LeanFinger finger)
+    {
+        if (State == GridState.Default || finger.IsOverGui) return;
+        if (Physics.Raycast(_cam.ScreenPointToRay(finger.ScreenPosition), out var hit, Mathf.Infinity, _layerMask))
+        {
+
+        SetState(GridState.Default);
+        }
     }
 
     /// <summary>
@@ -109,9 +130,30 @@ public class GridInteraction : MonoBehaviour
 
     private bool DrawingAllowed()
     {
-        if (State == GridState.Default || !_isDragging) return false;
+        if (State != GridState.Patching || !_isDragging) return false;
         
         return true;
+    }
+
+    private void SpawnDragBar(Sequencer seq)
+    {
+        //if (_dragBarInstance != null) Destroy(_dragBarInstance.gameObject);
+        //_dragBarInstance = Instantiate(_barDrawPrefab, seq.transform);
+        ////_dragBarInstance.transform.position += Vector3.forward;
+        //_dragBarInstance.DrawQuad(_gridController.WorldFromCell(seq.InstanceCellPosition) - Vector3.back * Config.CellSize, new Vector2(seq.StepAmount, 1));
+        if (State == GridState.Moving) return;
+        SetState(GridState.Moving);
+        var pos = _cam.WorldToScreenPoint(seq.transform.position + Vector3.forward * Config.CellSize * 1.3f + new Vector3(Config.CellSize * (seq.StepAmount -1) * .5f, 0, 0));
+        _dragger.transform.position = pos;
+        //_dragger.transform.position = new Vector3(pos.x, pos.y, pos.z);
+        //_dragger.setp
+        Debug.Log($"{pos} {seq.transform.position}");
+    }
+
+    private void RemoveHeldSequencer(Sequencer seq)
+    {
+        Destroy(seq.gameObject);
+        //Events.OnRemoveSequencer?.Invoke();
     }
 
     private void SetState(GridState state)
@@ -127,6 +169,7 @@ public class GridInteraction : MonoBehaviour
         //}
 
         _gridDisplay.gameObject.SetActive(state == GridState.Patching ? true : false);
+        _dragger.gameObject.SetActive(state == GridState.Moving ? true : false);
 
         State = state;
     }
@@ -137,10 +180,33 @@ public class GridInteraction : MonoBehaviour
         SetState(newState);
     }
 
+    public void SetState(int i)
+    {
+        var state = (GridState)i;
+
+        switch (state)
+        {
+            case GridState.Default:
+
+                break;
+            case GridState.Patching:
+
+                break;
+            case GridState.Moving:
+
+                break;
+        }
+
+        _gridDisplay.gameObject.SetActive(state == GridState.Patching ? true : false);
+        _dragger.gameObject.SetActive(state == GridState.Moving ? true : false);
+        State = state;
+    }
+
 }
 
 public enum GridState
 {
     Default,
-    Patching
+    Patching,
+    Moving
 }

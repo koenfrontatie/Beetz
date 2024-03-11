@@ -10,13 +10,15 @@ public class SequencerInteraction : MonoBehaviour
 
     private void OnEnable()
     {
-        LeanTouch.OnFingerDown += FingerDownHandler;
+        LeanTouch.OnFingerTap += FingerTapHandler;
+        LeanTouch.OnFingerOld += FingerHeldHandler;
         //LeanTouch.OnFingerUp += FingerUpHandler;
     }
 
     private void OnDisable()
     {
-        LeanTouch.OnFingerDown -= FingerDownHandler;
+        LeanTouch.OnFingerTap -= FingerTapHandler;
+        LeanTouch.OnFingerOld -= FingerHeldHandler;
         //LeanTouch.OnFingerUp -= FingerUpHandler;
     }
 
@@ -26,14 +28,10 @@ public class SequencerInteraction : MonoBehaviour
         _layerMask += LayerMask.GetMask("Sequencer");
 
     }
-
-    void FingerDownHandler(LeanFinger finger)
+    void FingerHeldHandler(LeanFinger finger)
     {
-        RaycastFinger(finger.ScreenPosition);
-    }
+        var v2 = finger.ScreenPosition;
 
-    private void RaycastFinger(Vector2 v2)
-    {
         if (Physics.Raycast(_cam.ScreenPointToRay(v2), out var hit, Mathf.Infinity, _layerMask))
         {
 
@@ -41,7 +39,22 @@ public class SequencerInteraction : MonoBehaviour
             {
 
                 var step = hit.transform.GetSiblingIndex() + 1;
-                Events.OnSequencerClicked?.Invoke(seq, step);
+                Events.OnSequencerHeld?.Invoke(seq);
+            }
+        }
+    }
+    void FingerTapHandler(LeanFinger finger)
+    {
+        var v2 = finger.ScreenPosition;
+
+        if (Physics.Raycast(_cam.ScreenPointToRay(v2), out var hit, Mathf.Infinity, _layerMask))
+        {
+
+            if (hit.transform.parent.parent.TryGetComponent<Sequencer>(out var seq))
+            {
+
+                var step = hit.transform.GetSiblingIndex() + 1;
+                Events.OnSequencerTapped?.Invoke(seq, step);
             }
         }
     }

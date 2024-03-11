@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 public abstract class Displayer : MonoBehaviour
 {
     public Sequencer Sequencer { get; private set; }
+    private PlaylistPlayback _playlistPlayback;
     public List<Step> Steps = new List<Step>();
     private void OnEnable()
     {
@@ -18,6 +20,7 @@ public abstract class Displayer : MonoBehaviour
     void Start()
     {
         Sequencer = GetComponent<Sequencer>();
+        transform.TryGetComponent<PlaylistPlayback>(out _playlistPlayback);
         PositionSteps();
         UpdateMaterials();
     }
@@ -26,8 +29,30 @@ public abstract class Displayer : MonoBehaviour
     //abstract public void ChangeSizing();
     public void UpdateMaterials()
     {
+        if (GridController.Instance.PlaylistPlaybackEnabled) //updates step materials based on PlaylistPlayback component
+        {
+            for (int r = 0; r < Sequencer.RowAmount; r++)
+            {
+                for (int c = 0; c < Sequencer.StepAmount; c++)
+                {
+                    var beatIndex = Steps[(r * Sequencer.StepAmount) + c].transform.GetSiblingIndex() % Sequencer.StepAmount;
 
-        for(int r = 0; r < Sequencer.RowAmount; r++)
+                    if (c == ((_playlistPlayback.PlaylistStep) % (Sequencer.StepAmount)) && _playlistPlayback.PlaylistStep != -1) 
+                    {
+                        Steps[(r * Sequencer.StepAmount) + c].SetColor(Config.ActiveStep);
+                    }
+                    else
+                    {
+                        Steps[(r * Sequencer.StepAmount) + c].SetColor(Config.PassiveStep);
+                    }
+                }
+            }
+
+
+            return;
+        }
+       
+        for(int r = 0; r < Sequencer.RowAmount; r++)    //updates step materials based on sequencer component
         {
             for(int c = 0; c < Sequencer.StepAmount; c++)
             {

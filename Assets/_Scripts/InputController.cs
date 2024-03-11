@@ -60,7 +60,7 @@ public class InputController : MonoBehaviour
                     {
 
                         var step = _hit.transform.GetSiblingIndex() + 1;
-                        Events.OnSequencerClicked?.Invoke(seq, step);
+                        Events.OnSequencerTapped?.Invoke(seq, step);
                     }
 
                     break;

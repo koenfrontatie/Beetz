@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6491047803801540266}
   - component: {fileID: 6491047803801540267}
-  - component: {fileID: 463461261242988322}
   m_Layer: 0
   m_Name: SeqDrawIndicator
   m_TagString: Untagged
@@ -47,20 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _quadTransform: {fileID: 6491047804663750978}
-  _position: {x: 0, y: 0}
-  _shape: {x: 1, y: 1}
---- !u!114 &463461261242988322
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6491047803801540261}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb4370aada8c7bc4492a83b78acbd587, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  _positionWorld: {x: 0, y: 0, z: 0}
+  _dimensions: {x: 0, y: 0}
 --- !u!1 &6491047804663751005
 GameObject:
   m_ObjectHideFlags: 0

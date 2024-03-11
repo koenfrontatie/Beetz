@@ -84,7 +84,7 @@ public class Sequencer : MonoBehaviour
         Metronome.OnStep += CalculateStepPosition;
         Metronome.OnResetMetronome += ResetSequencerPlayback;
 
-        Events.OnSequencerClicked += SequencerClickedHandler;
+        Events.OnSequencerTapped += SequencerClickedHandler;
     }
 
     private void SequencerClickedHandler(Sequencer sequencer, int step)

@@ -21,7 +21,7 @@ public class CamControlEnabler : MonoBehaviour
     {
         if (_gridInteraction == null) return;
         if (_gridInteraction.State == GridState.Default && !_dragCam.enabled) _dragCam.enabled = true;
-        if (_gridInteraction.State == GridState.Patching && _dragCam.enabled) _dragCam.enabled = false;
+        if (_gridInteraction.State != GridState.Default && _dragCam.enabled) _dragCam.enabled = false;
 
     }
 }

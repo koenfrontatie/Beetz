@@ -10,10 +10,10 @@ public class PlaylistPlayback : MonoBehaviour
     private void Awake()
     {
         _sequencer = GetComponent<Sequencer>();
-
     }
     private void OnEnable()
     {
+        Metronome.OnResetMetronome += () => ListenForPlayback();
         Metronome.OnStep += ListenForPlayback;
     }
     private void OnDisable()
@@ -23,17 +23,16 @@ public class PlaylistPlayback : MonoBehaviour
     private void Start()
     {
         _counter = GridController.Instance.GridCounter;
-        PlaylistStep = -1;
+        ListenForPlayback();
     }
 
     bool CounterIsInRange()
     {
-        //Debug.Log($"{_counter.CurrentStep} >= {_sequencer.InstanceCellPosition.x} && {_counter.CurrentStep} <= {_sequencer.InstanceCellPosition.x} + {_sequencer.StepAmount} - 1");
-        if (_counter.CurrentStep >= _sequencer.InstanceCellPosition.x && _counter.CurrentStep <= _sequencer.InstanceCellPosition.x + _sequencer.StepAmount)
+        if (_counter.CurrentStep >= _sequencer.InstanceCellPosition.x && _counter.CurrentStep < _sequencer.InstanceCellPosition.x + _sequencer.StepAmount)
         {
             return true;
         }
-
+            PlaylistStep = -1;
         return false;
     }
 
@@ -42,6 +41,5 @@ public class PlaylistPlayback : MonoBehaviour
         if (!CounterIsInRange()) return;
 
         PlaylistStep = _counter.CurrentStep - (int)_sequencer.InstanceCellPosition.x;
-
     }
 }
