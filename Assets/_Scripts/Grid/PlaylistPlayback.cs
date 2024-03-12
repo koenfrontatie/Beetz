@@ -38,6 +38,7 @@ public class PlaylistPlayback : MonoBehaviour
 
     void ListenForPlayback()
     {
+        if (_counter == null || _sequencer == null) return;
         if (!CounterIsInRange()) return;
 
         PlaylistStep = _counter.CurrentStep - (int)_sequencer.InstanceCellPosition.x;

@@ -89,7 +89,8 @@ public class Step : MonoBehaviour
 
     void SendScoreEvent()
     {
-        CsoundController.Instance.CsoundUnity.SendScoreEvent($"i {(int)(_sampleObject.Info.Template + 1)} 0 6");
+        Events.OnScoreEvent?.Invoke($"i {(int)(_sampleObject.Info.Template + 1)} 0 6");
+        //CsoundController.Instance.CsoundUnity.SendScoreEvent($"i {(int)(_sampleObject.Info.Template + 1)} 0 6");
         //print($"i {(int)(_sampleObject.Info.Template + 1)} 0 6");
     }
 

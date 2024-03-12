@@ -14,6 +14,19 @@ public class CsoundController : MonoBehaviour
         CsoundUnity = GetComponent<CsoundUnity>();
     }
 
+    public void PlayTemplate(int i)
+    {
+        CsoundUnity.SendScoreEvent($"i {i} 0 6");
+    }
 
+    private void OnEnable()
+    {
+        Events.OnScoreEvent += CsoundUnity.SendScoreEvent;
+    }
+
+    private void OnDisable()
+    {
+        Events.OnScoreEvent -= CsoundUnity.SendScoreEvent;
+    }
 
 }

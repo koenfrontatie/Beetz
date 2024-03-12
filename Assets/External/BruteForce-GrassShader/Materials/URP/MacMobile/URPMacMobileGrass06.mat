@@ -9,6 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: URPMacMobileGrass06
   m_Shader: {fileID: 4800000, guid: bf1b67d8223379749a0a88d47d0a7154, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - USE_RT
   - USE_S
@@ -20,6 +22,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -95,8 +98,8 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _GrassCut: 0
-    - _GrassSaturation: 4.42
-    - _GrassShading: 0.088
+    - _GrassSaturation: 1.7
+    - _GrassShading: 0.136
     - _GrassThinness: 1.4
     - _GrassThinnessIntersection: 0.13
     - _Metallic: 0
@@ -137,7 +140,7 @@ Material:
     - _ZWrite: 1
     - __NumberOfStacks: 17
     m_Colors:
-    - _Color: {r: 0.5505159, g: 0.8584906, b: 0.33610713, a: 1}
+    - _Color: {r: 0.26666668, g: 0.7411765, b: 0.19607843, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GroundColor: {r: 0.95699996, g: 0.8818866, b: 0.69860995, a: 1}
     - _OffsetVector: {r: 0, g: 0, b: 0, a: 0}

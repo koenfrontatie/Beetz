@@ -1,9 +1,4 @@
-using Lean.Touch;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class GridController : MonoBehaviour
 {
