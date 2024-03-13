@@ -29,4 +29,10 @@ public static class Events
     public static Action OnGridFingerUp;
     public static Action<Sequencer> OnSequencerHeld;
     public static Action<Sequencer, int> OnSequencerTapped;
+
+    public static Action<Transform, Vector3> OnFingerTap;
+    public static Action<Transform, Vector3> OnFingerDown;
+    public static Action<Transform, Vector3> OnFingerUp;
+    public static Action<Transform, Vector3> OnFingerHeld;
+    public static Action<Vector2> OnFingerUpdate;
 }
