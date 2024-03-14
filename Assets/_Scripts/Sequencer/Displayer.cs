@@ -39,11 +39,11 @@ public abstract class Displayer : MonoBehaviour
 
                     if (c == ((_playlistPlayback.PlaylistStep) % (Sequencer.StepAmount)) && _playlistPlayback.PlaylistStep != -1) 
                     {
-                        Steps[(r * Sequencer.StepAmount) + c].SetColor(Config.ActiveStep);
+                        Steps[(r * Sequencer.StepAmount) + c].SetColor(Prefabs.Instance.ActiveStep);
                     }
                     else
                     {
-                        Steps[(r * Sequencer.StepAmount) + c].SetColor(Config.PassiveStep);
+                        Steps[(r * Sequencer.StepAmount) + c].SetColor(Prefabs.Instance.PassiveStep);
                     }
                 }
             }

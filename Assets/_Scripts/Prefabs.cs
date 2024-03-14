@@ -12,10 +12,15 @@ public class Prefabs : MonoBehaviour
     public Material White;
     public Material Blue;
     public Material DarkBlue;
+    public Material Green;
 
     public List<SampleObject> BaseObjects = new List<SampleObject>();
 
-
+    public float CellSize = .5f;
+    public Color BodyColor = Color.green;
+    public Color DisplayColor = Color.white;
+    public Color ActiveStep = Color.green;
+    public Color PassiveStep = new Color(91f / 255f, 57f / 255f, 0f, 1f);
     private void Awake()
     {
         if (Instance != null && Instance != this)

@@ -13,6 +13,7 @@ public class LeanRaycaster : MonoBehaviour
         _cam = Camera.main;
         _layerMask += LayerMask.GetMask("Sequencer");
         _layerMask += LayerMask.GetMask("Grid");
+        _layerMask += LayerMask.GetMask("Dragger");
     }
 
     private void FingerUpHandler(LeanFinger finger)

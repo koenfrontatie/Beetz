@@ -12,7 +12,8 @@ public class GridInteraction : MonoBehaviour
     [SerializeField] private GameObject _gridDisplay, _draggerHitbox;
     [SerializeField] private RectTransform _dragger;
 
-    private Vector2 _raycastScreenPosition, _startCell, _currentCell, lastCellPosition, _drawerDimensions;
+    private Sequencer _lastSequencer;
+    private Vector2  _startCell, _currentCell, _lastCellPosition, _drawerDimensions;
     private GridController _gridController;
     private SoilDrawer _drawInstance;
 
@@ -28,12 +29,6 @@ public class GridInteraction : MonoBehaviour
     }
     private void OnEnable()
     {
-        //Events.OnGridTapped += FingerTapHandler;
-        //Events.OnNewRaycastScreenPosition += (v2) => _raycastScreenPosition = v2;
-        //Events.OnDrag += DrawSequencer;
-        //Events.OnGridFingerDown += FingerDownHandler;
-        //Events.OnGridFingerUp += FingerUpHandler;
-        //Events.OnSequencerHeld += SequencerHeldHandler;
         Events.OnFingerDown += FingerDownHandler;
         Events.OnFingerUp += FingerUpHandler;
         Events.OnFingerTap += FingerTapHandler;
@@ -63,6 +58,7 @@ public class GridInteraction : MonoBehaviour
             case InteractionState.Moving:
                 if (transform.gameObject.layer != LayerMask.NameToLayer("Grid")) return;
                 SetState(InteractionState.Default);
+                                                                    // todo : update sequencer and grid data 
                 break;
         }
     }
@@ -74,12 +70,6 @@ public class GridInteraction : MonoBehaviour
         Events.OnFingerTap -= FingerTapHandler;
         Events.OnFingerHeld -= FingerHeldHandler;
         Events.OnFingerUpdate -= FingerUpdateHandler;
-        //Events.OnGridTapped -= FingerTapHandler;
-        //Events.OnNewRaycastScreenPosition -= (v2) => _raycastScreenPosition = v2;
-        //Events.OnDrag -= DrawSequencer;
-        //Events.OnGridFingerDown -= FingerDownHandler;
-        //Events.OnGridFingerUp -= FingerUpHandler;
-        //Events.OnSequencerHeld -= SequencerHeldHandler;
     }
 
     void FingerDownHandler(Transform t, Vector3 point)
@@ -100,7 +90,15 @@ public class GridInteraction : MonoBehaviour
                 _drawInstance.DrawQuad(t.position, new Vector2(_drawerDimensions.x, _drawerDimensions.y));
 
                 break;
+            case InteractionState.Context:
+                //------------------------------------------------------------------- start creating patch
+                if (t.gameObject.layer != LayerMask.NameToLayer("Dragger")) return;
+                Debug.Log("dragger :)");
+                _lastCellPosition = _gridController.CellFromWorld(t.position);
+                _lastCellPosition = _gridController.CellFromWorld(t.position);
+                SetState(InteractionState.Moving);
 
+                break;
             case InteractionState.Moving: 
                 
                 break;
@@ -126,7 +124,7 @@ public class GridInteraction : MonoBehaviour
                 break;
 
             case InteractionState.Moving:
-
+                SetState(InteractionState.Default);
                 break;
         }
     }
@@ -146,8 +144,9 @@ public class GridInteraction : MonoBehaviour
                     _draggerHitbox.transform.position = worldPosition;
                     _draggerHitbox.transform.parent = seq.transform;
                     _dragger.transform.position = screenPosition;
-                    
-                    SetState(InteractionState.Moving);
+                    _lastSequencer = seq;
+
+                    SetState(InteractionState.Context);
                 }
                 break;
 
@@ -176,18 +175,31 @@ public class GridInteraction : MonoBehaviour
 
                 _currentCell = RaycastFingerToCell(v2);
 
-                if (_currentCell == lastCellPosition) return;
+                if (_currentCell == _lastCellPosition) return;
 
                 _drawerDimensions = new Vector3(Mathf.Clamp((_currentCell.x - _startCell.x) + 1, 1, 128), Mathf.Clamp(((_currentCell.y - _startCell.y) - 1) * -1, 1, 128), 0);
                 // update preview
                 _drawInstance.DrawQuad(_gridController.WorldFromCell(_startCell), new Vector2(_drawerDimensions.x, _drawerDimensions.y));
 
-                lastCellPosition = _currentCell;
+                _lastCellPosition = _currentCell;
 
 
                 break;
 
             case InteractionState.Moving:
+
+                _currentCell = RaycastFingerToCell(v2);
+
+                if (_currentCell == _lastCellPosition) return;
+
+                var offset = _currentCell - _lastCellPosition;
+
+                var worldoffset = offset * Config.CellSize;
+
+                _lastSequencer.transform.position += new Vector3(worldoffset.x, 0f, worldoffset.y);
+
+                _lastCellPosition = _currentCell;
+
                 break;
         }
     }
@@ -223,8 +235,8 @@ public class GridInteraction : MonoBehaviour
 
         // enable/disable state dependent objects
         _gridDisplay.gameObject.SetActive(state == InteractionState.Patching || state == InteractionState.Moving? true : false);
-        _dragger.gameObject.SetActive(state == InteractionState.Moving ? true : false);
-        _draggerHitbox.gameObject.SetActive(state == InteractionState.Moving ? true : false);
+        _dragger.gameObject.SetActive(state == InteractionState.Context ? true : false);
+        _draggerHitbox.gameObject.SetActive(state == InteractionState.Context || state == InteractionState.Moving ? true : false);
 
         State = state;
     }
@@ -268,6 +280,7 @@ public class GridInteraction : MonoBehaviour
 public enum InteractionState
 {
     Default,
+    Context,
     Patching,
     Moving
 }

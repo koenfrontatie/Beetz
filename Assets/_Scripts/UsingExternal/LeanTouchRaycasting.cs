@@ -32,6 +32,8 @@ public class LeanTouchRaycasting : MonoBehaviour
         _cam = Camera.main;
         _layerMask += LayerMask.GetMask("Sequencer");
         _layerMask += LayerMask.GetMask("Grid");
+        _layerMask += LayerMask.GetMask("Dragger");
+
     }
 
     private void Update()
