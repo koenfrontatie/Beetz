@@ -7,11 +7,15 @@ using UnityEngine.Events;
 public static class Events
 {
 
-   public static Action<Vector2, Vector2> OnNewSequencer;
+   public static Action<Vector2, Vector2> OnBuildNewSequencer;
+    public static Action OnNewSequencerBuilt;
    public static Action OnRemoveSequencer;
+   public static Action<Sequencer, Vector2> OnSequencerMoved;
+
    public static Action<int> OnHotbarClicked;
 
    public static Action OnGridStateChanged;
+    public static Action OnNewSongRange;
 
     public static Action<string> OnScoreEvent;
     //public static Action<Vector3Int> OnNewGridTarget;

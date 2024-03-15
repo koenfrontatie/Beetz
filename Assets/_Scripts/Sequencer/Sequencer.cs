@@ -16,7 +16,7 @@ public class Sequencer : MonoBehaviour
     public DisplayType DisplayType { get; private set; }
     public Vector3 InstancePosition { get; private set; }
 
-    public Vector2 InstanceCellPosition { get; private set; }
+    public Vector2 InstanceCellPosition;
 
 
 
@@ -59,6 +59,10 @@ public class Sequencer : MonoBehaviour
         ;
         //this.Samples = SequencerInfo.Samples;
         this.RowAmount = (int)SequencerInfo.Dimensions.y;
+        
+        SequencerManager.Instance.ActiveSequencers.Add(this);
+
+        Events.OnNewSequencerBuilt?.Invoke();
     }
 
     /// <summary>
@@ -84,6 +88,7 @@ public class Sequencer : MonoBehaviour
         Metronome.OnStep += CalculateStepPosition;
         Metronome.OnResetMetronome += ResetSequencerPlayback;
 
+        Events.OnNewSongRange += CalculateStepPosition;
         Events.OnSequencerTapped += SequencerClickedHandler;
     }
 
@@ -159,7 +164,6 @@ public class Sequencer : MonoBehaviour
                 break;
         }
 
-        SequencerManager.Instance.ActiveSequencers.Add(this);
         ResetSequencerPlayback();
     }
 

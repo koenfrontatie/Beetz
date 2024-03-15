@@ -6,6 +6,30 @@ using UnityEngine;
 public class PlaylistInformation : MonoBehaviour
 {
     [SerializeField] private PlaylistInfo _playlistInfo;
+    private void OnEnable()
+    {
+        Events.OnSequencerMoved += UpdateSequencerPosition;
+    }
+    private void OnDisable()
+    {
+        Events.OnSequencerMoved -= UpdateSequencerPosition;
+    }
+    private void UpdateSequencerPosition(Sequencer sequencer, Vector2 vector)
+    {
+        for(int i = 0; i < _playlistInfo.SequencerPositions.Count; i++)
+        {
+            if(sequencer.SequencerInfo.ID == _playlistInfo.SequencerPositions[i].ID)
+            {
+                PositionIDPair moved; //= new PositionIDPair(sequencer.SequencerInfo.ID, vector);
+                moved.ID = sequencer.SequencerInfo.ID;
+                moved.Position = _playlistInfo.SequencerPositions[i].Position + vector;
+                _playlistInfo.SequencerPositions[i] = moved;
+                sequencer.InstanceCellPosition = moved.Position;
+            }
+        }
+    }
+
+
     void Start()
     {
         LoadPlayListInfo();

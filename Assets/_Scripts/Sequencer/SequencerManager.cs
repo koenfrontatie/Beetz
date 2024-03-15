@@ -23,7 +23,7 @@ public class SequencerManager : MonoBehaviour
     private void Start()
     {
         //GridController.Instance = FindObjectOfType<GridController>();
-        Events.OnNewSequencer += BuildSequencer;
+        Events.OnBuildNewSequencer += BuildSequencer;
     }
 
     //private void BuildSequencer()
@@ -44,6 +44,6 @@ public class SequencerManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        Events.OnNewSequencer -= BuildSequencer;
+        Events.OnBuildNewSequencer -= BuildSequencer;
     }
 }

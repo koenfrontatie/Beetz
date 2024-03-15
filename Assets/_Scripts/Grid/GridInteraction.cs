@@ -56,9 +56,9 @@ public class GridInteraction : MonoBehaviour
                 break;
 
             case InteractionState.Moving:
-                if (transform.gameObject.layer != LayerMask.NameToLayer("Grid")) return;
-                SetState(InteractionState.Default);
-                                                                    // todo : update sequencer and grid data 
+                //if (transform.gameObject.layer != LayerMask.NameToLayer("Grid")) return;
+                //SetState(InteractionState.Default);
+                //                                                    // todo : update sequencer and grid data 
                 break;
         }
     }
@@ -91,9 +91,13 @@ public class GridInteraction : MonoBehaviour
 
                 break;
             case InteractionState.Context:
-                //------------------------------------------------------------------- start creating patch
-                if (t.gameObject.layer != LayerMask.NameToLayer("Dragger")) return;
-                Debug.Log("dragger :)");
+                //------------------------------------------------------------------- start sequencer dragging
+                if (t.gameObject.layer != LayerMask.NameToLayer("Dragger"))
+                {
+                    SetState(InteractionState.Default);
+                    return;
+                }
+                
                 _lastCellPosition = _gridController.CellFromWorld(t.position);
                 _lastCellPosition = _gridController.CellFromWorld(t.position);
                 SetState(InteractionState.Moving);
@@ -117,7 +121,7 @@ public class GridInteraction : MonoBehaviour
                 //------------------------------------------------------------------- build new sequencer
                 //if (t.gameObject.layer != LayerMask.NameToLayer("Grid")) return;
                 if (_drawInstance != null) Destroy(_drawInstance.gameObject);
-                if(_startCell != _currentCell) Events.OnNewSequencer?.Invoke(_startCell, _drawerDimensions);
+                if(_startCell != _currentCell) Events.OnBuildNewSequencer?.Invoke(_startCell, _drawerDimensions);
 
                 SetState(InteractionState.Default);
 
@@ -125,6 +129,7 @@ public class GridInteraction : MonoBehaviour
 
             case InteractionState.Moving:
                 SetState(InteractionState.Default);
+                // todo : update sequencer and grid data 
                 break;
         }
     }
@@ -136,11 +141,11 @@ public class GridInteraction : MonoBehaviour
             case InteractionState.Default:
                 if (t.parent.parent != null && t.parent.parent.TryGetComponent<Sequencer>(out var seq))
                 {
-                    //------------------------------------------------------------------- start sequencer dragging
+                    //------------------------------------------------------------------- open context menu 
                     //var step = t.GetSiblingIndex() + 1;
-                    var worldPosition = seq.transform.position + Vector3.forward * Config.CellSize * 1.3f + new Vector3(Config.CellSize * (seq.StepAmount - 1) * .5f, 0, 0);
-                    var screenPosition = _cam.WorldToScreenPoint(worldPosition);
-                    
+                    var worldPosition = seq.transform.position + Vector3.forward * Config.CellSize * 2f + new Vector3(Config.CellSize * (seq.StepAmount - 1) * .5f, 0, 0);
+                    var screenPosition = _cam.WorldToScreenPoint(worldPosition);//+ Vector3.forward * Config.CellSize
+
                     _draggerHitbox.transform.position = worldPosition;
                     _draggerHitbox.transform.parent = seq.transform;
                     _dragger.transform.position = screenPosition;
@@ -187,16 +192,18 @@ public class GridInteraction : MonoBehaviour
                 break;
 
             case InteractionState.Moving:
-
+                // ------------------------------------------------------------------- move sequencer along grid
                 _currentCell = RaycastFingerToCell(v2);
 
                 if (_currentCell == _lastCellPosition) return;
 
-                var offset = _currentCell - _lastCellPosition;
+                var delta = _currentCell - _lastCellPosition;
 
-                var worldoffset = offset * Config.CellSize;
+                var worlddelta = delta * Config.CellSize;
 
-                _lastSequencer.transform.position += new Vector3(worldoffset.x, 0f, worldoffset.y);
+                _lastSequencer.transform.position += new Vector3(worlddelta.x, 0f, worlddelta.y);
+
+                Events.OnSequencerMoved?.Invoke(_lastSequencer, delta);
 
                 _lastCellPosition = _currentCell;
 

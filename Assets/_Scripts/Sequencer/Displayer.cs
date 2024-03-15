@@ -11,11 +11,15 @@ public abstract class Displayer : MonoBehaviour
     {
         Metronome.OnStep += UpdateMaterials;
         Metronome.OnResetMetronome += UpdateMaterials;
+        //Events.OnNewSongRange += UpdateMaterials;
+        //Events.OnSequencerMoved += (Sequencer s, Vector2 v) => UpdateMaterials();
     }
     private void OnDisable()
     {
         Metronome.OnStep -= UpdateMaterials;
         Metronome.OnResetMetronome -= UpdateMaterials;
+        //Events.OnNewSongRange -= UpdateMaterials;
+        //Events.OnSequencerMoved -= (Sequencer s, Vector2 v) => UpdateMaterials();
     }
     void Start()
     {
