@@ -9,8 +9,8 @@ public class GridInteraction : MonoBehaviour
 
     
     [SerializeField] private SoilDrawer _soilDrawPrefab;
-    [SerializeField] private GameObject _gridDisplay, _draggerHitbox;
-    [SerializeField] private RectTransform _dragger;
+    [SerializeField] private GameObject _gridDisplay;
+    [SerializeField] private ContextColliders _contextColliders;
 
     private Sequencer _lastSequencer;
     private Vector2  _startCell, _currentCell, _lastCellPosition, _drawerDimensions;
@@ -94,9 +94,9 @@ public class GridInteraction : MonoBehaviour
                 break;
             case InteractionState.Context:
                 //------------------------------------------------------------------- start sequencer dragging
-                if (t.gameObject.layer != LayerMask.NameToLayer("Dragger"))
+                if (t.gameObject.tag != "ContextDragger")
                 {
-                    SetState(InteractionState.Default);
+                    SetState(InteractionState.Moving);
                     return;
                 }
                 
@@ -138,6 +138,7 @@ public class GridInteraction : MonoBehaviour
                 break;
 
             case InteractionState.Moving:
+                _contextColliders.SetContextMenu(false);
                 SetState(InteractionState.Default);
                 // todo : update sequencer and grid data 
                 break;
@@ -153,14 +154,18 @@ public class GridInteraction : MonoBehaviour
                 {
                     //------------------------------------------------------------------- open context menu 
                     //var step = t.GetSiblingIndex() + 1;
-                    var worldPosition = seq.transform.position + Vector3.forward * Config.CellSize * 2f + new Vector3(Config.CellSize * (seq.StepAmount - 1) * .5f, 0, 0);
-                    var screenPosition = _cam.WorldToScreenPoint(worldPosition);//+ Vector3.forward * Config.CellSize
+                    //var worldPosition = seq.transform.position + Vector3.forward * Config.CellSize * 2f + new Vector3(Config.CellSize * (seq.StepAmount - 1) * .5f, 0, 0);
+                    //var screenPosition = _cam.WorldToScreenPoint(worldPosition);//+ Vector3.forward * Config.CellSize
 
-                    _draggerHitbox.transform.position = worldPosition;
-                    _draggerHitbox.transform.parent = seq.transform;
-                    _dragger.transform.position = screenPosition;
+                    _contextColliders.PositionHitboxes(seq);
+
+                    _contextColliders.SetContextMenu(true);
+                    //_draggerHitbox.transform.position = worldPosition;
+                    //_draggerHitbox.transform.parent = seq.transform;
+                    //_contextColliders.transform.position = screenPosition;
+                    
                     _lastSequencer = seq;
-                    Events.OnSendToScareCrow?.Invoke(seq);
+                    
                     SetState(InteractionState.Context);
                 }
                 break;
@@ -251,9 +256,10 @@ public class GridInteraction : MonoBehaviour
         //}
 
         // enable/disable state dependent objects
-        _gridDisplay.gameObject.SetActive(state == InteractionState.Patching || state == InteractionState.Moving? true : false);
-        _dragger.gameObject.SetActive(state == InteractionState.Context ? true : false);
-        _draggerHitbox.gameObject.SetActive(state == InteractionState.Context || state == InteractionState.Moving ? true : false);
+        _gridDisplay.gameObject.SetActive(state == InteractionState.Patching || state == InteractionState.Moving ? true : false);
+        //_contextColliders.SetContextMenu((state == InteractionState.Context || state == InteractionState.Moving) ? true : false);
+
+
 
         State = state;
     }
@@ -276,9 +282,8 @@ public class GridInteraction : MonoBehaviour
         }
 
         // enable/disable state dependent objects
-        _gridDisplay.gameObject.SetActive(state == InteractionState.Patching || state == InteractionState.Moving? true : false);
-        _dragger.gameObject.SetActive(state == InteractionState.Moving ? true : false);
-        _draggerHitbox.gameObject.SetActive(state == InteractionState.Moving ? true : false);
+        _gridDisplay.gameObject.SetActive(state == InteractionState.Patching || state == InteractionState.Moving ? true : false);
+        //_contextColliders.SetContextMenu((state == InteractionState.Context || state == InteractionState.Moving) ? true : false);
 
         State = state;
     }

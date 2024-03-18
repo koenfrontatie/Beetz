@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 1462824003889863398}
   - component: {fileID: 6322389630542780122}
   - component: {fileID: 8023059904561252191}
-  m_Layer: 8
-  m_Name: DraggerHitbox
+  m_Layer: 3
+  m_Name: RemoveHitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 0.44}
+  m_LocalScale: {x: 0.5, y: 1, z: 0.44}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

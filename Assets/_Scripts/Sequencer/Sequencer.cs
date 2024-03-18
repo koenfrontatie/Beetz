@@ -1,9 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using UnityEditor.PackageManager.UI;
-using UnityEditor.ShaderKeywordFilter;
+
 using UnityEngine;
 
 public class Sequencer : MonoBehaviour
