@@ -20,6 +20,7 @@ public class LinearDisplay : Displayer
             }
         }
 
+        //Events.OnStepsPlaced?.Invoke(base.Sequencer);
         //base.UpdateMaterials();
     }
 }

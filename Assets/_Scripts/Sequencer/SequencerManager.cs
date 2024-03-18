@@ -32,11 +32,10 @@ public class SequencerManager : MonoBehaviour
     //    s.Init(_gridManager.GetCenter(), DisplayType);
     //}
 
-    public void BuildSequencer(Vector2 cell, Vector2 dimensions)
+    public void BuildSequencer(Vector3 position, SequencerInfo info)
     {
-        var spawnPos = GridController.Instance.GetCenterFromCell(cell);
-        var newSequencer = Instantiate(Prefabs.Instance.Sequencer, spawnPos, Quaternion.identity, transform);
-        newSequencer.Init(cell, dimensions);
+        var newSequencer = Instantiate(Prefabs.Instance.Sequencer, position, Quaternion.identity, transform);
+        newSequencer.Init(position, info);
         GridController.Instance.AddSequencerInformation(newSequencer);
     }
 

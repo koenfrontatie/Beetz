@@ -46,7 +46,7 @@ namespace CW.Common
 		public Vector3 LocalRotation { set { localRotation = value; } get { return localRotation; } } [SerializeField] private Vector3 localRotation;
 
 		/// <summary>This method will update the follow position now.</summary>
-		[ContextMenu("UpdatePosition")]
+		[UnityEngine.ContextMenu("UpdatePosition")]
 		public void UpdatePosition()
 		{
 			var finalTarget = target;

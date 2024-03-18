@@ -27,6 +27,9 @@ public abstract class Displayer : MonoBehaviour
         transform.TryGetComponent<PlaylistPlayback>(out _playlistPlayback);
         PositionSteps();
         UpdateMaterials();
+
+        Events.OnStepsPlaced?.Invoke(Sequencer);
+
     }
 
     abstract public void PositionSteps();

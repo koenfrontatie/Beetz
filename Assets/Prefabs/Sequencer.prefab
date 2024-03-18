@@ -350,7 +350,10 @@ MonoBehaviour:
     ID: 
     Type: 0
     Dimensions: {x: 0, y: 0}
+    PositionIDPairs: []
   Samples: []
+  InstanceCellPosition: {x: 0, y: 0}
+  _stepParent: {fileID: 1373759323480410067}
 --- !u!114 &8255520443760307352
 MonoBehaviour:
   m_ObjectHideFlags: 0

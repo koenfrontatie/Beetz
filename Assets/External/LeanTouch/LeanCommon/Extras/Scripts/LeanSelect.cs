@@ -232,7 +232,7 @@ namespace Lean.Common
 		}
 
 		/// <summary>This will deselect all objects that were selected by this component.</summary>
-		[ContextMenu("Deselect All")]
+		[UnityEngine.ContextMenu("Deselect All")]
 		public void DeselectAll()
 		{
 			if (selectables != null)

@@ -5,19 +5,11 @@ using UnityEngine;
 
 public class Step : MonoBehaviour
 {
-    [SerializeField] private SampleObject _sampleObject;
+    private SampleObject _sampleObject;
     private Sequencer _sequencer;
     private PlaylistPlayback _playback;
     private int _beatIndex;
     private Material _mat;
-
-    private void OnEnable()
-    {
-        transform.parent.parent.TryGetComponent<Sequencer>(out _sequencer);
-        transform.parent.parent.TryGetComponent<PlaylistPlayback>(out _playback);
-        Metronome.OnStep += CheckForPlayBack;
-        Metronome.OnTogglePlayPause += PlayPauseHandler;
-    }
 
     private void OnDisable()
     {
@@ -32,12 +24,13 @@ public class Step : MonoBehaviour
     private void Start()
     {
         transform.parent.parent.TryGetComponent<Sequencer>(out _sequencer);
+        transform.parent.parent.TryGetComponent<PlaylistPlayback>(out _playback);
+
         _beatIndex = transform.GetSiblingIndex() % _sequencer.StepAmount;
+
+        Metronome.OnStep += CheckForPlayBack;
+        Metronome.OnTogglePlayPause += PlayPauseHandler;
     }
-    //public void SetMat(Material mat)
-    //{
-    //    _meshRenderer.material = mat;
-    //}
 
     public void SetColor(Color c)
     {
@@ -48,10 +41,19 @@ public class Step : MonoBehaviour
         _sampleObject = so;
     }
 
+    public SampleObject GetSampleObject()
+    {
+        return (_sampleObject != null) ? _sampleObject : null;
+    }
+
     public void UnAssignSample()
     {
         if (_sampleObject == null) return;
-        Destroy(_sampleObject.gameObject);
+        // Check if the SampleObject is a runtime instance
+        //if (_sampleObject.gameObject.scene.IsValid())
+        //{
+            Destroy(_sampleObject.gameObject);
+        //}
         _sampleObject = null;
     }
 
@@ -90,33 +92,12 @@ public class Step : MonoBehaviour
     void SendScoreEvent()
     {
         Events.OnScoreEvent?.Invoke($"i {(int)(_sampleObject.Info.Template + 1)} 0 6");
-        //CsoundController.Instance.CsoundUnity.SendScoreEvent($"i {(int)(_sampleObject.Info.Template + 1)} 0 6");
-        //print($"i {(int)(_sampleObject.Info.Template + 1)} 0 6");
+
     }
 
     void SendAnimEvent()
     {
+        //Debug.Log($"ANIMATE {_sampleObject}");
         Events.OnScaleBounce?.Invoke(_sampleObject.gameObject);
     }
 }
-
-
-//using System.Collections;
-//using System.Collections.Generic;
-//using UnityEngine;
-
-//public class CsoundEventSender : MonoBehaviour
-//{
-//    [SerializeField] SampleObject _so;
-//    [SerializeField] CsoundUnity _cSound;
-
-//    void Start()
-//    {
-
-//    }
-
-//    void SendEvent(string template)
-//    {
-//        _cSound.SendScoreEvent($"i {_so.Info.Template - 1} 0 6");
-//    }
-//}

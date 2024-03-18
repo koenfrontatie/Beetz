@@ -53,7 +53,7 @@ namespace Lean.Common
 		}
 
 		/// <summary>This method will immediately snap the current angle to its target value.</summary>
-		[ContextMenu("Snap To Target")]
+		[UnityEngine.ContextMenu("Snap To Target")]
 		public void SnapToTarget()
 		{
 			currentAngle = angle;

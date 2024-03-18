@@ -16,14 +16,14 @@ public class PlaylistInformation : MonoBehaviour
     }
     private void UpdateSequencerPosition(Sequencer sequencer, Vector2 vector)
     {
-        for(int i = 0; i < _playlistInfo.SequencerPositions.Count; i++)
+        for(int i = 0; i < _playlistInfo.PositionIDPairs.Count; i++)
         {
-            if(sequencer.SequencerInfo.ID == _playlistInfo.SequencerPositions[i].ID)
+            if(sequencer.SequencerInfo.ID == _playlistInfo.PositionIDPairs[i].ID)
             {
                 PositionIDPair moved; //= new PositionIDPair(sequencer.SequencerInfo.ID, vector);
                 moved.ID = sequencer.SequencerInfo.ID;
-                moved.Position = _playlistInfo.SequencerPositions[i].Position + vector;
-                _playlistInfo.SequencerPositions[i] = moved;
+                moved.Position = _playlistInfo.PositionIDPairs[i].Position + vector;
+                _playlistInfo.PositionIDPairs[i] = moved;
                 sequencer.InstanceCellPosition = moved.Position;
             }
         }
@@ -61,7 +61,7 @@ public class PlaylistInformation : MonoBehaviour
             two = new Vector2(cell.x + sequencer.StepAmount - 1, cell.y + sequencer.RowAmount - 1)
         };
           
-        _playlistInfo.SequencerPositions.Add(sp);
+        _playlistInfo.PositionIDPairs.Add(sp);
         _playlistInfo.SequencerCorners.Add(sc);
         //Debug.Log(sp);
     }

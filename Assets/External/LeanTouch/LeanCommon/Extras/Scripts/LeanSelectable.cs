@@ -100,7 +100,7 @@ namespace Lean.Common
 			}
 		}
 
-		[ContextMenu("Deselect")]
+		[UnityEngine.ContextMenu("Deselect")]
 		public void Deselect()
 		{
 			SelfSelected = false;

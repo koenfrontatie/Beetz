@@ -9,4 +9,8 @@ public static class Config
     public static Color ActiveStep = Color.green;
     public static Color PassiveStep = Color.white;
 
+    public static float CircularStepDistance = .5f;
+    public static float CircularRowDistance = .5f;
+
+
 }

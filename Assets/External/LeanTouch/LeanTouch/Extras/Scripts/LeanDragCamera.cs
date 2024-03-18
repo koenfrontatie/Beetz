@@ -36,14 +36,14 @@ namespace Lean.Touch
 		private Vector3 remainingDelta;
 
 		/// <summary>This method resets the target position value to the <b>DefaultPosition</b> value.</summary>
-		[ContextMenu("Reset Position")]
+		[UnityEngine.ContextMenu("Reset Position")]
 		public virtual void ResetRotation()
 		{
 			remainingDelta = defaultPosition - transform.position;
 		}
 
 		/// <summary>This method moves the current GameObject to the center point of all selected objects.</summary>
-		[ContextMenu("Move To Selection")]
+		[UnityEngine.ContextMenu("Move To Selection")]
 		public virtual void MoveToSelection()
 		{
 			var center = default(Vector3);

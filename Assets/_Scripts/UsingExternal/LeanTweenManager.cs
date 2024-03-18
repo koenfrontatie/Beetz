@@ -23,9 +23,9 @@ public class LeanTweenManager : MonoBehaviour
 
     void ScaleBounce(GameObject obj)
     {
-        //var startScale = obj.transform.localScale;
-        //var tween = LeanTween.scale(obj, startScale * 1.2f, .1f).setEaseInOutBounce().setOnComplete(() => LeanTween.scale(obj, startScale, .2f));
-        var tween = LeanTween.scale(obj, Vector3.one * 1.2f, .1f).setEaseInOutBounce().setLoopPingPong(1);
+        Debug.Log($"leantween animate {obj}");
+        var startScale = obj.transform.localScale;
+        var tween = LeanTween.scale(obj, startScale * 1.2f, .15f).setEaseInBounce().setLoopPingPong(1);
         //Tweens.Add(tween);
         //TweenId.Add(tween.id);
     }

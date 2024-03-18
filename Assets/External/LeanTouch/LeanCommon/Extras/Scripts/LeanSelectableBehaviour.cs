@@ -24,7 +24,7 @@ namespace Lean.Common
 		}
 
 		/// <summary>This method allows you to manually register the LeanSelectable this component is associated with. This is useful if you're manually spawning and attaching children from code.</summary>
-		[ContextMenu("Register")]
+		[UnityEngine.ContextMenu("Register")]
 		public void Register()
 		{
 			Register(GetComponentInParent<LeanSelectable>());
@@ -50,7 +50,7 @@ namespace Lean.Common
 		}
 
 		/// <summary>This method allows you to manually register the LeanSelectable this component is associated with. This is useful if you're changing the associated LeanSelectable.</summary>
-		[ContextMenu("Unregister")]
+		[UnityEngine.ContextMenu("Unregister")]
 		public void Unregister()
 		{
 			if (selectable != null)

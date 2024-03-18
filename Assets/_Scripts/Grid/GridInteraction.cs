@@ -24,6 +24,8 @@ public class GridInteraction : MonoBehaviour
     {
         _gridController = GetComponent<GridController>();
         _layerMask += LayerMask.GetMask("Grid");
+        _layerMask += LayerMask.GetMask("Sequencer");
+
         _cam = Camera.main;
         State = InteractionState.Default;
     }
@@ -44,8 +46,8 @@ public class GridInteraction : MonoBehaviour
                 if (transform.parent.parent.TryGetComponent<Sequencer>(out var seq))
                 {
 
-                    var step = transform.GetSiblingIndex() + 1;
-                    Events.OnSequencerTapped?.Invoke(seq, step);
+                    var index = transform.GetSiblingIndex();
+                    Events.OnSequencerTapped?.Invoke(seq, index);
                 }
                 break;
 
@@ -121,7 +123,15 @@ public class GridInteraction : MonoBehaviour
                 //------------------------------------------------------------------- build new sequencer
                 //if (t.gameObject.layer != LayerMask.NameToLayer("Grid")) return;
                 if (_drawInstance != null) Destroy(_drawInstance.gameObject);
-                if(_startCell != _currentCell) Events.OnBuildNewSequencer?.Invoke(_startCell, _drawerDimensions);
+
+                if (_startCell != _currentCell)
+                {
+                    var info = DataManager.Instance.CreateNewSequencerInfo();
+                    info.Dimensions = _drawerDimensions;
+                    info.Type = DisplayType.Linear;
+                    info.PositionIDPairs = new List<PositionIDPair>(info.PositionIDPairs);
+                    Events.OnBuildNewSequencer?.Invoke(_gridController.GetCenterFromCell(_startCell), info);
+                }
 
                 SetState(InteractionState.Default);
 
@@ -150,7 +160,7 @@ public class GridInteraction : MonoBehaviour
                     _draggerHitbox.transform.parent = seq.transform;
                     _dragger.transform.position = screenPosition;
                     _lastSequencer = seq;
-
+                    Events.OnSendToScareCrow?.Invoke(seq);
                     SetState(InteractionState.Context);
                 }
                 break;

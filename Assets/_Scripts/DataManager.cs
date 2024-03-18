@@ -31,6 +31,7 @@ public class DataManager : MonoBehaviour
         var info = new SequencerInfo();
         info.ID = Guid.NewGuid().ToString();
         info.Dimensions = new Vector2(16, 1);
+        info.PositionIDPairs = new List<PositionIDPair>();
         return info;
     }
 
@@ -38,7 +39,7 @@ public class DataManager : MonoBehaviour
     {
         var info = new PlaylistInfo();
         info.ID = Guid.NewGuid().ToString();
-        info.SequencerPositions = new List<PositionIDPair>();
+        info.PositionIDPairs = new List<PositionIDPair>();
         info.SequencerCorners = new List<V2Pair>();
         return info;
     }
@@ -63,14 +64,16 @@ public struct SequencerInfo
     public string ID;
     public DisplayType Type;
     public Vector2 Dimensions;
-    public List<Tuple<Vector2, string>> Samples;
+    public List<PositionIDPair> PositionIDPairs;
+
+    //public List<Tuple<Vector2, string>> Samples;
 }
 
 [System.Serializable]
 public struct PlaylistInfo
 {
     public string ID;
-    public List<PositionIDPair> SequencerPositions;
+    public List<PositionIDPair> PositionIDPairs;
     public List<V2Pair> SequencerCorners;
 }
 

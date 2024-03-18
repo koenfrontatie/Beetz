@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public static class Events
 {
 
-   public static Action<Vector2, Vector2> OnBuildNewSequencer;
+   public static Action<Vector3, SequencerInfo> OnBuildNewSequencer;
     public static Action OnNewSequencerBuilt;
    public static Action OnRemoveSequencer;
    public static Action<Sequencer, Vector2> OnSequencerMoved;
@@ -39,4 +39,7 @@ public static class Events
     public static Action<Transform, Vector3> OnFingerUp;
     public static Action<Transform, Vector3> OnFingerHeld;
     public static Action<Vector2> OnFingerUpdate;
+
+    public static Action<Sequencer> OnSendToScareCrow;
+    public static Action<Sequencer> OnStepsPlaced;
 }
