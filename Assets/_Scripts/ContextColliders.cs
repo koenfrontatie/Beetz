@@ -59,7 +59,7 @@ public class ContextColliders : MonoBehaviour
         var rWorldPosition = dWorldPosition + offset;
         var rScreenPosition = _cam.WorldToScreenPoint(rWorldPosition);
 
-        _remove.transform.position = dWorldPosition;
+        _remove.transform.position = rWorldPosition;
         _removeUI.position = rScreenPosition;
 
         var cWorldPosition = dWorldPosition - offset;

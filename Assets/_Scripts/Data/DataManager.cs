@@ -51,6 +51,12 @@ public class DataManager : MonoBehaviour
 }
 
 [System.Serializable]
+public struct SampleCollection
+{
+    public List<SampleInfo> PositionIDPairs;
+}
+
+[System.Serializable]
 public struct SampleInfo
 {
     public string ID;

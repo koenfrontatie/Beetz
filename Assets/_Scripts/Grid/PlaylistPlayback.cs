@@ -7,10 +7,7 @@ public class PlaylistPlayback : MonoBehaviour
     [SerializeField] private Sequencer _sequencer;
     private GridCounter _counter;
     public int PlaylistStep { get; private set; }
-    private void Awake()
-    {
-        _sequencer = GetComponent<Sequencer>();
-    }
+
     private void OnEnable()
     {
         Metronome.OnResetMetronome += () => ListenForPlayback();
@@ -23,6 +20,7 @@ public class PlaylistPlayback : MonoBehaviour
     private void Start()
     {
         _counter = GridController.Instance.GridCounter;
+        _sequencer = GetComponent<Sequencer>();
         ListenForPlayback();
     }
 

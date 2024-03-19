@@ -1,5 +1,6 @@
 
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Sequencer : MonoBehaviour
 {
@@ -58,6 +59,7 @@ public class Sequencer : MonoBehaviour
         Events.OnNewSongRange += CalculateStepPosition;
         Events.OnSequencerTapped += SequencerTappedHandler;
         Events.OnStepsPlaced += OnStepsPlaced;
+        Events.OnSequencerMoved += OnMove;
     }
     private void OnDisable()
     {
@@ -68,12 +70,21 @@ public class Sequencer : MonoBehaviour
         Events.OnNewSongRange -= CalculateStepPosition;
         Events.OnSequencerTapped -= SequencerTappedHandler;
         Events.OnStepsPlaced -= OnStepsPlaced;
+        Events.OnSequencerMoved -= OnMove;
     }
 
     void OnStepsPlaced(Sequencer s)
     {
         if (s.gameObject != transform.gameObject) return;
         InitSamplesFromInfo(SequencerInfo);
+    }
+
+    void OnMove(Sequencer s, Vector2 delta)
+    {
+        if (s.gameObject != transform.gameObject) return;
+        InstanceCellPosition += delta;
+        InstancePosition = transform.position;
+        Events.OnUpdateGridRange?.Invoke();
     }
     private void SequencerTappedHandler(Sequencer sequencer, int stepIndex) // i think i should move this into interaction class
     {
@@ -143,10 +154,7 @@ public class Sequencer : MonoBehaviour
 
     public int GetStepIndexFromPosition(Vector2 position)
     {
-        Debug.Log("position is " + position);
         var yindex = position.y - 1;
-        Debug.Log("getstepindex is " + ((int)((SequencerInfo.Dimensions.x * yindex) + position.x) - 1));
-
         return (int)((SequencerInfo.Dimensions.x * yindex) + position.x) - 1;
     }
     

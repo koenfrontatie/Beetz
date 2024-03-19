@@ -27,4 +27,12 @@ public class BF_SetInteractiveShaderEffects : MonoBehaviour
         Shader.SetGlobalVector("_Position", transform.position);
         transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
     }
+    private void OnEnable()
+    {
+        rt.Release();
+    }
+    private void OnDisable()
+    {
+        rt.Release();
+    }
 }

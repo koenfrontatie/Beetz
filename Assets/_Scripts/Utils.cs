@@ -8,8 +8,10 @@ public static class Utils
     private static readonly string StreamingAssetsPath = Application.streamingAssetsPath;
     public static readonly string BaseSamplesPath = $"{StreamingAssetsPath}";
     private static readonly string SaveFilesPath = $"{PersistentDataPath}{Path.DirectorySeparatorChar}SaveFiles";
-    public static readonly string SaveFilesSample = $"{SaveFilesPath}{Path.DirectorySeparatorChar}SampleData";
-    public static readonly string SaveFilesSequencer = $"{SaveFilesPath}{Path.DirectorySeparatorChar}SequencerData";
+    
+    public static readonly string ProjectSavepath = $"{SaveFilesPath}{Path.DirectorySeparatorChar}Projects";
+    public static readonly string SampleSavepath = $"{SaveFilesPath}{Path.DirectorySeparatorChar}Samples";
+    public static readonly string SequencerSavepath = $"{SaveFilesPath}{Path.DirectorySeparatorChar}Sequencers";
     //public static readonly string SaveFilesSolarSystems = SaveFilesPath + "/SolarSystems";
     //public static readonly string SaveFilesSolarSystemsScreenshots = SaveFilesSolarSystems + "/screenshots
 

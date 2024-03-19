@@ -8,11 +8,11 @@ public class PlaylistInformation : MonoBehaviour
     [SerializeField] private PlaylistInfo _playlistInfo;
     private void OnEnable()
     {
-        Events.OnSequencerMoved += UpdateSequencerPosition;
+        //Events.OnSequencerMoved += UpdateSequencerPosition;
     }
     private void OnDisable()
     {
-        Events.OnSequencerMoved -= UpdateSequencerPosition;
+        //Events.OnSequencerMoved -= UpdateSequencerPosition;
     }
     private void UpdateSequencerPosition(Sequencer sequencer, Vector2 vector)
     {

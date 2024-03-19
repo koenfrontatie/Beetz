@@ -16,7 +16,7 @@ public class GridCounter : MonoBehaviour
         
         Events.OnNewSequencerBuilt += UpdateRange;
         Events.OnRemoveSequencer += UpdateRange;
-        Events.OnSequencerMoved += (Sequencer seq, Vector2 offset) => UpdateRange();
+        Events.OnUpdateGridRange += UpdateRange;
         Metronome.OnStep += UpdatePos;
         Metronome.OnResetMetronome += () => CurrentStep = SongRange[0];
     }
@@ -25,7 +25,7 @@ public class GridCounter : MonoBehaviour
     {
         Events.OnNewSequencerBuilt -= UpdateRange;
         Events.OnRemoveSequencer -= UpdateRange;
-        Events.OnSequencerMoved -= (Sequencer seq, Vector2 offset) => UpdateRange();
+        Events.OnUpdateGridRange -= UpdateRange;
         Metronome.OnResetMetronome -= () => CurrentStep = SongRange[0];
     }
 
@@ -61,7 +61,7 @@ public class GridCounter : MonoBehaviour
                 newRange = true;
             }
             
-            if (cell.x > SongRange[1] || reach > SongRange[1])
+            if (reach > SongRange[1])
             {
                 SongRange[1] = reach;
                 newRange = true;
@@ -78,7 +78,7 @@ public class GridCounter : MonoBehaviour
                 Events.OnNewSongRange?.Invoke();
             }
 
-            if (CurrentStep > SongRange[0]) CurrentStep = SongRange[0];
+            if (CurrentStep > SongRange[1]) CurrentStep = SongRange[0];
 
             // TODO - recalculate currentstep position so playback works while moving seq
         }

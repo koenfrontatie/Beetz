@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LeanTweenManager : MonoBehaviour
@@ -23,8 +21,13 @@ public class LeanTweenManager : MonoBehaviour
 
     void ScaleBounce(GameObject obj)
     {
-
+        if (obj == null)
+        {
+            Debug.LogWarning("ScaleBounce() called with a null GameObject.");
+            return;
+        }
         var startScale = obj.transform.localScale;
+        if (obj.LeanIsTweening()) return;
         var tween = LeanTween.scale(obj, startScale * 1.2f, .15f).setEaseInBounce().setLoopPingPong(1);
         //Tweens.Add(tween);
         //TweenId.Add(tween.id);

@@ -62,6 +62,12 @@ public class GridInteraction : MonoBehaviour
                 //SetState(InteractionState.Default);
                 //                                                    // todo : update sequencer and grid data 
                 break;
+            
+            case InteractionState.Context:
+                if (transform.gameObject.layer != LayerMask.NameToLayer("Grid")) return;
+                SetState(InteractionState.Default);
+
+                break;
         }
     }
 
@@ -94,15 +100,35 @@ public class GridInteraction : MonoBehaviour
                 break;
             case InteractionState.Context:
                 //------------------------------------------------------------------- start sequencer dragging
-                if (t.gameObject.tag != "ContextDragger")
+                if (t.gameObject.tag == "ContextDrag")
                 {
+                    _lastCellPosition = _gridController.CellFromWorld(t.position);
+                    _lastCellPosition = _gridController.CellFromWorld(t.position);
                     SetState(InteractionState.Moving);
+
                     return;
                 }
-                
-                _lastCellPosition = _gridController.CellFromWorld(t.position);
-                _lastCellPosition = _gridController.CellFromWorld(t.position);
-                SetState(InteractionState.Moving);
+                //------------------------------------------------------------------- remove sequencer
+                if (t.gameObject.tag == "ContextRemove")
+                {
+                    Destroy(_lastSequencer.gameObject);
+                    SetState(InteractionState.Default);
+
+                    return;
+                }
+                //------------------------------------------------------------------- start copying patch
+                if (t.gameObject.tag == "ContextCopy")
+                {
+                    _startCell = _gridController.CellFromWorld(point);
+                    _drawInstance = Instantiate(_soilDrawPrefab, transform);
+                    _drawerDimensions = _lastSequencer.SequencerInfo.Dimensions;
+                    // update preview
+                    _drawInstance.DrawQuad(t.position, _lastSequencer.SequencerInfo.Dimensions);
+
+                    SetState(InteractionState.Copying);
+
+                    return;
+                }
 
                 break;
             case InteractionState.Moving: 
@@ -138,9 +164,14 @@ public class GridInteraction : MonoBehaviour
                 break;
 
             case InteractionState.Moving:
-                _contextColliders.SetContextMenu(false);
                 SetState(InteractionState.Default);
                 // todo : update sequencer and grid data 
+                break;
+            case InteractionState.Copying:
+                //------------------------------------------------------------------- build copy
+                if (_drawInstance != null) Destroy(_drawInstance.gameObject);
+                Events.OnBuildNewSequencer?.Invoke(_gridController.GetCenterFromCell(_currentCell), _lastSequencer.SequencerInfo);
+                SetState(InteractionState.Default);
                 break;
         }
     }
@@ -156,10 +187,6 @@ public class GridInteraction : MonoBehaviour
                     //var step = t.GetSiblingIndex() + 1;
                     //var worldPosition = seq.transform.position + Vector3.forward * Config.CellSize * 2f + new Vector3(Config.CellSize * (seq.StepAmount - 1) * .5f, 0, 0);
                     //var screenPosition = _cam.WorldToScreenPoint(worldPosition);//+ Vector3.forward * Config.CellSize
-
-                    _contextColliders.PositionHitboxes(seq);
-
-                    _contextColliders.SetContextMenu(true);
                     //_draggerHitbox.transform.position = worldPosition;
                     //_draggerHitbox.transform.parent = seq.transform;
                     //_contextColliders.transform.position = screenPosition;
@@ -223,6 +250,23 @@ public class GridInteraction : MonoBehaviour
                 _lastCellPosition = _currentCell;
 
                 break;
+            case InteractionState.Copying:
+                // ------------------------------------------------------------------- handle placement of copy
+                if (_drawInstance == null) return;
+
+                _currentCell = RaycastFingerToCell(v2);
+
+                if (_currentCell == _lastCellPosition) return;
+
+                //Events.OnSequencerMoved?.Invoke(_lastSequencer, _currentCell - _lastCellPosition); // params are not necessary i think
+
+                // update preview
+                _drawInstance.DrawQuad(_gridController.WorldFromCell(_currentCell), _lastSequencer.SequencerInfo.Dimensions);
+
+                _lastCellPosition = _currentCell;
+
+
+                break;
         }
     }
 
@@ -245,15 +289,18 @@ public class GridInteraction : MonoBehaviour
 
     private void SetState(InteractionState state)
     {
-        //switch (state)
-        //{
-        //    case GridState.Default:
-
-        //        break;
-        //    case GridState.Patching:
-
-        //        break;
-        //}
+        switch (state)
+        {
+            case InteractionState.Default:
+                _contextColliders.SetContextMenu(false);
+                break;
+            case InteractionState.Context:
+                _contextColliders.SetContextMenu(true);
+                _contextColliders.PositionHitboxes(_lastSequencer);
+                break;
+            case InteractionState.Moving:
+                break;
+        }
 
         // enable/disable state dependent objects
         _gridDisplay.gameObject.SetActive(state == InteractionState.Patching || state == InteractionState.Moving ? true : false);
@@ -271,13 +318,13 @@ public class GridInteraction : MonoBehaviour
         switch (state)
         {
             case InteractionState.Default:
-
+                _contextColliders.SetContextMenu(false);
                 break;
-            case InteractionState.Patching:
-
+            case InteractionState.Context:
+                _contextColliders.SetContextMenu(true);
+                _contextColliders.PositionHitboxes(_lastSequencer);
                 break;
             case InteractionState.Moving:
-
                 break;
         }
 
@@ -304,5 +351,6 @@ public enum InteractionState
     Default,
     Context,
     Patching,
-    Moving
+    Moving,
+    Copying
 }

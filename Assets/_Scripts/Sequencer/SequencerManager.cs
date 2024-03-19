@@ -19,24 +19,26 @@ public class SequencerManager : MonoBehaviour
             Instance = this;
         }
     }
-
     private void Start()
     {
-        //GridController.Instance = FindObjectOfType<GridController>();
         Events.OnBuildNewSequencer += BuildSequencer;
+        Events.OnCopySequencer += CloneSequencer;
     }
 
-    //private void BuildSequencer()
-    //{
-    //    var s = Instantiate(Prefabs.Instance.Sequencer, _gridManager.GetCenter(), Quaternion.identity, transform);
-    //    s.Init(_gridManager.GetCenter(), DisplayType);
-    //}
-
-    public void BuildSequencer(Vector3 position, SequencerInfo info)
+    public void BuildSequencer(Vector3 worldPosition, SequencerInfo info)
     {
-        var newSequencer = Instantiate(Prefabs.Instance.Sequencer, position, Quaternion.identity, transform);
-        newSequencer.Init(position, info);
+        var newSequencer = Instantiate(Prefabs.Instance.Sequencer, worldPosition, Quaternion.identity, transform);
+        newSequencer.Init(worldPosition, info);
         GridController.Instance.AddSequencerInformation(newSequencer);
+    }
+
+    public void CloneSequencer(Vector3 worldPosition, SequencerInfo info)
+    {
+        var newInfo = DataManager.Instance.CreateNewSequencerInfo();
+        newInfo.Dimensions = info.Dimensions;
+        newInfo.Type = info.Type;
+        newInfo.PositionIDPairs = new List<PositionIDPair>(info.PositionIDPairs);
+        Events.OnBuildNewSequencer?.Invoke(worldPosition, info);
     }
 
     public void ChangeDisplayType() => DisplayType = DisplayType.NextEnumValue();
@@ -44,5 +46,6 @@ public class SequencerManager : MonoBehaviour
     private void OnDestroy()
     {
         Events.OnBuildNewSequencer -= BuildSequencer;
+        Events.OnCopySequencer -= CloneSequencer;
     }
 }

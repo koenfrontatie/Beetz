@@ -6,12 +6,13 @@ using UnityEngine.Events;
 
 public static class Events
 {
+    public static Action<Vector3, SequencerInfo> OnCopySequencer;
 
-   public static Action<Vector3, SequencerInfo> OnBuildNewSequencer;
+    public static Action<Vector3, SequencerInfo> OnBuildNewSequencer;
     public static Action OnNewSequencerBuilt;
    public static Action OnRemoveSequencer;
    public static Action<Sequencer, Vector2> OnSequencerMoved;
-
+    public static Action OnUpdateGridRange;
    public static Action<int> OnHotbarClicked;
 
    public static Action OnGridStateChanged;
