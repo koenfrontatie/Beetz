@@ -18,12 +18,12 @@ public class UIController : MonoBehaviour
     }
     void SetHotbarText()
     {
-        var loader = FindObjectOfType<AndroidSampleFinder>();
+        var loader = FindObjectOfType<SampleDirectoryChecker>();
         if (loader != null)
         {
-            for (int i = 0; i < loader.BaseSampleNames.Count; i++)
+            for (int i = 0; i < loader.NumberOfBaseSamples; i++)
             {
-                sampleHotbar.SetButtonText(i, loader.BaseSampleNames[i]);
+                //sampleHotbar.SetButtonText(i, loader.BaseSampleNames[i]);
             }
         }
     }

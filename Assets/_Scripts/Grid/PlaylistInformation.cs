@@ -37,12 +37,12 @@ public class PlaylistInformation : MonoBehaviour
 
     void LoadPlayListInfo()
     {
-        _playlistInfo = DataManager.Instance.CreateNewPlaylistInfo();
+        _playlistInfo = DataHelper.Instance.CreateNewPlaylistInfo();
     }
 
     void LoadPlayListInfo(string s)
     {
-        _playlistInfo = DataManager.Instance.CreateNewPlaylistInfo();
+        _playlistInfo = DataHelper.Instance.CreateNewPlaylistInfo();
     }
 
     public void Add(Sequencer sequencer)

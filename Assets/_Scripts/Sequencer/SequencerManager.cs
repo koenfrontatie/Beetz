@@ -34,7 +34,7 @@ public class SequencerManager : MonoBehaviour
 
     public void CloneSequencer(Vector3 worldPosition, SequencerInfo info)
     {
-        var newInfo = DataManager.Instance.CreateNewSequencerInfo();
+        var newInfo = DataHelper.Instance.CreateNewSequencerInfo();
         newInfo.Dimensions = info.Dimensions;
         newInfo.Type = info.Type;
         newInfo.PositionIDPairs = new List<PositionIDPair>(info.PositionIDPairs);

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class DataManager : MonoBehaviour
+public class DataHelper : MonoBehaviour
 {
-    public static DataManager Instance;
+    public static DataHelper Instance;
 
     private void Awake()
     {
@@ -53,7 +53,7 @@ public class DataManager : MonoBehaviour
 [System.Serializable]
 public struct SampleCollection
 {
-    public List<SampleInfo> PositionIDPairs;
+    public List<SampleInfo> Samples;
 }
 
 [System.Serializable]

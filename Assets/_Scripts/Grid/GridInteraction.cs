@@ -152,7 +152,7 @@ public class GridInteraction : MonoBehaviour
 
                 if (_startCell != _currentCell)
                 {
-                    var info = DataManager.Instance.CreateNewSequencerInfo();
+                    var info = DataHelper.Instance.CreateNewSequencerInfo();
                     info.Dimensions = _drawerDimensions;
                     info.Type = DisplayType.Linear;
                     info.PositionIDPairs = new List<PositionIDPair>(info.PositionIDPairs);

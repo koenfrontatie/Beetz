@@ -1,4 +1,3 @@
-using log4net.Util;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,7 +19,7 @@ public class CircularViewer : MonoBehaviour
         transform.DestroyChildren();
 
 
-        var info = DataManager.Instance.CreateNewSequencerInfo();
+        var info = DataHelper.Instance.CreateNewSequencerInfo();
         info.Dimensions = sequencer.SequencerInfo.Dimensions;
         info.Type = sequencer.SequencerInfo.Type;
         info.PositionIDPairs = new List<PositionIDPair>(sequencer.SequencerInfo.PositionIDPairs);

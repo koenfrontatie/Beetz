@@ -163,7 +163,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Info:
     ID: 3
-    Name: 
+    Name: Potato
     Template: 3
 --- !u!1 &8284465200282125991
 GameObject:

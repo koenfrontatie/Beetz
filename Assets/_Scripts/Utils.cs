@@ -4,20 +4,27 @@ using System.IO;
 
 public static class Utils
 {
-    private static readonly string PersistentDataPath = Application.persistentDataPath;
-    private static readonly string StreamingAssetsPath = Application.streamingAssetsPath;
-    public static readonly string BaseSamplesPath = $"{StreamingAssetsPath}";
-    private static readonly string SaveFilesPath = $"{PersistentDataPath}{Path.DirectorySeparatorChar}SaveFiles";
+    public static readonly string PersistentDataPath = Application.persistentDataPath;
+    public static readonly string StreamingBaseSamples = $"{Application.streamingAssetsPath}{Path.DirectorySeparatorChar}BaseSamples";
+    public static readonly string SaveFilesPath = $"{PersistentDataPath}{Path.DirectorySeparatorChar}SaveFiles";
     
     public static readonly string ProjectSavepath = $"{SaveFilesPath}{Path.DirectorySeparatorChar}Projects";
     public static readonly string SampleSavepath = $"{SaveFilesPath}{Path.DirectorySeparatorChar}Samples";
+    public static readonly string PersistentBaseSamples = $"{SampleSavepath}{Path.DirectorySeparatorChar}BaseSamples";
     public static readonly string SequencerSavepath = $"{SaveFilesPath}{Path.DirectorySeparatorChar}Sequencers";
     //public static readonly string SaveFilesSolarSystems = SaveFilesPath + "/SolarSystems";
     //public static readonly string SaveFilesSolarSystemsScreenshots = SaveFilesSolarSystems + "/screenshots
 
 
 
-
+    public static void CheckForCreateDirectory(string directory)
+    {
+        if (!Directory.Exists(directory))
+        {
+            Debug.Log("Creating dir " + directory);
+            Directory.CreateDirectory(directory);
+        }
+    }
 
 
 
