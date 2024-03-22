@@ -40,26 +40,28 @@ public class SaveLoader : MonoBehaviour
 
         StringBuilder sb = new StringBuilder();
 
-        for(int i = 0; i < list.Count - 1; i++)
+        for(int i = 0; i < list.Count; i++)
         {
             sb.Append($"{list[i]},");
         }
 
+        if (sb.Length > 0)
+        {
+            sb.Remove(sb.Length - 1, 1);
+        }
+
         var content = sb.ToString();
 
-        if (!File.Exists(path)) File.Create(path).Close();
-
-        StreamWriter sw = new StreamWriter(path);
-        
-        sw.Write(content);
-        
-        sw.Close();
+        File.WriteAllText(path, content);
     }
 
     public List<string> LoadProjectLibrary()
     {
+        var libraryPath = $"{_projectPath}{Path.DirectorySeparatorChar}library.bfc";
 
-        var content = File.ReadAllText($"{_projectPath}{Path.DirectorySeparatorChar}library.bfc");
+        if (!Utils.CheckForFile(libraryPath)) CreateLibrary();
+        
+        var content = File.ReadAllText(libraryPath);
 
         string[] entries = content.Split(",");
 
@@ -71,6 +73,19 @@ public class SaveLoader : MonoBehaviour
         }
 
         return loadedList;
+    }
+
+    void CreateLibrary()
+    {
+        Debug.Log("Creating new library.");
+        List<string> newLib = new List<string>();
+
+        for (int i = 1; i <= 5; i++)
+        {
+            newLib.Add(i.ToString());
+        }
+
+        SaveListToBfc(newLib);
     }
     
 }

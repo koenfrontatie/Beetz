@@ -7,6 +7,7 @@ TagManager:
   - ContextRemove
   - ContextCopy
   - ContextDrag
+  - Droppable
   layers:
   - Default
   - TransparentFX
@@ -18,7 +19,7 @@ TagManager:
   - Overlay
   - Dragger
   - NoGrass
-  - 
+  - UITop
   - 
   - 
   - 

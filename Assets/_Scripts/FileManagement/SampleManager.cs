@@ -9,7 +9,7 @@ public class SampleManager : MonoBehaviour
 
     public SampleObject SelectedSample;
 
-    public List<string> LoadedLibrary = new List<string>();
+    public List<string> Library = new List<string>(); 
 
     private void Awake()
     {
@@ -29,22 +29,20 @@ public class SampleManager : MonoBehaviour
     }
     private void Start()
     {
-        LoadedLibrary.Clear();
-
-        LoadedLibrary = SaveLoader.Instance.LoadProjectLibrary();
+        Library = SaveLoader.Instance.LoadProjectLibrary();
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.S)) SaveLoader.Instance.SaveListToBfc(LoadedLibrary);
-        if (Input.GetKeyDown(KeyCode.L)) LoadedLibrary = SaveLoader.Instance.LoadProjectLibrary();
+        if(Input.GetKeyDown(KeyCode.S)) SaveLoader.Instance.SaveListToBfc(Library);
+        if (Input.GetKeyDown(KeyCode.L)) Library = SaveLoader.Instance.LoadProjectLibrary();
     }
     private void OnDisable()
     {
         Events.OnHotbarClicked -= (i) => SelectedSample = Prefabs.Instance.BaseObjects[i];
     }
 
-    void SampleSelection(int i)
+    void LoadToolbar()
     {
 
     }

@@ -15,18 +15,19 @@ public static class Utils
     //public static readonly string SaveFilesSolarSystems = SaveFilesPath + "/SolarSystems";
     //public static readonly string SaveFilesSolarSystemsScreenshots = SaveFilesSolarSystems + "/screenshots
 
-
-
-    public static void CheckForCreateDirectory(string directory)
+    public static bool CheckForCreateDirectory(string directory)
     {
-        if (!Directory.Exists(directory))
-        {
-            Debug.Log("Creating dir " + directory);
-            Directory.CreateDirectory(directory);
-        }
+        if (Directory.Exists(directory)) return true;
+        Debug.Log("Creating dir " + directory);
+        Directory.CreateDirectory(directory);
+        return false;
     }
 
-
+    public static bool CheckForFile(string path)
+    {
+        if (File.Exists(path)) return true;
+        return false;
+    }
 
     public async static Task LerpToTarget(GameObject obj, Vector3 targetPosition, float duration)
     {

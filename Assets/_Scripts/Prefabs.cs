@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Prefabs : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class Prefabs : MonoBehaviour
     public Material Green;
 
     public List<SampleObject> BaseObjects = new List<SampleObject>();
+    public List<Texture2D> BaseIcons = new List<Texture2D>();
+
+    public Camera CanvasCamera;
 
     public float CellSize = .5f;
     public Color BodyColor = Color.green;

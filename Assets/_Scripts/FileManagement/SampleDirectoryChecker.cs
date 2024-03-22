@@ -20,10 +20,6 @@ public class SampleDirectoryChecker : MonoBehaviour
         var targetDir = Utils.PersistentBaseSamples;
         
         Utils.CheckForCreateDirectory(targetDir);
-        
-        Utils.CheckForCreateDirectory(Utils.SaveFilesPath);
-
-        Utils.CheckForCreateDirectory(Utils.SampleSavepath);
 
         FileInfo[] files = streamDir.GetFiles();
 
