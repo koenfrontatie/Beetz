@@ -15,6 +15,8 @@ public static class Utils
     //public static readonly string SaveFilesSolarSystems = SaveFilesPath + "/SolarSystems";
     //public static readonly string SaveFilesSolarSystemsScreenshots = SaveFilesSolarSystems + "/screenshots
 
+    
+
     public static bool CheckForCreateDirectory(string directory)
     {
         if (Directory.Exists(directory)) return true;

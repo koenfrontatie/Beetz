@@ -132,3 +132,7 @@ MonoBehaviour:
     ID: 4
     Name: Carrot
     Template: 4
+  SampleData:
+    ID: 4
+    Name: Carrot
+    Template: 4

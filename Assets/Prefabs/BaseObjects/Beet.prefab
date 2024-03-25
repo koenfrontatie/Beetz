@@ -668,3 +668,7 @@ MonoBehaviour:
     ID: 2
     Name: Beet
     Template: 2
+  SampleData:
+    ID: 2
+    Name: Beet
+    Template: 2

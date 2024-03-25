@@ -11,13 +11,14 @@ public class DragDropUI : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     public void OnDrag(PointerEventData eventData)
     {
         transform.position = eventData.position;
-
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (_resetPositionOnRelease)
             _startPosition = transform.position;
+
+        transform.SetAsLastSibling();
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -27,19 +28,26 @@ public class DragDropUI : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
 
         foreach (var hit in hits)
         {
+            var droppedItem = hit.gameObject.GetComponent<DragDropUI>();
+
+            if (droppedItem)
+            {
+                droppedItem.transform.position = _startPosition;
+            }
+        }
+
+        foreach (var hit in hits)
+        {
             var droppedContainer = hit.gameObject.GetComponent<InventorySlot>();
 
             if (droppedContainer)
             {
-                Debug.Log($"Dragended on {droppedContainer.name}");
-
-                //swap
                 _startPosition = droppedContainer.transform.position;
                 transform.position = droppedContainer.transform.position;
 
+                Events.OnInventoryChange?.Invoke();
             }
         }
-
 
         if (_resetPositionOnRelease)
             transform.position = _startPosition;

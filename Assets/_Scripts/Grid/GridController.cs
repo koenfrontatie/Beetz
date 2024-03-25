@@ -4,7 +4,6 @@ public class GridController : MonoBehaviour
 {
     public static GridController Instance { get; private set; }
     public Grid Grid { get; private set; }
-    public PlaylistInformation PlaylistInformation { get; private set; }
     public GridCounter GridCounter { get; private set; }
 
     public bool PlaylistPlaybackEnabled;
@@ -24,7 +23,6 @@ public class GridController : MonoBehaviour
     {
         Grid = GetComponentInChildren<Grid>();
         GridCounter = GetComponent<GridCounter>();
-        PlaylistInformation = GetComponent<PlaylistInformation>();
         Grid.cellSize = new Vector3(Config.CellSize, Config.CellSize, Config.CellSize);
     }
 
@@ -50,6 +48,6 @@ public class GridController : MonoBehaviour
 
     public void AddSequencerInformation(Sequencer sequencer)
     {
-        PlaylistInformation.Add(sequencer);
+        ProjectData.Instance.Add(sequencer);
     }
 }

@@ -43,4 +43,12 @@ public static class Events
 
     public static Action<Sequencer> OnSendToScareCrow;
     public static Action<Sequencer> OnStepsPlaced;
+
+    public static Action OnLibraryLoaded;
+    public static Action OnInventoryChange;
+
+    public static Action<ProjectInfo> OnProjectInfoLoaded;
+
+    public static Action OnToolbarLoaded;
+
 }

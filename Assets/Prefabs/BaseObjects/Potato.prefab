@@ -165,6 +165,10 @@ MonoBehaviour:
     ID: 3
     Name: Potato
     Template: 3
+  SampleData:
+    ID: 3
+    Name: Potato
+    Template: 3
 --- !u!1 &8284465200282125991
 GameObject:
   m_ObjectHideFlags: 0

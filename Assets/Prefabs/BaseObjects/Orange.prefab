@@ -148,3 +148,7 @@ MonoBehaviour:
     ID: 1
     Name: Orange
     Template: 1
+  SampleData:
+    ID: 1
+    Name: Orange
+    Template: 1

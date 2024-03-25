@@ -98,6 +98,21 @@ public struct V2Pair
     public Vector2 two;
 }
 
+[System.Serializable]
+public struct ToolbarConfig
+{
+    public List<string> Samples;
+}
+
+[System.Serializable]
+public struct ProjectInfo
+{
+    public string Name;
+    public string ID;
+    public PlaylistInfo PlaylistInfo;
+    public List<string> ToolbarConfig;
+}
+
 
 
 //public PlanetInfo CreateNewInfo(PlanetType planetType = PlanetType.Rhythmic, int segments = 4, int beatsPerSegment = 4)

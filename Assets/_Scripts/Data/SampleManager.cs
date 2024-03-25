@@ -27,15 +27,16 @@ public class SampleManager : MonoBehaviour
     {
         Events.OnHotbarClicked += (i) => SelectedSample = Prefabs.Instance.BaseObjects[i];
     }
-    private void Start()
-    {
-        Library = SaveLoader.Instance.LoadProjectLibrary();
-    }
+    //private void Start()
+    //{
+    //    Library = SaveLoader.Instance.LoadProjectLibrary();
+    //    Events.OnLibraryLoaded?.Invoke();
+    //}
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.S)) SaveLoader.Instance.SaveListToBfc(Library);
-        if (Input.GetKeyDown(KeyCode.L)) Library = SaveLoader.Instance.LoadProjectLibrary();
+        //if(Input.GetKeyDown(KeyCode.S)) SaveLoader.Instance.SaveListToBfc(Library);
+        //if (Input.GetKeyDown(KeyCode.L)) Library = SaveLoader.Instance.LoadProjectLibrary();
     }
     private void OnDisable()
     {

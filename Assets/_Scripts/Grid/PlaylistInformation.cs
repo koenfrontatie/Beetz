@@ -1,19 +1,27 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using UnityEditor.SearchService;
 using UnityEngine;
 
 public class PlaylistInformation : MonoBehaviour
 {
+    public static PlaylistInformation Instance;
+
     [SerializeField] private PlaylistInfo _playlistInfo;
-    private void OnEnable()
+    private void Awake()
     {
-        //Events.OnSequencerMoved += UpdateSequencerPosition;
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
     }
-    private void OnDisable()
-    {
-        //Events.OnSequencerMoved -= UpdateSequencerPosition;
-    }
+
     private void UpdateSequencerPosition(Sequencer sequencer, Vector2 vector)
     {
         for(int i = 0; i < _playlistInfo.PositionIDPairs.Count; i++)

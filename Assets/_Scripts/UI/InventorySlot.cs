@@ -7,30 +7,13 @@ using UnityEngine.UI;
 
 public class InventorySlot : MonoBehaviour
 {
-    private Button _button;
-
     private string _guid;
 
-    bool DroppedInContainer(PointerEventData eventData)
+    public SampleObject InventorySampleObject;
+
+
+    public void Bind(SampleObject so)
     {
-        var hits = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(eventData, hits);
-
-        foreach(var hit in hits)
-        {
-            var droppedContainer = hit.gameObject.GetComponent<InventorySlot>();
-
-            if(droppedContainer)
-            {
-                Debug.Log($"Dragended on {droppedContainer.name}");
-
-                //swap
-
-                return true;
-            }
-        }
-
-        return false;
-       
+        InventorySampleObject = so;
     }
 }

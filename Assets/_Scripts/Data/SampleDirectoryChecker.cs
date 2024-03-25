@@ -14,19 +14,18 @@ public class SampleDirectoryChecker : MonoBehaviour
     {
         // --------------------------------------------------- finds all basesamples in streamingassets
         var streamDir = new DirectoryInfo(Utils.StreamingBaseSamples);
-        
-        NumberOfBaseSamples = streamDir.GetFiles().Length;
-        
+            
         var targetDir = Utils.PersistentBaseSamples;
         
         Utils.CheckForCreateDirectory(targetDir);
 
         FileInfo[] files = streamDir.GetFiles();
 
-        for (int i = 0; i < NumberOfBaseSamples; i++)
+        for (int i = 0; i < files.Length; i++)
         {
             if (files[i].Name.EndsWith(".wav"))
             {
+                NumberOfBaseSamples++;
                 // ---------------------------------------------- finds files to check in persistentdata
                 StartCoroutine(CopyWavFile(files[i].FullName, files[i].Name ));
             }
@@ -64,7 +63,7 @@ public class SampleDirectoryChecker : MonoBehaviour
         {
 
             Events.OnBaseSamplesLoaded?.Invoke();
-            if (existingSamples > 0) Debug.Log($"{existingSamples} already exist in persistent data.");
+            if (Config.Log && existingSamples > 0) Debug.Log($"{existingSamples} already exist in persistent data.");
         }
     }
 
