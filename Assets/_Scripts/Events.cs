@@ -6,10 +6,8 @@ using UnityEngine.Events;
 
 public static class Events
 {
-    public static Action<Vector3, SequencerInfo> OnCopySequencer;
 
-    public static Action<Vector3, SequencerInfo> OnBuildNewSequencer;
-    public static Action OnNewSequencerBuilt;
+    public static Action<Vector3, SequencerData> OnBuildNewSequencer;
    public static Action OnRemoveSequencer;
    public static Action<Sequencer, Vector2> OnSequencerMoved;
     public static Action OnUpdateGridRange;
@@ -47,8 +45,16 @@ public static class Events
     public static Action OnLibraryLoaded;
     public static Action OnInventoryChange;
 
-    public static Action<ProjectInfo> OnProjectInfoLoaded;
+    public static Action<ProjectData> OnProjectInfoLoaded;
 
     public static Action OnToolbarLoaded;
+
+    //--------------- new data stuff
+
+    public static Action<Vector3, SequencerData> BuildingSequencer;
+    //public static Action SequencerBuilt;
+    public static Action SequencerBuilt;
+
+    public static Action<Vector3, SequencerData> CopyingSequencer;
 
 }

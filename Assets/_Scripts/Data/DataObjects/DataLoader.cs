@@ -6,6 +6,8 @@ public class DataLoader : MonoBehaviour
 {
     public static DataLoader Instance;
 
+    public ProjectData ProjectData;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -22,7 +24,22 @@ public class DataLoader : MonoBehaviour
     {
         return Guid.NewGuid().ToString();
     }
+
+    public void AddSequencer(Sequencer sequencer)
+    {
+        var cell = sequencer.InstanceCellPosition;
+
+        var sp = new PositionID(sequencer.SequencerData.ID, cell);
+
+        var sc = new Vector2Pair(cell, new Vector2(cell.x + sequencer.StepAmount - 1, cell.y + sequencer.RowAmount - 1));
+
+        ProjectData.PlaylistData.PositionIDData.Add(sp);
+        ProjectData.PlaylistData.SequencerCorners.Add(sc);
+
+    }
 }
+
+//----------------------------------------------- Data storage classes
 
 [System.Serializable]
 public class SampleData
@@ -71,13 +88,13 @@ public class PositionID
 public class PlaylistData
 {
     public string ID;
-    public List<PositionID> PositionIDPairs;
+    public List<PositionID> PositionIDData;
     public List<Vector2Pair> SequencerCorners;
 
-    public PlaylistData(string id, List<PositionID> positionIDPairs, List<Vector2Pair> sequencerCorners)
+    public PlaylistData(string id, List<PositionID> pidData, List<Vector2Pair> sequencerCorners)
     {
         ID = id;
-        PositionIDPairs = positionIDPairs;
+        PositionIDData = pidData;
         SequencerCorners = sequencerCorners;
     }
 }
@@ -106,3 +123,16 @@ public class IDCollection
     }
 }
 
+[System.Serializable]
+public class ProjectData
+{
+    public string ID;
+    public PlaylistData PlaylistData;
+    public IDCollection IDCollection;
+    public ProjectData(string id, PlaylistData pdata, IDCollection idcol)
+    {
+        ID = id;
+        PlaylistData = pdata;
+        IDCollection = idcol;
+    }
+}

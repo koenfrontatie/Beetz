@@ -48,6 +48,6 @@ public class GridController : MonoBehaviour
 
     public void AddSequencerInformation(Sequencer sequencer)
     {
-        ProjectData.Instance.Add(sequencer);
+        DataLoader.Instance.AddSequencer(sequencer);
     }
 }

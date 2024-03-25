@@ -20,22 +20,21 @@ public class Toolbar : MonoBehaviour
         //Events.OnLibraryLoaded -= () => AssignItems(SampleManager.Instance.Library);
         //Events.OnInventoryChange -= UpdateConfiguration;
 
-        Events.OnToolbarLoaded -= () => AssignItems(ProjectData.Instance.ProjectInfo.ToolbarConfig);
+        Events.OnToolbarLoaded -= () => AssignItems(DataLoader.Instance.ProjectData.IDCollection.IDC);
     }
     void OnEnable()
     {
-        Debug.Log("_TBC child count: " + _TBC.childCount); // Debug log to check the number of children
-
         for (int i = 0; i < Config.ToolbarCount; i++)
         {
             _containers[i] = _TBC.GetChild(i).GetComponent<InventorySlot>();
         }
-        Events.OnToolbarLoaded += () => AssignItems(ProjectData.Instance.ProjectInfo.ToolbarConfig);
+
+        Events.OnToolbarLoaded += () => AssignItems(DataLoader.Instance.ProjectData.IDCollection.IDC);
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I)) AssignItems(ProjectData.Instance.ProjectInfo.ToolbarConfig);
+        if (Input.GetKeyDown(KeyCode.I)) AssignItems(DataLoader.Instance.ProjectData.IDCollection.IDC);
     }
 
     public void AssignItems(List<string> library)

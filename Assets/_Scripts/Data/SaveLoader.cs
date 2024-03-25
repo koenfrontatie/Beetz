@@ -35,34 +35,34 @@ public class SaveLoader : MonoBehaviour
 
     public void SerializeProjectInfo()
     {
-        _relativeProjectPath = $"{Path.DirectorySeparatorChar}SaveFiles{Path.DirectorySeparatorChar}Projects{Path.DirectorySeparatorChar}{ProjectData.Instance.ProjectInfo.ID}";
+        _relativeProjectPath = $"{Path.DirectorySeparatorChar}SaveFiles{Path.DirectorySeparatorChar}Projects{Path.DirectorySeparatorChar}{DataLoader.Instance.ProjectData.ID}";
 
         var path = $"{_relativeProjectPath}{Path.DirectorySeparatorChar}ProjectInfo.json";
         
-        _dataService.SaveData(path, ProjectData.Instance.ProjectInfo);
+        _dataService.SaveData(path, DataLoader.Instance.ProjectData);
     }
 
-    public ProjectInfo LoadProjectInfo(string id)
+    public ProjectData LoadProjectInfo(string id)
     {
         _relativeProjectPath = $"{Path.DirectorySeparatorChar}SaveFiles{Path.DirectorySeparatorChar}Projects{Path.DirectorySeparatorChar}{id}";
 
         var path = $"{_relativeProjectPath}{Path.DirectorySeparatorChar}ProjectInfo.json";
 
-        ProjectInfo info = _dataService.LoadData<ProjectInfo>(path);
+        ProjectData info = _dataService.LoadData<ProjectData>(path);
 
         // if id  is null or smt create blank project?
 
         return info;
     }
 
-    public void LoadProjectInfoAsync(string id, Action<ProjectInfo> callback)
+    public void LoadProjectInfoAsync(string id, Action<ProjectData> callback)
     {
         _relativeProjectPath = $"{Path.DirectorySeparatorChar}SaveFiles{Path.DirectorySeparatorChar}Projects{Path.DirectorySeparatorChar}{id}";
-        var path = $"{_relativeProjectPath}{Path.DirectorySeparatorChar}ProjectInfo.json";
+        var path = $"{_relativeProjectPath}{Path.DirectorySeparatorChar}ProjectData.json";
 
         try
         {
-            _dataService.LoadDataAsync<ProjectInfo>(path, data =>
+            _dataService.LoadDataAsync<ProjectData>(path, data =>
             {
                 // Ensure callback is not null before invoking
                 callback?.Invoke(data);

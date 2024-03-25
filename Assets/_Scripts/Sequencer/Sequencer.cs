@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 public class Sequencer : MonoBehaviour
 {
-    public SequencerInfo SequencerInfo;
+    public SequencerData SequencerData;
     public int CurrentStep { get; private set; }
     public int StepAmount { get; private set; }
     public int RowAmount { get; private set; }
@@ -22,15 +22,15 @@ public class Sequencer : MonoBehaviour
     /// a sequencer via sequencer data.
     /// </summary>
     /// <param name="position">World position of sequencer instance</param>
-    /// <param name="info">Serialized data</param>
+    /// <param name="data">Serialized data</param>
     /// <param name="type">Display type</param>
-    public void Init(Vector3 position, SequencerInfo info)
+    public void Init(Vector3 position, SequencerData data)
     {
-        SequencerInfo = info;
-        this.DisplayType = info.Type;
+        SequencerData = data;
+        this.DisplayType = DisplayType.Linear;
 
-        this.StepAmount = (int)SequencerInfo.Dimensions.x;
-        this.RowAmount = (int)SequencerInfo.Dimensions.y;
+        this.StepAmount = (int)SequencerData.Dimensions.x;
+        this.RowAmount = (int)SequencerData.Dimensions.y;
         
         this.InstancePosition = position;
         this.InstanceCellPosition = GridController.Instance.CellFromWorld(position);
@@ -47,7 +47,7 @@ public class Sequencer : MonoBehaviour
 
         SequencerManager.Instance.ActiveSequencers.Add(this);
 
-        Events.OnNewSequencerBuilt?.Invoke();
+        Events.SequencerBuilt?.Invoke();
     }
 
     private void OnEnable()
@@ -76,7 +76,7 @@ public class Sequencer : MonoBehaviour
     void OnStepsPlaced(Sequencer s)
     {
         if (s.gameObject != transform.gameObject) return;
-        InitSamplesFromInfo(SequencerInfo);
+        InitSamplesFromInfo(SequencerData);
     }
 
     void OnMove(Sequencer s, Vector2 delta)
@@ -100,12 +100,12 @@ public class Sequencer : MonoBehaviour
             {
 
                 // remove if there is a sampleobject present
-                foreach (PositionIDPair pair in SequencerInfo.PositionIDPairs)
+                foreach (PositionID pair in SequencerData.PositionIDData)
                 {
                     if (pair.Position == GetPositionFromSiblingIndex(stepIndex))
                     {
                         //Samples.RemoveAt(Samples.IndexOf(pair));
-                        SequencerInfo.PositionIDPairs.RemoveAt(SequencerInfo.PositionIDPairs.IndexOf(pair));
+                        SequencerData.PositionIDData.RemoveAt(SequencerData.PositionIDData.IndexOf(pair));
                         selectedStep.UnAssignSample();
 
                         break;
@@ -117,33 +117,31 @@ public class Sequencer : MonoBehaviour
             var sample = Instantiate(selectedSample, selectedStep.transform);
 
             selectedStep.AssignSample(sample);
-            // TODO save this data
 
-            var positionData = new PositionIDPair();
-            positionData.ID = selectedSample.Info.ID;
-
-            if (string.IsNullOrEmpty(selectedSample.Info.ID))
+            string idCopy = selectedSample.SampleData.ID;
+            
+            if (string.IsNullOrEmpty(selectedSample.SampleData.ID))
             {
-                positionData.ID = selectedSample.Info.Template.ToString();
+                idCopy = selectedSample.SampleData.Template.ToString();
             }
 
-            positionData.Position = GetPositionFromSiblingIndex(stepIndex);
-            SequencerInfo.PositionIDPairs.Add(positionData);
-
+            var posID = new PositionID(idCopy, GetPositionFromSiblingIndex(stepIndex));
+            
+            SequencerData.PositionIDData.Add(posID);
         }
     }
 
-    public void InitSamplesFromInfo(SequencerInfo sequencerInfo)
+    public void InitSamplesFromInfo(SequencerData sequencerData)
     {
-        if (sequencerInfo.PositionIDPairs.Count == 0) return;
+        if (sequencerData.PositionIDData.Count == 0) return;
 
-        for (int i = 0; i < sequencerInfo.PositionIDPairs.Count; i++)
+        for (int i = 0; i < sequencerData.PositionIDData.Count; i++)
         {
-            var stepIndex = GetStepIndexFromPosition(sequencerInfo.PositionIDPairs[i].Position);
+            var stepIndex = GetStepIndexFromPosition(sequencerData.PositionIDData[i].Position);
 
             if (_stepParent.GetChild(stepIndex).TryGetComponent<Step>(out Step selectedStep))
             {
-                var spawnedSampleObject = Prefabs.Instance.BaseObjects[int.Parse(sequencerInfo.PositionIDPairs[i].ID)];
+                var spawnedSampleObject = Prefabs.Instance.BaseObjects[int.Parse(sequencerData.PositionIDData[i].ID)];
                 
                 SampleObject so = Instantiate(spawnedSampleObject, selectedStep.transform);
 
@@ -155,13 +153,13 @@ public class Sequencer : MonoBehaviour
     public int GetStepIndexFromPosition(Vector2 position)
     {
         var yindex = position.y - 1;
-        return (int)((SequencerInfo.Dimensions.x * yindex) + position.x) - 1;
+        return (int)((SequencerData.Dimensions.x * yindex) + position.x) - 1;
     }
     
     public Vector2 GetPositionFromSiblingIndex(int index)
     {
-        var x = (index % SequencerInfo.Dimensions.x) + 1;
-        var y = 1 + ((index - (x-1)) / SequencerInfo.Dimensions.x);
+        var x = (index % SequencerData.Dimensions.x) + 1;
+        var y = 1 + ((index - (x-1)) / SequencerData.Dimensions.x);
         return new Vector2(x, y);
     }
     

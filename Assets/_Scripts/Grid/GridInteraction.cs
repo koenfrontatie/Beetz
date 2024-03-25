@@ -121,9 +121,9 @@ public class GridInteraction : MonoBehaviour
                 {
                     _startCell = _gridController.CellFromWorld(point);
                     _drawInstance = Instantiate(_soilDrawPrefab, transform);
-                    _drawerDimensions = _lastSequencer.SequencerInfo.Dimensions;
+                    _drawerDimensions = _lastSequencer.SequencerData.Dimensions;
                     // update preview
-                    _drawInstance.DrawQuad(t.position, _lastSequencer.SequencerInfo.Dimensions);
+                    _drawInstance.DrawQuad(t.position, _lastSequencer.SequencerData.Dimensions);
 
                     SetState(InteractionState.Copying);
 
@@ -152,11 +152,8 @@ public class GridInteraction : MonoBehaviour
 
                 if (_startCell != _currentCell)
                 {
-                    var info = DataHelper.Instance.CreateNewSequencerInfo();
-                    info.Dimensions = _drawerDimensions;
-                    info.Type = DisplayType.Linear;
-                    info.PositionIDPairs = new List<PositionIDPair>(info.PositionIDPairs);
-                    Events.OnBuildNewSequencer?.Invoke(_gridController.GetCenterFromCell(_startCell), info);
+                    var sData = new SequencerData(DataLoader.Instance.NewGuid(), _drawerDimensions, new List<PositionID>());
+                    Events.BuildingSequencer?.Invoke(_gridController.GetCenterFromCell(_startCell), sData);
                 }
 
                 SetState(InteractionState.Default);
@@ -170,7 +167,7 @@ public class GridInteraction : MonoBehaviour
             case InteractionState.Copying:
                 //------------------------------------------------------------------- build copy
                 if (_drawInstance != null) Destroy(_drawInstance.gameObject);
-                Events.OnBuildNewSequencer?.Invoke(_gridController.GetCenterFromCell(_currentCell), _lastSequencer.SequencerInfo);
+                Events.BuildingSequencer?.Invoke(_gridController.GetCenterFromCell(_currentCell), _lastSequencer.SequencerData);
                 SetState(InteractionState.Default);
                 break;
         }
@@ -261,7 +258,7 @@ public class GridInteraction : MonoBehaviour
                 //Events.OnSequencerMoved?.Invoke(_lastSequencer, _currentCell - _lastCellPosition); // params are not necessary i think
 
                 // update preview
-                _drawInstance.DrawQuad(_gridController.WorldFromCell(_currentCell), _lastSequencer.SequencerInfo.Dimensions);
+                _drawInstance.DrawQuad(_gridController.WorldFromCell(_currentCell), _lastSequencer.SequencerData.Dimensions);
 
                 _lastCellPosition = _currentCell;
 

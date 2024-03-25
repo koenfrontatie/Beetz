@@ -21,31 +21,28 @@ public class SequencerManager : MonoBehaviour
     }
     private void Start()
     {
-        Events.OnBuildNewSequencer += BuildSequencer;
-        Events.OnCopySequencer += CloneSequencer;
+        Events.BuildingSequencer += BuildSequencer;
+        Events.CopyingSequencer += CloneSequencer;
     }
 
-    public void BuildSequencer(Vector3 worldPosition, SequencerInfo info)
+    public void BuildSequencer(Vector3 worldPosition, SequencerData data)
     {
         var newSequencer = Instantiate(Prefabs.Instance.Sequencer, worldPosition, Quaternion.identity, transform);
-        newSequencer.Init(worldPosition, info);
+        newSequencer.Init(worldPosition, data);
         GridController.Instance.AddSequencerInformation(newSequencer);
     }
 
-    public void CloneSequencer(Vector3 worldPosition, SequencerInfo info)
+    public void CloneSequencer(Vector3 worldPosition, SequencerData data)
     {
-        var newInfo = DataHelper.Instance.CreateNewSequencerInfo();
-        newInfo.Dimensions = info.Dimensions;
-        newInfo.Type = info.Type;
-        newInfo.PositionIDPairs = new List<PositionIDPair>(info.PositionIDPairs);
-        Events.OnBuildNewSequencer?.Invoke(worldPosition, info);
+        var newData = new SequencerData(DataLoader.Instance.NewGuid(), data.Dimensions, data.PositionIDData);
+        Events.BuildingSequencer?.Invoke(worldPosition, data);
     }
 
     public void ChangeDisplayType() => DisplayType = DisplayType.NextEnumValue();
 
     private void OnDestroy()
     {
-        Events.OnBuildNewSequencer -= BuildSequencer;
-        Events.OnCopySequencer -= CloneSequencer;
+        Events.BuildingSequencer -= BuildSequencer;
+        Events.CopyingSequencer -= CloneSequencer;
     }
 }

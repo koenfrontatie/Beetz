@@ -91,7 +91,7 @@ public class Step : MonoBehaviour
 
     void SendScoreEvent()
     {
-        Events.OnScoreEvent?.Invoke($"i {(int)(_sampleObject.Info.Template + 1)} 0 6");
+        Events.OnScoreEvent?.Invoke($"i {(int)(_sampleObject.SampleData.Template + 1)} 0 6");
 
     }
 

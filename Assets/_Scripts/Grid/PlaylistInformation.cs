@@ -1,15 +1,12 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using UnityEditor.SearchService;
+
 using UnityEngine;
 
 public class PlaylistInformation : MonoBehaviour
 {
     public static PlaylistInformation Instance;
 
-    [SerializeField] private PlaylistInfo _playlistInfo;
+    [SerializeField] PlaylistData _playlistData;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -24,14 +21,12 @@ public class PlaylistInformation : MonoBehaviour
 
     private void UpdateSequencerPosition(Sequencer sequencer, Vector2 vector)
     {
-        for(int i = 0; i < _playlistInfo.PositionIDPairs.Count; i++)
+        for(int i = 0; i < _playlistData.PositionIDData.Count; i++)
         {
-            if(sequencer.SequencerInfo.ID == _playlistInfo.PositionIDPairs[i].ID)
+            if(sequencer.SequencerData.ID == _playlistData.PositionIDData[i].ID)
             {
-                PositionIDPair moved; //= new PositionIDPair(sequencer.SequencerInfo.ID, vector);
-                moved.ID = sequencer.SequencerInfo.ID;
-                moved.Position = _playlistInfo.PositionIDPairs[i].Position + vector;
-                _playlistInfo.PositionIDPairs[i] = moved;
+                var moved = new PositionID(sequencer.SequencerData.ID, _playlistData.PositionIDData[i].Position + vector);
+                _playlistData.PositionIDData[i] = moved;
                 sequencer.InstanceCellPosition = moved.Position;
             }
         }
@@ -45,32 +40,32 @@ public class PlaylistInformation : MonoBehaviour
 
     void LoadPlayListInfo()
     {
-        _playlistInfo = DataHelper.Instance.CreateNewPlaylistInfo();
+        _playlistData = new PlaylistData(DataLoader.Instance.NewGuid(), null, null);
     }
 
-    void LoadPlayListInfo(string s)
-    {
-        _playlistInfo = DataHelper.Instance.CreateNewPlaylistInfo();
-    }
+    //void LoadPlayListInfo(string s)
+    //{
+    //    _playlistData = DataHelper.Instance.CreateNewPlaylistInfo();
+    //}
 
-    public void Add(Sequencer sequencer)
-    {
-        var cell = sequencer.InstanceCellPosition;
+    //public void Add(Sequencer sequencer)
+    //{
+    //    var cell = sequencer.InstanceCellPosition;
 
-        var sp = new PositionIDPair
-        {
-            ID = sequencer.SequencerInfo.ID,
-            Position = cell
-        };
+    //    var sp = new PositionIDPair
+    //    {
+    //        ID = sequencer.SequencerData.ID,
+    //        Position = cell
+    //    };
 
-        var sc = new V2Pair
-        {
-            one = cell,
-            two = new Vector2(cell.x + sequencer.StepAmount - 1, cell.y + sequencer.RowAmount - 1)
-        };
+    //    var sc = new V2Pair
+    //    {
+    //        one = cell,
+    //        two = new Vector2(cell.x + sequencer.StepAmount - 1, cell.y + sequencer.RowAmount - 1)
+    //    };
           
-        _playlistInfo.PositionIDPairs.Add(sp);
-        _playlistInfo.SequencerCorners.Add(sc);
-        //Debug.Log(sp);
-    }
+    //    _playlistData.PositionIDPairs.Add(sp);
+    //    _playlistData.SequencerCorners.Add(sc);
+    //    //Debug.Log(sp);
+    //}
 }

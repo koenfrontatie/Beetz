@@ -17,7 +17,7 @@ public class SoilDrawer : MonoBehaviour
         //if(FindObjectOfType<Grid>());
         if (transform.parent.TryGetComponent<Sequencer>(out var seq))
         {
-            DrawQuad(seq.transform.position, seq.SequencerInfo.Dimensions);
+            DrawQuad(seq.transform.position, seq.SequencerData.Dimensions);
             _quadTransform.position -= new Vector3(Config.CellSize * .5f, 0f, Config.CellSize * .5f);
         }
     }

@@ -46,7 +46,7 @@ public class ObjectMaker : MonoBehaviour
 
             image.texture = Prefabs.Instance.BaseIcons[template];
 
-            so.Info = Prefabs.Instance.BaseObjects[template].Info;
+            so.SampleData = Prefabs.Instance.BaseObjects[template].SampleData;
 
             return item;
         }
