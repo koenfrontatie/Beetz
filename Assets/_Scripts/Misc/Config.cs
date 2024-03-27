@@ -13,5 +13,5 @@ public static class Config
     public static float CircularRowDistance = .5f;
     public static int ToolbarCount = 9;
 
-    public static bool Log = false;
+    public static bool Log = true;
 }

@@ -54,6 +54,24 @@ a1      diskin2  "5SNARE.wav", kSpeed, iSkip, iLoop
 		;aL, aR  freeverb a1, a1, 0.9, 0.7, sr, 0
 		;outs a1 + aL, a1 + aR
   endin
+  
+    instr	6 ; play audio from disk
+kSpeed  init     1           ; playback speed
+iSkip   init     0           ; inskip into file (in seconds)
+iLoop   init     0           ; looping switch (0=off 1=on)
+; read audio from disk using diskin2 opcode
+a1      diskin2  "6KICK808.wav", kSpeed, iSkip, iLoop
+        outs      a1, a1          ; send audio to outputs
+  endin
+  
+    instr	7 ; play audio from disk
+kSpeed  init     1           ; playback speed
+iSkip   init     0           ; inskip into file (in seconds)
+iLoop   init     0           ; looping switch (0=off 1=on)
+; read audio from disk using diskin2 opcode
+a1      diskin2  "7SNARE2.wav", kSpeed, iSkip, iLoop
+        outs      a1, a1          ; send audio to outputs
+  endin
 </CsInstruments>
 
 <CsScore>

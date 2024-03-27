@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 
     public GameState State;
 
-    public Action<GameState> StateChanged;
+    public static Action<GameState> StateChanged;
 
     private void Awake()
     {

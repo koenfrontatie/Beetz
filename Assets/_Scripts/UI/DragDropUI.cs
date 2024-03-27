@@ -26,13 +26,19 @@ public class DragDropUI : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         var hits = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, hits);
 
+        DragDropUI swapWith = null;
+
         foreach (var hit in hits)
         {
             var droppedItem = hit.gameObject.GetComponent<DragDropUI>();
 
-            if (droppedItem)
+            if (droppedItem && droppedItem != this)
             {
                 droppedItem.transform.position = _startPosition;
+
+                swapWith = droppedItem;
+                break; // Exit the loop once a valid dropped item is found
+
             }
         }
 
@@ -45,6 +51,10 @@ public class DragDropUI : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
                 _startPosition = droppedContainer.transform.position;
                 transform.position = droppedContainer.transform.position;
 
+               
+                
+                Events.ItemSwap?.Invoke(droppedContainer, this, swapWith);
+                
                 Events.OnInventoryChange?.Invoke();
             }
         }

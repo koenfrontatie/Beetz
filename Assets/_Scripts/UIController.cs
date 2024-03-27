@@ -7,7 +7,7 @@ public class UIController : MonoBehaviour
 
     private void OnEnable()
     {
-        GameManager.Instance.StateChanged += OnStateChanged;
+        GameManager.StateChanged += OnStateChanged;
     }
 
     void OnStateChanged(GameState state)
@@ -29,7 +29,7 @@ public class UIController : MonoBehaviour
 
     private void OnDisable()
     {
-        GameManager.Instance.StateChanged -= OnStateChanged;
+        GameManager.StateChanged -= OnStateChanged;
     }
 }
 

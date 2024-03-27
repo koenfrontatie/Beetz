@@ -41,7 +41,6 @@ public static class Events
     public static Action<Sequencer> OnSendToScareCrow;
     public static Action<Sequencer> OnStepsPlaced;
 
-    public static Action OnLibraryLoaded;
     public static Action OnInventoryChange;
 
     public static Action<ProjectData> ProjectDataLoaded;
@@ -55,5 +54,7 @@ public static class Events
     public static Action SequencerBuilt;
     public static Action RemoveSequencer;
     public static Action<Vector3, SequencerData> CopyingSequencer;
+
+    public static Action<InventorySlot, DragDropUI, DragDropUI> ItemSwap;
 
 }
