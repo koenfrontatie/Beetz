@@ -46,8 +46,4 @@ public class GridController : MonoBehaviour
         return Grid.CellToWorld(cellPos);
     }
 
-    public void AddSequencerInformation(Sequencer sequencer)
-    {
-        DataLoader.Instance.AddSequencer(sequencer);
-    }
 }

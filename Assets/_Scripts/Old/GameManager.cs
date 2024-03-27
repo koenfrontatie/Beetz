@@ -1,69 +1,55 @@
 //using System;
-//using System.Reflection;
 //using UnityEngine;
-//using UnityEngine.Events;
 
 //public class GameManager : MonoBehaviour
 //{
 //    public static GameManager Instance;
+
 //    public GameState State;
-    
+
+//    public static event Action<GameState> StateChanged;
 
 //    private void Awake()
 //    {
-//        Instance = this;
+//        if (Instance != null && Instance != this)
+//        {
+//            Destroy(this);
+//        }
+//        else
+//        {
+//            Instance = this;
+//        }
 //    }
 
-//    private void OnEnable()
+//    private void Start()
 //    {
-//        //Metronome.OnStep += StepLog;
-//        //Metronome.OnBeat += BeatLog;
+//        UpdateState(GameState.Menu);
 //    }
+
 //    public void UpdateState(GameState state)
 //    {
 //        State = state;
 
-//        switch(State)
-//        {
-//            case GameState.Viewing:
-                
-//                break;
-//            case GameState.Patching:
-                
-//            break;
-//        }
-
-//        Events.OnGridStateChanged?.Invoke(State);
-//    }
-
-   
-//    void StepLog() {
-//        Debug.Log("Step");
-//    }
-//    void BeatLog()
-//    {
-//        Debug.Log("Beat");
-//    }
-//    public void UpdateState(int state)
-//    {
-//        State = (GameState)state;
-
 //        switch (State)
 //        {
-//            case GameState.Viewing:
+//            case GameState.Menu:
 
 //                break;
-//            case GameState.Patching:
+//            case GameState.Gameplay:
 
+//                break;
+//            case GameState.Saving:
+                
 //                break;
 //        }
 
-//        Events.OnGridStateChanged?.Invoke(State);
+//        StateChanged?.Invoke(State);
 //    }
 //}
 
 //public enum GameState
 //{
-//    Viewing,
-//    Patching
+//    Menu,
+//    Gameplay,
+//    Saving
 //}

@@ -26,6 +26,71 @@ public class JsonDataService : IDataService
         }
     }
 
+    public T LoadDataFullPath<T>(string fullpath)
+    {
+        string path = fullpath;
+
+        if (!File.Exists(path))
+        {
+            Debug.LogError($"Cannot load file at {path}. Does not exist.");
+            throw new FileNotFoundException();
+        }
+
+        try
+        {
+            T data = JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
+            return data;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to load data due to: {e.Message} {e.StackTrace}");
+            throw e;
+        }
+    }
+
+    public void LoadDataAsyncFullPath<T>(string fullpath, Action<T> callback)
+    {
+        string path = fullpath;
+
+        if (!File.Exists(path))
+        {
+            Debug.LogError($"Cannot load file at {path}. Does not exist.");
+            throw new FileNotFoundException();
+        }
+
+        try
+        {
+            // Read file asynchronously
+            File.ReadAllTextAsync(path).ContinueWith(task =>
+            {
+                if (task.IsFaulted || task.IsCanceled)
+                {
+                    Debug.LogError($"Failed to load data due to: {task.Exception}");
+                    throw new Exception("Failed to load data.");
+                }
+
+                var settings = new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                };
+
+            // Deserialize data on the main thread
+            T data = JsonConvert.DeserializeObject<T>(task.Result, settings);
+
+                // Invoke callback with loaded data
+                Debug.Log($"Invoking {data} {callback}");
+                Debug.Log(data.ToString());
+                Debug.Log(task.Result);
+                callback?.Invoke(data);
+            });
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to load data due to: {e.Message} {e.StackTrace}");
+            throw e;
+        }
+    }
+
     public void LoadDataAsync<T>(string relativePath, Action<T> callback)
     {
         string path = Application.persistentDataPath + relativePath;
@@ -80,7 +145,11 @@ public class JsonDataService : IDataService
 
             using FileStream stream = File.Create(path);
             stream.Close();
-            File.WriteAllText(path, JsonConvert.SerializeObject(data));
+            string json = JsonConvert.SerializeObject(data, Formatting.Indented, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+            File.WriteAllText(path, json);
             return true;
         }
         catch (Exception e)

@@ -8,9 +8,8 @@ public static class Events
 {
 
     public static Action<Vector3, SequencerData> OnBuildNewSequencer;
-   public static Action OnRemoveSequencer;
-   public static Action<Sequencer, Vector2> OnSequencerMoved;
-    public static Action OnUpdateGridRange;
+   public static Action<Sequencer, Vector2> MoveSequencer;
+    public static Action UpdateGridRange;
    public static Action<int> OnHotbarClicked;
 
    public static Action OnGridStateChanged;
@@ -45,16 +44,16 @@ public static class Events
     public static Action OnLibraryLoaded;
     public static Action OnInventoryChange;
 
-    public static Action<ProjectData> OnProjectInfoLoaded;
+    public static Action<ProjectData> ProjectDataLoaded;
 
-    public static Action OnToolbarLoaded;
+    public static Action<List<string>> LoadingToolbar;
 
     //--------------- new data stuff
 
     public static Action<Vector3, SequencerData> BuildingSequencer;
     //public static Action SequencerBuilt;
     public static Action SequencerBuilt;
-
+    public static Action RemoveSequencer;
     public static Action<Vector3, SequencerData> CopyingSequencer;
 
 }

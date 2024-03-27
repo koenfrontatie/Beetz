@@ -11,54 +11,75 @@ public class Toolbar : MonoBehaviour
 
     private GameObject[] _toolbarConfiguration = new GameObject[Config.ToolbarCount];
 
-    private void Awake()
+    private void OnEnable()
     {
 
+        Events.LoadingToolbar += (data) => AssignItems(new List<string>(data));
+        for (int i = 0; i < Config.ToolbarCount; i++)
+        {
+            _containers[i] = _TBC.GetChild(i).GetComponent<InventorySlot>();
+        }
     }
     private void OnDisable()
     {
         //Events.OnLibraryLoaded -= () => AssignItems(SampleManager.Instance.Library);
         //Events.OnInventoryChange -= UpdateConfiguration;
 
-        Events.OnToolbarLoaded -= () => AssignItems(DataLoader.Instance.ProjectData.IDCollection.IDC);
+        Events.LoadingToolbar -= (data) => AssignItems(new List<string>(data));
     }
-    void OnEnable()
-    {
-        for (int i = 0; i < Config.ToolbarCount; i++)
-        {
-            _containers[i] = _TBC.GetChild(i).GetComponent<InventorySlot>();
-        }
+    //void OnEnable()
+    //{
+    //    for (int i = 0; i < Config.ToolbarCount; i++)
+    //    {
+    //        _containers[i] = _TBC.GetChild(i).GetComponent<InventorySlot>();
+    //    }
 
-        Events.OnToolbarLoaded += () => AssignItems(DataLoader.Instance.ProjectData.IDCollection.IDC);
-    }
+    //    Events.ProjectDataLoaded += (data) => AssignItems(data.IDCollection.IDC);
+    //}
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I)) AssignItems(DataLoader.Instance.ProjectData.IDCollection.IDC);
+        if (Input.GetKeyDown(KeyCode.I)) AssignItems(DataStorage.Instance.ProjectData.IDCollection.IDC);
     }
-
-    public void AssignItems(List<string> library)
+    IEnumerator Assign(List<string> library)
     {
-        //for(int i = 0; i < library.Count; i++)
-        //{
-        //    Debug.Log(library[i]);
-        //}
+        yield return new WaitForSeconds(1);
 
-        for(int i = 0; i < Config.ToolbarCount; i++)
+        for(int i =0; i < library.Count; i++)
         {
             Debug.Log(library[i]);
 
-            var item = ObjectMaker.Instance.ToolbarItem(library[i]);
-
-            item.transform.position = _containers[i].transform.position;
-
-            item.transform.parent = _TBI;
-
-            _toolbarConfiguration[i] = item;
         }
+        if (library.Count != 0)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                var item = ObjectMaker.Instance.ToolbarItem(i.ToString());
+                item.transform.position = _containers[i].transform.position;
 
-        //ToolbarConfiguration.Capacity = _containers.Count;
+                item.transform.parent = _TBI;
 
+                _toolbarConfiguration[i] = item;
+            }
+        }
+    }
+    public void AssignItems(List<string> library)
+    {
+        if (library.Count != 0)
+        {
+            for (int i = 0; i < library.Count; i++)
+            {
+                if (library[i] == "-1") { continue; }
+                
+                var item = ObjectMaker.Instance.ToolbarItem(library[i]);
+                
+                item.transform.position = _containers[i].transform.position;
+
+                item.transform.parent = _TBI;
+
+                _toolbarConfiguration[i] = item;
+            }
+        }
         Events.OnInventoryChange?.Invoke();
     }
 

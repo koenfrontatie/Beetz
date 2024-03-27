@@ -47,6 +47,8 @@ public class Sequencer : MonoBehaviour
 
         SequencerManager.Instance.ActiveSequencers.Add(this);
 
+        DataStorage.Instance.AddSequencer(this);
+
         Events.SequencerBuilt?.Invoke();
     }
 
@@ -59,7 +61,7 @@ public class Sequencer : MonoBehaviour
         Events.OnNewSongRange += CalculateStepPosition;
         Events.OnSequencerTapped += SequencerTappedHandler;
         Events.OnStepsPlaced += OnStepsPlaced;
-        Events.OnSequencerMoved += OnMove;
+        Events.MoveSequencer += OnMove;
     }
     private void OnDisable()
     {
@@ -70,7 +72,7 @@ public class Sequencer : MonoBehaviour
         Events.OnNewSongRange -= CalculateStepPosition;
         Events.OnSequencerTapped -= SequencerTappedHandler;
         Events.OnStepsPlaced -= OnStepsPlaced;
-        Events.OnSequencerMoved -= OnMove;
+        Events.MoveSequencer -= OnMove;
     }
 
     void OnStepsPlaced(Sequencer s)
@@ -84,7 +86,8 @@ public class Sequencer : MonoBehaviour
         if (s.gameObject != transform.gameObject) return;
         InstanceCellPosition += delta;
         InstancePosition = transform.position;
-        Events.OnUpdateGridRange?.Invoke();
+        DataStorage.Instance.UpdateSequencerPosition(s);
+        Events.UpdateGridRange?.Invoke();
     }
     private void SequencerTappedHandler(Sequencer sequencer, int stepIndex) // i think i should move this into interaction class
     {
@@ -200,5 +203,6 @@ public class Sequencer : MonoBehaviour
     void OnDestroy()
     {
         SequencerManager.Instance.ActiveSequencers.Remove(this);
+        DataStorage.Instance.RemoveSequencer(this);
     }
 }

@@ -19,12 +19,12 @@ public class ContextColliders : MonoBehaviour
 
     private void OnEnable()
     {
-        Events.OnSequencerMoved += MoveWithSequencer;
+        Events.MoveSequencer += MoveWithSequencer;
     }
 
     private void OnDisable()
     {
-        Events.OnSequencerMoved -= MoveWithSequencer;
+        Events.MoveSequencer -= MoveWithSequencer;
     }
 
     public void SetContextMenu(bool b)

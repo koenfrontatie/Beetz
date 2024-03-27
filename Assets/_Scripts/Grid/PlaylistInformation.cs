@@ -1,47 +1,47 @@
-using System;
+//using System;
 
-using UnityEngine;
+//using UnityEngine;
 
-public class PlaylistInformation : MonoBehaviour
-{
-    public static PlaylistInformation Instance;
+//public class PlaylistInformation : MonoBehaviour
+//{
+//    public static PlaylistInformation Instance;
 
-    [SerializeField] PlaylistData _playlistData;
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-        }
-    }
+//    [SerializeField] PlaylistData _playlistData;
+//    private void Awake()
+//    {
+//        if (Instance != null && Instance != this)
+//        {
+//            Destroy(this);
+//        }
+//        else
+//        {
+//            Instance = this;
+//        }
+//    }
 
-    private void UpdateSequencerPosition(Sequencer sequencer, Vector2 vector)
-    {
-        for(int i = 0; i < _playlistData.PositionIDData.Count; i++)
-        {
-            if(sequencer.SequencerData.ID == _playlistData.PositionIDData[i].ID)
-            {
-                var moved = new PositionID(sequencer.SequencerData.ID, _playlistData.PositionIDData[i].Position + vector);
-                _playlistData.PositionIDData[i] = moved;
-                sequencer.InstanceCellPosition = moved.Position;
-            }
-        }
-    }
+//    private void UpdateSequencerPosition(Sequencer sequencer, Vector2 vector)
+//    {
+//        for(int i = 0; i < _playlistData.PositionIDData.Count; i++)
+//        {
+//            if(sequencer.SequencerData.ID == _playlistData.PositionIDData[i].ID)
+//            {
+//                var moved = new PositionID(sequencer.SequencerData.ID, _playlistData.PositionIDData[i].Position + vector);
+//                _playlistData.PositionIDData[i] = moved;
+//                sequencer.InstanceCellPosition = moved.Position;
+//            }
+//        }
+//    }
 
 
-    void Start()
-    {
-        LoadPlayListInfo();
-    }
+//    void Start()
+//    {
+//        LoadPlayListInfo();
+//    }
 
-    void LoadPlayListInfo()
-    {
-        _playlistData = new PlaylistData(DataLoader.Instance.NewGuid(), null, null);
-    }
+//    void LoadPlayListInfo()
+//    {
+//        _playlistData = new PlaylistData(SaveLoader.Instance.NewGuid(), null, null);
+//    }
 
     //void LoadPlayListInfo(string s)
     //{
@@ -68,4 +68,4 @@ public class PlaylistInformation : MonoBehaviour
     //    _playlistData.SequencerCorners.Add(sc);
     //    //Debug.Log(sp);
     //}
-}
+//}

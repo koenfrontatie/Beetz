@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public static class Extensions
@@ -46,8 +48,19 @@ public static class Extensions
         }
     }
 
+    public static void ToggleCanvasGroup(this CanvasGroup canvasGroup, bool on)
+    {
+        canvasGroup.alpha = on ? 1 : 0;
+        canvasGroup.interactable = on;
+        canvasGroup.blocksRaycasts = on;
+    }
 
-
+    public static TaskAwaiter GetAwaiter(this AsyncOperation asyncOp)
+    {
+        var tcs = new TaskCompletionSource<object>();
+        asyncOp.completed += obj => { tcs.SetResult(null); };
+        return ((Task)tcs.Task).GetAwaiter();
+    }
 
     public static void SaveToJSON<T>(List<T> toSave, string filename)
     {

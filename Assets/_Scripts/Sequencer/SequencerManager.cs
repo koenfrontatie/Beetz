@@ -29,13 +29,17 @@ public class SequencerManager : MonoBehaviour
     {
         var newSequencer = Instantiate(Prefabs.Instance.Sequencer, worldPosition, Quaternion.identity, transform);
         newSequencer.Init(worldPosition, data);
-        GridController.Instance.AddSequencerInformation(newSequencer);
     }
 
     public void CloneSequencer(Vector3 worldPosition, SequencerData data)
     {
-        var newData = new SequencerData(DataLoader.Instance.NewGuid(), data.Dimensions, data.PositionIDData);
-        Events.BuildingSequencer?.Invoke(worldPosition, data);
+        // make new data object for new sequencer
+        var newID = SaveLoader.Instance.NewGuid();
+        var copiedList = new List<PositionID>(data.PositionIDData);
+        var copiedV2 = new Vector2(data.Dimensions.x, data.Dimensions.y);
+        var newData = new SequencerData(newID, copiedV2, copiedList);
+        
+        BuildSequencer(worldPosition, newData);
     }
 
     public void ChangeDisplayType() => DisplayType = DisplayType.NextEnumValue();

@@ -43,6 +43,11 @@ public class SampleManager : MonoBehaviour
         Events.OnHotbarClicked -= (i) => SelectedSample = Prefabs.Instance.BaseObjects[i];
     }
 
+    public void SetSelectedTemplateSample(SampleObject sample)
+    {
+        SelectedSample = Prefabs.Instance.BaseObjects[sample.SampleData.Template];
+    }
+
     void LoadToolbar()
     {
 

@@ -11,4 +11,8 @@ public interface IDataService
 
     public void LoadDataAsync<T>(string relativePath, Action<T> callback);
 
+    public T LoadDataFullPath<T>(string fullpath);
+
+    public void LoadDataAsyncFullPath<T>(string fullpath, Action<T> callback);
+
 }
