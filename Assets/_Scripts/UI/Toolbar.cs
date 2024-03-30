@@ -42,13 +42,15 @@ public class Toolbar : MonoBehaviour
                 
                 item.transform.position = _containers[i].transform.position;
 
-                item.transform.parent = _TBI;
+                item.transform.SetParent(_TBI);
 
                 if (item.transform.TryGetComponent<SampleObject>(out var so))
                 {
                     _containers[i].Bind(so);
                     _toolbarSampleObjects[i] = so;
                 }
+
+                item.transform.localScale = Vector3.one;
             }
         }
         Events.OnInventoryChange?.Invoke();

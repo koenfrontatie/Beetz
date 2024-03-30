@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.Networking;
 using System.IO;
-using System.Collections;
+using System.Threading.Tasks;
 using System.Collections.Generic;
+using System;
 
 public class SampleDirectoryChecker : MonoBehaviour
 {
@@ -10,67 +11,89 @@ public class SampleDirectoryChecker : MonoBehaviour
     private int coroutineCounter, existingSamples;
 
     public int NumberOfBaseSamples;
-    void Start()
+    async void Start()
     {
+        BetterStreamingAssets.Initialize();
+        
         Utils.CheckForCreateDirectory(Utils.PersistentBaseSamples);
 
-
         // --------------------------------------------------- finds all basesamples in streamingassets
-        var streamDir = new DirectoryInfo(Utils.StreamingBaseSamples);
-            
+ 
         var targetDir = Utils.PersistentBaseSamples;
         
         Utils.CheckForCreateDirectory(targetDir);
 
-        FileInfo[] files = streamDir.GetFiles();
-
-        //FileInfo[] betterFiles = Bette
-
-        for (int i = 0; i < files.Length; i++)
+        var betterfiles = BetterStreamingAssets.GetFiles("BaseSamples", "*.wav", SearchOption.AllDirectories);
+        
+        Debug.Log(betterfiles.Length);
+        
+        for (int i = 0; i < betterfiles.Length; i++)
         {
-            if (files[i].Name.EndsWith(".wav"))
-            {
+
+                Debug.Log(betterfiles[i]);
                 NumberOfBaseSamples++;
-                // ---------------------------------------------- finds files to check in persistentdata
-                StartCoroutine(CopyWavFile(files[i].FullName, files[i].Name ));
-            }
+            // ---------------------------------------------- finds files to check in persistentdata
+            await ReadBaseSamples(betterfiles[i]);
+
+            //if (data == null) continue;
+
         }
     }
 
-    IEnumerator CopyWavFile(string path, string name)
+
+
+    async Task ReadBaseSamples(string url)
     {
-        string pathToCheck = Path.Combine(Utils.PersistentBaseSamples, name);
-        SamplePaths.Add(pathToCheck);
-        if (!File.Exists(pathToCheck))
+        string pathToCheck = Path.Combine(Utils.SampleSavepath, url);
+        await Task.Run(() =>
         {
-            using (UnityWebRequest www = UnityWebRequest.Get(Path.Combine(path)))
+            if (!File.Exists(pathToCheck))
             {
-                yield return www.SendWebRequest();
-
-                if (www.result == UnityWebRequest.Result.Success)
-                {
-                    File.WriteAllBytes(pathToCheck, www.downloadHandler.data);
-                    Debug.Log("Copied " + name + " to persistentDataPath");
-                }
-                else
-                {
-                    Debug.LogError("Failed to copy " + name + ": " + www.error);
-                }
+                var data = BetterStreamingAssets.ReadAllBytes(url);
+                Debug.Log($"writing {url}");
+                File.WriteAllBytes(pathToCheck, data);
             }
-        }
-        else
-        {
-            existingSamples++;
-        }
-
-        coroutineCounter--;
-        if (coroutineCounter <= 0)
-        {
-
-            Events.OnBaseSamplesLoaded?.Invoke();
-            if (Config.Log && existingSamples > 0) Debug.Log($"{existingSamples} already exist in persistent data.");
-        }
+        });
     }
+
+
+
+
+    //IEnumerator CopyWavFile(string path, string name)
+    //{
+    //    string pathToCheck = Path.Combine(Utils.PersistentBaseSamples, name);
+    //    SamplePaths.Add(pathToCheck);
+
+    //    if (!File.Exists(pathToCheck))
+    //    {
+    //        using (UnityWebRequest www = UnityWebRequest.Get(Path.Combine(path)))
+    //        {
+    //            yield return www.SendWebRequest();
+
+    //            if (www.result == UnityWebRequest.Result.Success)
+    //            {
+    //                File.WriteAllBytes(pathToCheck, www.downloadHandler.data);
+    //                Debug.Log("Copied " + name + " to persistentDataPath");
+    //            }
+    //            else
+    //            {
+    //                Debug.LogError("Failed to copy " + name + ": " + www.error);
+    //            }
+    //        }
+    //    }
+    //    else
+    //    {
+    //        existingSamples++;
+    //    }
+
+    //    coroutineCounter--;
+    //    if (coroutineCounter <= 0)
+    //    {
+
+    //        Events.OnBaseSamplesLoaded?.Invoke();
+    //        if (Config.Log && existingSamples > 0) Debug.Log($"{existingSamples} already exist in persistent data.");
+    //    }
+    //}
 
 
     //void Start()

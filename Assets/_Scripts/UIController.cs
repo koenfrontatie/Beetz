@@ -14,8 +14,6 @@ public class UIController : MonoBehaviour
     {
         _menu.ToggleCanvasGroup(false);
 
-        Debug.Log("menu sees " + state.ToString());
-
         switch (state)
         {
             case GameState.Menu:

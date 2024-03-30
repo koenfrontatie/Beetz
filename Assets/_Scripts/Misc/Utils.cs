@@ -5,17 +5,17 @@ using System.IO;
 public static class Utils
 {
     public static readonly string PersistentDataPath = Application.persistentDataPath;
-    public static readonly string StreamingBaseSamples = $"{Application.streamingAssetsPath}{Path.DirectorySeparatorChar}BaseSamples";
-    public static readonly string SaveFilesPath = $"{PersistentDataPath}{Path.DirectorySeparatorChar}SaveFiles";
-    
-    public static readonly string ProjectSavepath = $"{SaveFilesPath}{Path.DirectorySeparatorChar}Projects";
-    public static readonly string SampleSavepath = $"{SaveFilesPath}{Path.DirectorySeparatorChar}Samples";
-    public static readonly string PersistentBaseSamples = $"{SampleSavepath}{Path.DirectorySeparatorChar}BaseSamples";
-    public static readonly string SequencerSavepath = $"{SaveFilesPath}{Path.DirectorySeparatorChar}Sequencers";
+    public static readonly string StreamingBaseSamples = Path.Combine(Application.streamingAssetsPath, "basesamples");
+    public static readonly string SaveFilesPath = Path.Combine(PersistentDataPath, "SaveFiles");
+
+    public static readonly string ProjectSavepath = Path.Combine(SaveFilesPath, "Projects");
+    public static readonly string SampleSavepath = Path.Combine(SaveFilesPath, "Samples");
+    public static readonly string PersistentBaseSamples = Path.Combine(SampleSavepath, "BaseSamples");
+    public static readonly string SequencerSavepath = Path.Combine(SaveFilesPath, "Sequencers");
     //public static readonly string SaveFilesSolarSystems = SaveFilesPath + "/SolarSystems";
     //public static readonly string SaveFilesSolarSystemsScreenshots = SaveFilesSolarSystems + "/screenshots
 
-    
+
 
     public static bool CheckForCreateDirectory(string directory)
     {

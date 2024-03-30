@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -8,11 +6,18 @@ public class DragDropUI : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
 {
     private Vector3 _startPosition;
     [SerializeField] private bool _resetPositionOnRelease = true;
+    //public void OnDrag(PointerEventData eventData)
+    //{
+    //    transform.position = eventData.position;
+    //}
     public void OnDrag(PointerEventData eventData)
     {
-        transform.position = eventData.position;
+        Vector3 vec = Prefabs.Instance.CanvasCamera.WorldToScreenPoint(transform.position);
+        vec.x += eventData.delta.x;
+        vec.y += eventData.delta.y;
+        transform.position = Prefabs.Instance.CanvasCamera.ScreenToWorldPoint(vec);
+        //myRectTransform.anchoredPosition = eventData.position / myCanvas.scaleFactor;
     }
-
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (_resetPositionOnRelease)
@@ -37,7 +42,7 @@ public class DragDropUI : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
                 droppedItem.transform.position = _startPosition;
 
                 swapWith = droppedItem;
-                break; // Exit the loop once a valid dropped item is found
+                break; 
 
             }
         }
