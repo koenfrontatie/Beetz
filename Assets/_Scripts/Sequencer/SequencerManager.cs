@@ -25,13 +25,13 @@ public class SequencerManager : MonoBehaviour
         Events.CopyingSequencer += CloneSequencer;
     }
 
-    public void BuildSequencer(Vector3 worldPosition, SequencerData data)
+    public void BuildSequencer(Vector3 worldPosition, SequencerData data, DisplayType type)
     {
         var newSequencer = Instantiate(Prefabs.Instance.Sequencer, worldPosition, Quaternion.identity, transform);
-        newSequencer.Init(worldPosition, data);
+        newSequencer.Init(worldPosition, data, type);
     }
 
-    public void CloneSequencer(Vector3 worldPosition, SequencerData data)
+    public void CloneSequencer(Vector3 worldPosition, SequencerData data, DisplayType type)
     {
         // make new data object for new sequencer
         var newID = SaveLoader.Instance.NewGuid();
@@ -39,7 +39,7 @@ public class SequencerManager : MonoBehaviour
         var copiedV2 = new Vector2(data.Dimensions.x, data.Dimensions.y);
         var newData = new SequencerData(newID, copiedV2, copiedList);
         
-        BuildSequencer(worldPosition, newData);
+        BuildSequencer(worldPosition, newData, type);
     }
 
     public void ChangeDisplayType() => DisplayType = DisplayType.NextEnumValue();

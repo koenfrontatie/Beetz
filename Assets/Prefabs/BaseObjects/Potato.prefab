@@ -161,10 +161,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b18a7cbdc3ed4441b9570efbeb6a68a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Info:
-    ID: 3
-    Name: Potato
-    Template: 3
   SampleData:
     ID: 3
     Name: Potato

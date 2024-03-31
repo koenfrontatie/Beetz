@@ -49,12 +49,14 @@ public static class Events
 
     //--------------- new data stuff
 
-    public static Action<Vector3, SequencerData> BuildingSequencer;
+    public static Action<Vector3, SequencerData, DisplayType> BuildingSequencer;
     //public static Action SequencerBuilt;
-    public static Action SequencerBuilt;
+    public static Action<Sequencer> SequencerBuilt;
     public static Action RemoveSequencer;
-    public static Action<Vector3, SequencerData> CopyingSequencer;
+    public static Action<Vector3, SequencerData, DisplayType> CopyingSequencer;
 
     public static Action<InventorySlot, DragDropUI, DragDropUI> ItemSwap;
+
+    public static Action<Vector3> SampleSpawned;
 
 }

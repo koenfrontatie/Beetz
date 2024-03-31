@@ -14,7 +14,7 @@ public class GridCounter : MonoBehaviour
 
         SongRange[1] = -10000;
         
-        Events.SequencerBuilt += UpdateRange;
+        Events.SequencerBuilt += (s) => UpdateRange();
         Events.RemoveSequencer += UpdateRange;
         Events.UpdateGridRange += UpdateRange;
         Metronome.OnStep += UpdatePos;
@@ -23,7 +23,7 @@ public class GridCounter : MonoBehaviour
 
     private void OnDisable()
     {
-        Events.SequencerBuilt -= UpdateRange;
+        Events.SequencerBuilt -= (s) => UpdateRange();
         Events.RemoveSequencer -= UpdateRange;
         Events.UpdateGridRange -= UpdateRange;
         Metronome.OnResetMetronome -= () => CurrentStep = SongRange[0];

@@ -24,10 +24,10 @@ public class Sequencer : MonoBehaviour
     /// <param name="position">World position of sequencer instance</param>
     /// <param name="data">Serialized data</param>
     /// <param name="type">Display type</param>
-    public void Init(Vector3 position, SequencerData data)
+    public void Init(Vector3 position, SequencerData data, DisplayType type)
     {
         SequencerData = data;
-        this.DisplayType = DisplayType.Linear;
+        this.DisplayType = type;
 
         this.StepAmount = (int)SequencerData.Dimensions.x;
         this.RowAmount = (int)SequencerData.Dimensions.y;
@@ -49,7 +49,7 @@ public class Sequencer : MonoBehaviour
 
         DataStorage.Instance.AddSequencer(this);
 
-        Events.SequencerBuilt?.Invoke();
+        Events.SequencerBuilt?.Invoke(this);
     }
 
     private void OnEnable()
@@ -131,6 +131,8 @@ public class Sequencer : MonoBehaviour
             var posID = new PositionID(idCopy, GetPositionFromSiblingIndex(stepIndex));
             
             SequencerData.PositionIDData.Add(posID);
+
+            Events.SampleSpawned(selectedStep.transform.position);
         }
     }
 
