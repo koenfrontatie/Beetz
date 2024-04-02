@@ -153,7 +153,7 @@ public class GridInteraction : MonoBehaviour
                 if (_startCell != _currentCell)
                 {
                     var sData = new SequencerData(SaveLoader.Instance.NewGuid(), _drawerDimensions, new List<PositionID>());
-                    Events.BuildingSequencer?.Invoke(_gridController.GetCenterFromCell(_startCell), sData, DisplayType.Linear);
+                    Events.BuildingSequencer?.Invoke(_gridController.GetCenterFromCell(_startCell), sData);
                 }
 
                 SetState(InteractionState.Default);
@@ -167,7 +167,7 @@ public class GridInteraction : MonoBehaviour
             case InteractionState.Copying:
                 //------------------------------------------------------------------- build copy
                 if (_drawInstance != null) Destroy(_drawInstance.gameObject);
-                Events.CopyingSequencer?.Invoke(_gridController.GetCenterFromCell(_currentCell), _lastSequencer.SequencerData, DisplayType.Linear);
+                Events.CopyingSequencer?.Invoke(_gridController.GetCenterFromCell(_currentCell), _lastSequencer.SequencerData);
                 SetState(InteractionState.Default);
                 break;
         }
@@ -187,7 +187,8 @@ public class GridInteraction : MonoBehaviour
                     //_draggerHitbox.transform.position = worldPosition;
                     //_draggerHitbox.transform.parent = seq.transform;
                     //_contextColliders.transform.position = screenPosition;
-                    
+                    SequencerManager.Instance.LastInteracted = seq;
+
                     _lastSequencer = seq;
                     
                     SetState(InteractionState.Context);

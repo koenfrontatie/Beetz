@@ -6,7 +6,11 @@ public class SequencerManager : MonoBehaviour
 {
     public static SequencerManager Instance;
     public List<Sequencer> ActiveSequencers = new List<Sequencer>();
+    public List<Sequencer> ActiveScarecrows = new List<Sequencer>();
+
     public DisplayType DisplayType;
+
+    public Sequencer LastInteracted;
 
     private void Awake()
     {
@@ -25,13 +29,19 @@ public class SequencerManager : MonoBehaviour
         Events.CopyingSequencer += CloneSequencer;
     }
 
-    public void BuildSequencer(Vector3 worldPosition, SequencerData data, DisplayType type)
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1)) BuildScarecrow(LastInteracted.SequencerData);
+    }
+    public void BuildSequencer(Vector3 worldPosition, SequencerData data)
     {
         var newSequencer = Instantiate(Prefabs.Instance.Sequencer, worldPosition, Quaternion.identity, transform);
-        newSequencer.Init(worldPosition, data, type);
+        newSequencer.Init(worldPosition, data);
+        ActiveSequencers.Add(newSequencer);
+        LastInteracted = newSequencer;
     }
 
-    public void CloneSequencer(Vector3 worldPosition, SequencerData data, DisplayType type)
+    public void CloneSequencer(Vector3 worldPosition, SequencerData data)
     {
         // make new data object for new sequencer
         var newID = SaveLoader.Instance.NewGuid();
@@ -39,7 +49,25 @@ public class SequencerManager : MonoBehaviour
         var copiedV2 = new Vector2(data.Dimensions.x, data.Dimensions.y);
         var newData = new SequencerData(newID, copiedV2, copiedList);
         
-        BuildSequencer(worldPosition, newData, type);
+        BuildSequencer(worldPosition, newData);
+    }
+
+    public void BuildScarecrow(SequencerData data)
+    {
+        // make new data object for new sequencer
+        var newID = data.ID;
+        var copiedList = new List<PositionID>(data.PositionIDData);
+        var copiedV2 = new Vector2(data.Dimensions.x, data.Dimensions.y);
+        var newData = new SequencerData(newID, copiedV2, copiedList);
+
+        var pos = new Vector3(0, 0, 8f);
+
+        var newSequencer = Instantiate(Prefabs.Instance.CircularSequencer, pos, Quaternion.identity, transform);
+        newSequencer.Init(pos, newData);
+
+        ActiveScarecrows.Add(newSequencer);
+
+        LastInteracted = newSequencer;
     }
 
     public void ChangeDisplayType() => DisplayType = DisplayType.NextEnumValue();

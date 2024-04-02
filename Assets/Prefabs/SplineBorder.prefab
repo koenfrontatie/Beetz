@@ -191,7 +191,7 @@ MonoBehaviour:
     randomZ: 0
     space: 0
   m_RotationOffset:
-    setup: 3
+    setup: -1
     min: {x: 0, y: 0, z: 0}
     max: {x: 360, y: 360, z: 360}
     randomX: 1

@@ -1,6 +1,5 @@
 
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Sequencer : MonoBehaviour
 {
@@ -10,10 +9,12 @@ public class Sequencer : MonoBehaviour
     public int RowAmount { get; private set; }
     public int CurrentBeat { get; private set; }
     public int CurrentBar { get; private set; }
-    public DisplayType DisplayType { get; private set; }
+    public IDisplayer Displayer { get; private set; }
     public Vector3 InstancePosition { get; private set; }
 
     public Vector2 InstanceCellPosition;
+
+    public bool _isLooping;
 
     [SerializeField] private Transform _stepParent;
 
@@ -24,10 +25,12 @@ public class Sequencer : MonoBehaviour
     /// <param name="position">World position of sequencer instance</param>
     /// <param name="data">Serialized data</param>
     /// <param name="type">Display type</param>
-    public void Init(Vector3 position, SequencerData data, DisplayType type)
+    public void Init(Vector3 position, SequencerData data)
     {
+        Displayer = GetComponent<IDisplayer>();
+
+
         SequencerData = data;
-        this.DisplayType = type;
 
         this.StepAmount = (int)SequencerData.Dimensions.x;
         this.RowAmount = (int)SequencerData.Dimensions.y;
@@ -35,19 +38,12 @@ public class Sequencer : MonoBehaviour
         this.InstancePosition = position;
         this.InstanceCellPosition = GridController.Instance.CellFromWorld(position);
 
-        switch (DisplayType)
-        {
-            case DisplayType.Linear:
-                gameObject.AddComponent<LinearDisplay>();
-                break;
-            case DisplayType.Circular:
-                gameObject.AddComponent<CircularDisplay>();
-                break;
-        }
-
         SequencerManager.Instance.ActiveSequencers.Add(this);
 
         DataStorage.Instance.AddSequencer(this);
+
+        Displayer.SpawnSteps();
+        Displayer.UpdateStepColors();
 
         Events.SequencerBuilt?.Invoke(this);
     }
@@ -77,8 +73,8 @@ public class Sequencer : MonoBehaviour
 
     void OnStepsPlaced(Sequencer s)
     {
-        if (s.gameObject != transform.gameObject) return;
-        InitSamplesFromInfo(SequencerData);
+        if (s != this) return;
+        InitSamplesFromInfo(s.SequencerData);
     }
 
     void OnMove(Sequencer s, Vector2 delta)
@@ -134,6 +130,8 @@ public class Sequencer : MonoBehaviour
 
             Events.SampleSpawned(selectedStep.transform.position);
         }
+
+        SequencerManager.Instance.LastInteracted = this;
     }
 
     public void InitSamplesFromInfo(SequencerData sequencerData)

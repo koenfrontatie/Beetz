@@ -15,7 +15,7 @@ public class ScareCrow : MonoBehaviour
 
     void OnSequencerBuilt(Sequencer seq)
     {
-        CloneToScarecrow(transform.position, seq.SequencerData, DisplayType.Circular);
+        CloneToScarecrow(transform.position, seq.SequencerData);
     }
     
     private void OnDisable()
@@ -23,7 +23,7 @@ public class ScareCrow : MonoBehaviour
         Events.SequencerBuilt -= OnSequencerBuilt;
     }
 
-    public void CloneToScarecrow(Vector3 worldPosition, SequencerData data, DisplayType type)
+    public void CloneToScarecrow(Vector3 worldPosition, SequencerData data)
     {
         // make new data object for new sequencer
         var newID = data.ID;
@@ -32,7 +32,7 @@ public class ScareCrow : MonoBehaviour
         var newData = new SequencerData(newID, copiedV2, copiedList);
 
         var newSequencer = Instantiate(Prefabs.Instance.Sequencer, worldPosition, Quaternion.identity, transform);
-        newSequencer.Init(worldPosition, data, type);
+        newSequencer.Init(worldPosition, data);
     }
 }
 //var newSequencer = Instantiate(Prefabs.Instance.Sequencer, worldPosition, Quaternion.identity, transform);

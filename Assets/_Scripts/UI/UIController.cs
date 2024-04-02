@@ -18,9 +18,11 @@ public class UIController : MonoBehaviour
         {
             case GameState.Menu:
                 _menu.ToggleCanvasGroup(true);
+                _menu.gameObject.SetActive(true);
             break;
             case GameState.Gameplay: 
-                _menu.ToggleCanvasGroup(false); 
+                _menu.ToggleCanvasGroup(false);
+                _menu.gameObject.SetActive(false);
             break;
         }
     }

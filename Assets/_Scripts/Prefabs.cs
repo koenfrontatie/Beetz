@@ -8,6 +8,8 @@ public class Prefabs : MonoBehaviour
     public static Prefabs Instance;
 
     public Sequencer Sequencer;
+    public Sequencer CircularSequencer;
+
     public Step Step;
 
     public Material White;

@@ -8,7 +8,7 @@ public class Step : MonoBehaviour
     private SampleObject _sampleObject;
     private Sequencer _sequencer;
     private PlaylistPlayback _playback;
-    private int _beatIndex;
+    public int BeatIndex;
     private Material _mat;
 
     private void OnDisable()
@@ -19,15 +19,12 @@ public class Step : MonoBehaviour
     private void Awake()
     {
         _mat = transform.GetChild(0).GetComponent<MeshRenderer>().material;
+        transform.parent.parent.TryGetComponent<Sequencer>(out _sequencer);
+        transform.parent.parent.TryGetComponent<PlaylistPlayback>(out _playback);
     }
 
     private void Start()
     {
-        transform.parent.parent.TryGetComponent<Sequencer>(out _sequencer);
-        transform.parent.parent.TryGetComponent<PlaylistPlayback>(out _playback);
-
-        _beatIndex = transform.GetSiblingIndex() % _sequencer.StepAmount;
-
         Metronome.OnStep += CheckForPlayBack;
         Metronome.OnTogglePlayPause += PlayPauseHandler;
     }
@@ -66,12 +63,12 @@ public class Step : MonoBehaviour
     {
         if (_sampleObject == null || _sequencer == null) return;
         //Debug.Log($"step:{_sequencer.CurrentStep} sibling+1:{transform.GetSiblingIndex() + 1} rowamt:{_sequencer.RowAmount} s1%amt:{(_sequencer.CurrentStep) % _sequencer.StepAmount}");
-        bool shouldPlay = _sequencer.CurrentStep - 1 == _beatIndex;
+        bool shouldPlay = _sequencer.CurrentStep - 1 == BeatIndex;
         
-        if(GridController.Instance.PlaylistPlaybackEnabled) // global playback
+        if(!_sequencer._isLooping) // global playback
         {
             shouldPlay = false;
-            if(_playback.PlaylistStep == _beatIndex )
+            if(_playback.PlaylistStep == BeatIndex )
             {
                 shouldPlay = true;
             }
