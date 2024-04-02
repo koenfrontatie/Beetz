@@ -14,7 +14,7 @@ public class Sequencer : MonoBehaviour
 
     public Vector2 InstanceCellPosition;
 
-    public bool _isLooping;
+    public bool IsLooping;
 
     [SerializeField] private Transform _stepParent;
 

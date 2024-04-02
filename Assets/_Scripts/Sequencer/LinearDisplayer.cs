@@ -39,7 +39,7 @@ public class LinearDisplayer : MonoBehaviour, IDisplayer
     }
     public void UpdateStepColors()
     {
-        if (!_sequencer._isLooping) //updates step materials based on PlaylistPlayback component
+        if (!_sequencer.IsLooping) //updates step materials based on PlaylistPlayback component
         {
             for (int r = 0; r < _sequencer.RowAmount; r++)
             {
