@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Toolbar : MonoBehaviour
 {
@@ -12,10 +13,15 @@ public class Toolbar : MonoBehaviour
 
     [SerializeField] private ObjectMaker _objectMaker;
 
+    private DragDropUI _dragDropUI;
+
+
+
     private void OnEnable()
     {
         Events.ProjectDataLoaded += OnProjectDataLoaded;
         Events.ItemSwap += OnItemSwap;
+        Events.SampleSelected += OnSampleSelected;
     }
 
     private void Start()
@@ -60,6 +66,8 @@ public class Toolbar : MonoBehaviour
     {
         var copy = new List<string>(projectData.IDCollection.IDC);
         AssignItems(copy);
+
+        SetToolbarItemsTransparent();
     }
 
     void OnItemSwap(InventorySlot targetSlot, DragDropUI one, DragDropUI two)
@@ -90,9 +98,52 @@ public class Toolbar : MonoBehaviour
         _containers[oldIndexTwo].Bind(oneSO);
     }
 
+    void OnSampleSelected(SampleObject sampleObject)
+    {
+        for(int i = 0; i < _toolbarSampleObjects.Length; i++) {
+
+            if (_toolbarSampleObjects[i] == null) continue;
+
+            RawImage img;
+
+            if (!_toolbarSampleObjects[i].TryGetComponent<RawImage>(out img))
+            {
+                continue;
+            }
+
+            if (_toolbarSampleObjects[i].SampleData.ID == sampleObject.SampleData.ID && img != null)
+            {
+                img.CrossFadeAlpha(1f, .1f, false);
+            } else
+            {
+                img.CrossFadeAlpha(.5f, .1f, false);
+            }
+        
+        }
+    }
+
+    void SetToolbarItemsTransparent()
+    {
+        for (int i = 0; i < _toolbarSampleObjects.Length; i++)
+        {
+
+            if (_toolbarSampleObjects[i] == null) continue;
+
+            RawImage img;
+
+            if (!_toolbarSampleObjects[i].TryGetComponent<RawImage>(out img))
+            {
+                continue;
+            }
+
+            img.CrossFadeAlpha(.5f, .1f, false);
+
+        }
+    }
     private void OnDisable()
     {
         Events.ProjectDataLoaded -= OnProjectDataLoaded;
         Events.ItemSwap -= OnItemSwap;
+        Events.SampleSelected -= OnSampleSelected;
     }
 }

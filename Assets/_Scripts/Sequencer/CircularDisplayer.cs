@@ -43,13 +43,14 @@ public class CircularDisplayer : MonoBehaviour, IDisplayer
                 
                 Vector3 spawnPos = new Vector3(x, 0, z);
                 Quaternion spawnRot = Quaternion.Euler(0f, -angle, 0f);
-                Step step = Instantiate(Prefabs.Instance.Step, transform);
+                Step step = Instantiate(Prefabs.Instance.Step, transform.GetChild(0));
                 step.transform.localPosition = spawnPos;
                 step.transform.localRotation = spawnRot;
+                step.BeatIndex = i % (int)_sequencer.SequencerData.Dimensions.x;
+
                 Steps.Add(step);
             }
         }
-
 
         Events.OnStepsPlaced(_sequencer);
     }

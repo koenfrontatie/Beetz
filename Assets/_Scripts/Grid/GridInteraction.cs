@@ -301,7 +301,7 @@ public class GridInteraction : MonoBehaviour
         }
 
         // enable/disable state dependent objects
-        _gridDisplay.gameObject.SetActive(state == InteractionState.Patching || state == InteractionState.Moving ? true : false);
+        _gridDisplay.gameObject.SetActive(state == InteractionState.Patching || state == InteractionState.Moving || state == InteractionState.Copying ? true : false);
         //_contextColliders.SetContextMenu((state == InteractionState.Context || state == InteractionState.Moving) ? true : false);
 
 

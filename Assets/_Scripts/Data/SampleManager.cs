@@ -26,6 +26,7 @@ public class SampleManager : MonoBehaviour
     private void OnEnable()
     {
         Events.OnHotbarClicked += (i) => SelectedSample = Prefabs.Instance.BaseObjects[i];
+        Events.SampleSelected += SetSelectedTemplateSample;
     }
     //private void Start()
     //{
@@ -41,6 +42,8 @@ public class SampleManager : MonoBehaviour
     private void OnDisable()
     {
         Events.OnHotbarClicked -= (i) => SelectedSample = Prefabs.Instance.BaseObjects[i];
+        Events.SampleSelected -= SetSelectedTemplateSample;
+
     }
 
     public void SetSelectedTemplateSample(SampleObject sample)

@@ -50,22 +50,22 @@ public class Sequencer : MonoBehaviour
 
     private void OnEnable()
     {
-        Metronome.OnBeat += CalculateBeatPosition;
-        Metronome.OnBeat += CalculateBarPosition;
-        Metronome.OnStep += CalculateStepPosition;
+        //Metronome.OnBeat += CalculateBeatPosition;
+        //Metronome.OnBeat += CalculateBarPosition;
+        Metronome.OnStep += CalculatePosition;
         Metronome.OnResetMetronome += ResetSequencerPlayback;
-        Events.OnNewSongRange += CalculateStepPosition;
+        Events.OnNewSongRange += CalculatePosition;
         Events.OnSequencerTapped += SequencerTappedHandler;
         Events.OnStepsPlaced += OnStepsPlaced;
         Events.MoveSequencer += OnMove;
     }
     private void OnDisable()
     {
-        Metronome.OnBeat -= CalculateBeatPosition;
-        Metronome.OnBeat -= CalculateBarPosition;
-        Metronome.OnStep -= CalculateStepPosition;
+        //Metronome.OnBeat -= CalculateBeatPosition;
+        //Metronome.OnStep -= CalculateBarPosition;
+        Metronome.OnStep -= CalculatePosition;
         Metronome.OnResetMetronome -= ResetSequencerPlayback;
-        Events.OnNewSongRange -= CalculateStepPosition;
+        Events.OnNewSongRange -= CalculatePosition;
         Events.OnSequencerTapped -= SequencerTappedHandler;
         Events.OnStepsPlaced -= OnStepsPlaced;
         Events.MoveSequencer -= OnMove;
@@ -74,7 +74,7 @@ public class Sequencer : MonoBehaviour
     void OnStepsPlaced(Sequencer s)
     {
         if (s != this) return;
-        InitSamplesFromInfo(s.SequencerData);
+        InitSamplesFromInfo(SequencerData);
     }
 
     void OnMove(Sequencer s, Vector2 delta)
@@ -141,13 +141,12 @@ public class Sequencer : MonoBehaviour
         for (int i = 0; i < sequencerData.PositionIDData.Count; i++)
         {
             var stepIndex = GetStepIndexFromPosition(sequencerData.PositionIDData[i].Position);
-
             if (_stepParent.GetChild(stepIndex).TryGetComponent<Step>(out Step selectedStep))
             {
                 var spawnedSampleObject = Prefabs.Instance.BaseObjects[int.Parse(sequencerData.PositionIDData[i].ID)];
                 
                 SampleObject so = Instantiate(spawnedSampleObject, selectedStep.transform);
-
+                //Debug.Log($"this is i is {i} ,{selectedStep.BeatIndex}");
                 selectedStep.AssignSample(so); // TODO - load proper sampleobject
             }
         }
@@ -174,22 +173,39 @@ public class Sequencer : MonoBehaviour
     }
 
     #region position calculation
-    void CalculateStepPosition()
+    void CalculatePosition()
     {
         if (StepAmount == 0) return;
         CurrentStep = (CurrentStep % StepAmount) + 1;
+        
+        CalculateBeatPosition();
+
+        CalculateBarPosition();
     }
 
     void CalculateBeatPosition()
     {
-        CurrentBeat = (CurrentBeat % Metronome.Instance.BeatsPerBar) + 1;
+        if (CurrentStep == 1)
+        {
+            CurrentBeat = 1;
+            return;
+        }
+
+        if ((CurrentStep - 1) % Metronome.Instance.StepsPerBeat == 0)
+        {
+            CurrentBeat = (CurrentBeat % Metronome.Instance.BeatsPerBar) + 1;
+        }
     }
 
     void CalculateBarPosition()
     {
-        var stepsPerBar = Metronome.Instance.StepsPerBeat * Metronome.Instance.BeatsPerBar;
-        var barsPerLoop = StepAmount / stepsPerBar;
-        CurrentBar = (int)(Mathf.Floor(CurrentStep / stepsPerBar) % (barsPerLoop)) + 1;
+        if (CurrentStep == 1)
+        {
+            CurrentBar = 1;
+            return;
+        }
+
+        CurrentBar = 1 + Mathf.CeilToInt((CurrentStep - 1) / Metronome.Instance.StepsPerBeat * Metronome.Instance.BeatsPerBar);
     }
     #endregion
 

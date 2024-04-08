@@ -55,19 +55,18 @@ public class SequencerManager : MonoBehaviour
     public void BuildScarecrow(SequencerData data)
     {
         // make new data object for new sequencer
-        var newID = data.ID;
+        var newID = new string(data.ID);
         var copiedList = new List<PositionID>(data.PositionIDData);
         var copiedV2 = new Vector2(data.Dimensions.x, data.Dimensions.y);
         var newData = new SequencerData(newID, copiedV2, copiedList);
 
-        var pos = new Vector3(0, 0, 8f);
+        var pos = new Vector3(0, 0, 9f);
 
         var newSequencer = Instantiate(Prefabs.Instance.CircularSequencer, pos, Quaternion.identity, transform);
         newSequencer.Init(pos, newData);
 
         ActiveScarecrows.Add(newSequencer);
 
-        LastInteracted = newSequencer;
     }
 
     public void ChangeDisplayType() => DisplayType = DisplayType.NextEnumValue();

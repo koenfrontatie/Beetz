@@ -14,6 +14,6 @@ public class PointerSelect : MonoBehaviour, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        SampleManager.Instance.SetSelectedTemplateSample(obj);
+        Events.SampleSelected?.Invoke(obj);
     }
 }

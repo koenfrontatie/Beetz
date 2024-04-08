@@ -81,7 +81,7 @@ public class Step : MonoBehaviour
 
     void PlayPauseHandler()
     {
-        if (!Metronome.Instance.Playing || Metronome.Instance.BeatProgression != 0) return;
+        if (Metronome.Instance.BeatProgression != 0) return;
 
         CheckForPlayBack();
     }

@@ -59,4 +59,8 @@ public static class Events
 
     public static Action<Vector3> SampleSpawned;
 
+    public static Action<GenericButton> AnimateButton;
+
+    public static Action<SampleObject> SampleSelected;
+
 }
