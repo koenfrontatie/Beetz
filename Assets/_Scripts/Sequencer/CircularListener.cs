@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 public class CircularListener : MonoBehaviour, IListener
 {
@@ -12,7 +11,7 @@ public class CircularListener : MonoBehaviour, IListener
     }
     public int GetStepPosition()
     {
-        if (!IsGlobalPlaybackInRange()) return -1;
+        if (!IsGlobalPlaybackInRange() || PlaybackController.Instance.PlaybackMode == PlaybackMode.Linear) return -1;
 
         return CircularPlayback.Instance.CurrentPosition;
     }

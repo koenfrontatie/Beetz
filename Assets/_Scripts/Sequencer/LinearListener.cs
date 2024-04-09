@@ -13,7 +13,7 @@ public class LinearListener : MonoBehaviour, IListener
 
     public int GetStepPosition()
     {
-        if (!IsGlobalPlaybackInRange()) return -1;
+        if (!IsGlobalPlaybackInRange() || PlaybackController.Instance.PlaybackMode == PlaybackMode.Circular) return -1;
 
         return 1 + LinearPlayback.Instance.CurrentPosition - (int)_sequencer.InstanceCellPosition.x;
     }
