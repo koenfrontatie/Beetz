@@ -18,7 +18,7 @@ public class EditorMetronome : Editor
 
         if (GUILayout.Button("Reset"))
         {
-            metronome.ResetMetronome();
+            metronome.Reset();
         }
     }
 }

@@ -10,8 +10,8 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
-        Metronome.OnBeat += PlayClip;
-        Metronome.OnStep += PlayStep;
+        Metronome.NewBeat += PlayClip;
+        Metronome.NewStep += PlayStep;
     }
 
     private void Start()

@@ -24,13 +24,13 @@ public class Metronome : MonoBehaviour
     public int BeatsPerBar;
     public int StepsPerBeat;
    
-    public static UnityAction OnBeat;
-    public static UnityAction OnStep;
+    public static UnityAction NewBeat;
+    public static UnityAction NewStep;
 
-    public static UnityAction OnResetMetronome;
-    public static UnityAction<bool> OnPlayPause;
-    public static UnityAction OnTogglePlayPause;
-    public static UnityAction OnTempoChange;
+    public static UnityAction ResetMetronome;
+    public static UnityAction<bool> PlayPause;
+    public static UnityAction TogglePlayPause;
+    public static UnityAction TempoChanged;
 
     void Awake()
     {
@@ -45,7 +45,7 @@ public class Metronome : MonoBehaviour
     }
     void Start()
     {
-        ResetMetronome();
+        Reset();
     }
 
     void Update()
@@ -55,7 +55,7 @@ public class Metronome : MonoBehaviour
             if (AudioSettings.dspTime >= nextBeatTime) 
             {
                 // nextBeatTime is reached
-                OnBeat?.Invoke();
+                NewBeat?.Invoke();
                 lastBeatTime = AudioSettings.dspTime;
                 nextBeatTime = lastBeatTime + beatInterval;
             }
@@ -66,7 +66,7 @@ public class Metronome : MonoBehaviour
             // calculate step progress
             stepProgression = BeatProgression * StepsPerBeat % 1f;
 
-            if (lastStepProgression > stepProgression) OnStep?.Invoke();
+            if (lastStepProgression > stepProgression) NewStep?.Invoke();
             lastStepProgression = stepProgression;
         }
 
@@ -79,14 +79,14 @@ public class Metronome : MonoBehaviour
         TempoCheck();
     }
 
-    public void ResetMetronome()
+    public void Reset()
     {
         BeatProgression = 0;
         stepProgression = 0;
         lastBeatTime = AudioSettings.dspTime;
         beatInterval = Halftime ? 120f / BPM : 60f / BPM;
 
-        OnResetMetronome?.Invoke();
+        ResetMetronome?.Invoke();
     }
 
     public void PlayPauseMetronome()
@@ -105,7 +105,7 @@ public class Metronome : MonoBehaviour
             Playing = false;
         }
 
-        OnTogglePlayPause?.Invoke();
+        TogglePlayPause?.Invoke();
     }
 
     public void SetPlayPauseMetronome(bool b)
@@ -129,11 +129,16 @@ public class Metronome : MonoBehaviour
     {
         if (BPM != lastBPM || Halftime != lastHalftime)
         {
-            OnTempoChange?.Invoke();
+            TempoChanged?.Invoke();
         }
 
         lastBPM = BPM;
         lastHalftime = Halftime;
+    }
+
+    public float GetStepProgression()
+    {
+        return stepProgression;
     }
 }
 

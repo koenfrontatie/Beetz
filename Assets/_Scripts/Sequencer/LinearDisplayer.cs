@@ -9,20 +9,18 @@ public class LinearDisplayer : MonoBehaviour, IDisplayer
     public List<Step> Steps = new List<Step>();
     
     private Sequencer _sequencer;
-    private PlaylistPlayback _playlistPlayback;
 
-    void OnEnable()
+    private void Awake()
     {
-        Metronome.OnPlayPause += (b) => UpdateStepColors();
-        Metronome.OnStep += UpdateStepColors;
-        Metronome.OnResetMetronome += UpdateStepColors;
+        _sequencer = GetComponent<Sequencer>();
+    }
+    public Step GetStepFromIndex(int index)
+    {
+        return Steps[index];
     }
 
     public void SpawnSteps()
     {
-        _sequencer = GetComponent<Sequencer>();
-        _playlistPlayback = GetComponent<PlaylistPlayback>();
-
         float x = transform.localPosition.x;
 
         for (int r = 0; r < _sequencer.RowAmount; r++)
@@ -35,29 +33,16 @@ public class LinearDisplayer : MonoBehaviour, IDisplayer
             }
         }
 
-        Events.OnStepsPlaced(_sequencer);
+        Events.OnStepsPlaced(gameObject);
     }
     public void UpdateStepColors()
     {
-        if (!_sequencer.IsLooping) //updates step materials based on PlaylistPlayback component
+        if(_sequencer.CurrentStep == -1)
         {
-            for (int r = 0; r < _sequencer.RowAmount; r++)
+            for(int i = 0; i < Steps.Count; i++)
             {
-                for (int c = 0; c < _sequencer.StepAmount; c++)
-                {
-                    var beatIndex = Steps[(r * _sequencer.StepAmount) + c].transform.GetSiblingIndex() % _sequencer.StepAmount;
-
-                    if (c == ((_playlistPlayback.PlaylistStep) % (_sequencer.StepAmount)) && _playlistPlayback.PlaylistStep != -1)
-                    {
-                        Steps[(r * _sequencer.StepAmount) + c].SetColor(Prefabs.Instance.ActiveStep);
-                    }
-                    else
-                    {
-                        Steps[(r * _sequencer.StepAmount) + c].SetColor(Prefabs.Instance.PassiveStep);
-                    }
-                }
+                Steps[i].SetColor(Prefabs.Instance.PassiveStep);
             }
-
 
             return;
         }
@@ -78,12 +63,5 @@ public class LinearDisplayer : MonoBehaviour, IDisplayer
                 }
             }
         }
-    }
-
-    void OnDisable()
-    {
-        Metronome.OnPlayPause -= (b) => UpdateStepColors();
-        Metronome.OnStep -= UpdateStepColors;
-        Metronome.OnResetMetronome -= UpdateStepColors;
     }
 }

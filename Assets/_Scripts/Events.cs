@@ -9,7 +9,7 @@ public static class Events
 
     public static Action<Vector3, SequencerData> OnBuildNewSequencer;
    public static Action<Sequencer, Vector2> MoveSequencer;
-    public static Action UpdateGridRange;
+    public static Action UpdateSongRange;
    public static Action<int> OnHotbarClicked;
 
    public static Action OnGridStateChanged;
@@ -39,7 +39,7 @@ public static class Events
     public static Action<Vector2> OnFingerUpdate;
 
     public static Action<Sequencer> OnSendToScareCrow;
-    public static Action<Sequencer> OnStepsPlaced;
+    public static Action<GameObject> OnStepsPlaced;
 
     public static Action OnInventoryChange;
 
@@ -63,4 +63,6 @@ public static class Events
 
     public static Action<SampleObject> SampleSelected;
 
+    public static Action UpdateLinearRange;
+    public static Action UpdateCircularRange;
 }

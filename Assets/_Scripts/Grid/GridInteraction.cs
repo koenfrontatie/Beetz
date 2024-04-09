@@ -43,11 +43,67 @@ public class GridInteraction : MonoBehaviour
         switch (State)
         {
             case InteractionState.Default:
-                if (transform.parent.parent.TryGetComponent<Sequencer>(out var seq))
+                if (transform.TryGetComponent<Step>(out var tappedStep))
                 {
+                    var tappedSequencer = tappedStep.GetSequencer();
+                    var data = tappedSequencer.SequencerData;
 
                     var index = transform.GetSiblingIndex();
-                    Events.OnSequencerTapped?.Invoke(seq, index);
+                    var selectedSample = SampleManager.Instance.SelectedSample;
+
+                    if (selectedSample == null) return;
+
+                    // ------ update referenced sequencer data class
+                    if (tappedStep.GetSampleObject() != null)
+                    {
+                        foreach (PositionID pair in data.PositionIDData)
+                        {
+                            if (pair.Position == tappedSequencer.GetPositionFromSiblingIndex(index))
+                            {
+                                data.PositionIDData.RemoveAt(data.PositionIDData.IndexOf(pair));
+                                break;
+                            }
+                        }
+                    } else
+                    {
+                        string idCopy = selectedSample.SampleData.ID;
+
+                        if (string.IsNullOrEmpty(selectedSample.SampleData.ID))
+                        {
+                            idCopy = selectedSample.SampleData.Template.ToString();
+                        }
+
+                        var posID = new PositionID(idCopy, tappedSequencer.GetPositionFromSiblingIndex(index));
+
+                        data.PositionIDData.Add(posID);
+                    }
+
+                    // ------   loops through all sequencers and assigns samples on all matching id's
+                    for (int i = 0; i < SequencerManager.Instance.ActiveSequencers.Count; i++) {
+             
+                        var matchingSequencer = SequencerManager.Instance.ActiveSequencers[i];
+             
+                        if (matchingSequencer.SequencerData.ID != tappedSequencer.SequencerData.ID) continue;
+
+                        var matchingStep = matchingSequencer.Displayer.GetStepFromIndex(index);
+
+                        if (matchingStep.GetSampleObject() != null)
+                        {
+                            Debug.Log("Sample object is not null");
+
+                            matchingStep.UnAssignSample();
+
+                        } else
+                        {
+                            Debug.Log("Instantiating new object");
+
+                            var sample = Instantiate(SampleManager.Instance.SelectedSample, matchingStep.transform);
+
+                            matchingStep.AssignSample(sample);
+                        }
+                    }
+
+                    SequencerManager.Instance.LastInteracted = tappedSequencer;
                 }
                 break;
 

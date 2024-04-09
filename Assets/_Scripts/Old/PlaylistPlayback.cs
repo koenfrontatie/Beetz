@@ -10,12 +10,12 @@ public class PlaylistPlayback : MonoBehaviour
 
     private void OnEnable()
     {
-        Metronome.OnResetMetronome += () => ListenForPlayback();
-        Metronome.OnStep += ListenForPlayback;
+        Metronome.ResetMetronome += () => ListenForPlayback();
+        Metronome.NewStep += ListenForPlayback;
     }
     private void OnDisable()
     {
-        Metronome.OnStep -= ListenForPlayback;
+        Metronome.NewStep -= ListenForPlayback;
     }
     private void Start()
     {

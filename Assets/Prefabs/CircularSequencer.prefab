@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5016859328250569983}
   - component: {fileID: 5016859328250569982}
-  - component: {fileID: 8255520443760307352}
   - component: {fileID: 5485081499972392420}
+  - component: {fileID: 3655581288236942449}
   m_Layer: 3
   m_Name: CircularSequencer
   m_TagString: Untagged
@@ -55,21 +55,7 @@ MonoBehaviour:
     Dimensions: {x: 0, y: 0}
     PositionIDData: []
   InstanceCellPosition: {x: 0, y: 0}
-  IsLooping: 1
   _stepParent: {fileID: 1373759323480410067}
---- !u!114 &8255520443760307352
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5016859328250569981}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7becfe56948716646a87b46a9ed88e49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _sequencer: {fileID: 5016859328250569982}
 --- !u!114 &5485081499972392420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,6 +70,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Steps: []
   _rowSpacing: 0.5
+--- !u!114 &3655581288236942449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5016859328250569981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 164ecb3ea02563645aeec944b5b772bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8505929518037936735
 GameObject:
   m_ObjectHideFlags: 0

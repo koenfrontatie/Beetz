@@ -7,4 +7,6 @@ public interface IDisplayer
     abstract void SpawnSteps();
 
     abstract void UpdateStepColors();
+
+    abstract Step GetStepFromIndex(int index);
 }

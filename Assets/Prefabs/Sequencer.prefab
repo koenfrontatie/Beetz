@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5016859328250569983}
   - component: {fileID: 5016859328250569982}
-  - component: {fileID: 8255520443760307352}
   - component: {fileID: 6486317533001769195}
+  - component: {fileID: 7411785422444798631}
   m_Layer: 3
   m_Name: Sequencer
   m_TagString: Untagged
@@ -54,20 +54,8 @@ MonoBehaviour:
     Dimensions: {x: 0, y: 0}
     PositionIDData: []
   InstanceCellPosition: {x: 0, y: 0}
+  IsLooping: 0
   _stepParent: {fileID: 1373759323480410067}
---- !u!114 &8255520443760307352
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5016859328250569981}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7becfe56948716646a87b46a9ed88e49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _sequencer: {fileID: 0}
 --- !u!114 &6486317533001769195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81,8 +69,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Steps: []
-  _sequencer: {fileID: 5016859328250569982}
-  _playlistPlayback: {fileID: 8255520443760307352}
+--- !u!114 &7411785422444798631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5016859328250569981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fedb939d71ab3344098c8dd3173a671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8505929518037936735
 GameObject:
   m_ObjectHideFlags: 0
@@ -408,7 +406,8 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 21e53c9dc00b151478f0a73b7ca5316c, type: 2}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4719076470283312930, guid: 20912830ded91c143bf7eacf3faca57f, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 20912830ded91c143bf7eacf3faca57f, type: 3}

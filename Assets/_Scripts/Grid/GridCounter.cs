@@ -16,17 +16,17 @@ public class GridCounter : MonoBehaviour
         
         Events.SequencerBuilt += (s) => UpdateRange();
         Events.RemoveSequencer += UpdateRange;
-        Events.UpdateGridRange += UpdateRange;
-        Metronome.OnStep += UpdatePos;
-        Metronome.OnResetMetronome += () => CurrentStep = SongRange[0];
+        Events.UpdateSongRange += UpdateRange;
+        Metronome.NewStep += UpdatePos;
+        Metronome.ResetMetronome += () => CurrentStep = SongRange[0];
     }
 
     private void OnDisable()
     {
         Events.SequencerBuilt -= (s) => UpdateRange();
         Events.RemoveSequencer -= UpdateRange;
-        Events.UpdateGridRange -= UpdateRange;
-        Metronome.OnResetMetronome -= () => CurrentStep = SongRange[0];
+        Events.UpdateSongRange -= UpdateRange;
+        Metronome.ResetMetronome -= () => CurrentStep = SongRange[0];
     }
 
     //void UpdateRange(Vector2 cell, Vector2 dim)

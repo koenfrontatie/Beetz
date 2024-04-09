@@ -7,26 +7,24 @@ public class Step : MonoBehaviour
 {
     private SampleObject _sampleObject;
     private Sequencer _sequencer;
-    private PlaylistPlayback _playback;
     public int BeatIndex;
     private Material _mat;
 
     private void OnDisable()
     {
-        Metronome.OnStep -= CheckForPlayBack;
-        Metronome.OnTogglePlayPause -= PlayPauseHandler;
+        Metronome.NewStep -= CheckForPlayBack;
+        Metronome.TogglePlayPause -= PlayPauseHandler;
     }
     private void Awake()
     {
         _mat = transform.GetChild(0).GetComponent<MeshRenderer>().material;
         transform.parent.parent.TryGetComponent<Sequencer>(out _sequencer);
-        transform.parent.parent.TryGetComponent<PlaylistPlayback>(out _playback);
     }
 
     private void Start()
     {
-        Metronome.OnStep += CheckForPlayBack;
-        Metronome.OnTogglePlayPause += PlayPauseHandler;
+        Metronome.NewStep += CheckForPlayBack;
+        Metronome.TogglePlayPause += PlayPauseHandler;
     }
 
     public void SetColor(Color c)
@@ -41,6 +39,11 @@ public class Step : MonoBehaviour
     public SampleObject GetSampleObject()
     {
         return (_sampleObject != null) ? _sampleObject : null;
+    }
+
+    public Sequencer GetSequencer()
+    {
+        return (_sequencer != null) ? _sequencer : null;
     }
 
     public void UnAssignSample()
@@ -65,14 +68,14 @@ public class Step : MonoBehaviour
         //Debug.Log($"step:{_sequencer.CurrentStep} sibling+1:{transform.GetSiblingIndex() + 1} rowamt:{_sequencer.RowAmount} s1%amt:{(_sequencer.CurrentStep) % _sequencer.StepAmount}");
         bool shouldPlay = _sequencer.CurrentStep - 1 == BeatIndex;
         
-        if(!_sequencer.IsLooping) // global playback
-        {
-            shouldPlay = false;
-            if(_playback.PlaylistStep == BeatIndex )
-            {
-                shouldPlay = true;
-            }
-        }
+        //if(!_sequencer.IsLooping) // global playback
+        //{
+        //    shouldPlay = false;
+        //    if(_playback.PlaylistStep == BeatIndex )
+        //    {
+        //        shouldPlay = true;
+        //    }
+        //}
 
         if (!shouldPlay) return;
             SendScoreEvent();
