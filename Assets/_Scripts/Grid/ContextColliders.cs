@@ -3,11 +3,8 @@ using UnityEngine;
 
 public class ContextColliders : MonoBehaviour
 {
-    [SerializeField] private Transform _dragger;
-    [SerializeField] private Transform _remove;
-    [SerializeField] private Transform _copy;
-
-    [SerializeField] private RectTransform _draggerUI, _removeUI, _copyUI;
+    [SerializeField] private Transform _dragger, _remove, _copy, _scareCrow;
+    [SerializeField] private RectTransform _draggerUI, _removeUI, _copyUI, _scareCrowUI;
     private Camera _cam;
     [SerializeField] private CanvasGroup _cg;
     private void Start()
@@ -39,6 +36,7 @@ public class ContextColliders : MonoBehaviour
         _dragger.gameObject.SetActive(b);
         _remove.gameObject.SetActive(b);
         _copy.gameObject.SetActive(b);
+        _scareCrow.gameObject.SetActive(b);
     }
 
     private void MoveWithSequencer(Sequencer s, Vector2 d)
@@ -49,20 +47,28 @@ public class ContextColliders : MonoBehaviour
     }
     public void PositionHitboxes(Sequencer sequencer)
     {
-        var dWorldPosition = sequencer.transform.position + Vector3.forward * Config.CellSize * 2f + new Vector3(Config.CellSize * (sequencer.StepAmount - 1) * .5f, 0, 0);
+        var dWorldPosition = sequencer.transform.position + Vector3.back * Config.CellSize * (sequencer.RowAmount - 1) / 2f + new Vector3(Config.CellSize * (sequencer.StepAmount - 1) * .5f, 0, 0);
+
+        
         var dScreenPosition = _cam.WorldToScreenPoint(dWorldPosition);//+ Vector3.forward * Config.CellSize
+
+        var upperCenter = sequencer.transform.position + Vector3.forward * Config.CellSize * 2f + new Vector3(Config.CellSize * (sequencer.StepAmount - 1) * .5f, 0, 0);
+        var scScreenPosition = _cam.WorldToScreenPoint(upperCenter);
+
+        _scareCrow.transform.position = upperCenter;
+        _scareCrowUI.position = scScreenPosition;
 
         _dragger.transform.position = dWorldPosition;
         _draggerUI.position = dScreenPosition;
 
         var offset = new Vector3(Config.CellSize * 2, 0, 0);
-        var rWorldPosition = dWorldPosition + offset;
+        var rWorldPosition = upperCenter + offset;
         var rScreenPosition = _cam.WorldToScreenPoint(rWorldPosition);
 
         _remove.transform.position = rWorldPosition;
         _removeUI.position = rScreenPosition;
 
-        var cWorldPosition = dWorldPosition - offset;
+        var cWorldPosition = upperCenter - offset;
         var cScreenPosition = _cam.WorldToScreenPoint(cWorldPosition);
 
         _copy.transform.position = cWorldPosition;

@@ -65,4 +65,8 @@ public static class Events
 
     public static Action UpdateLinearRange;
     public static Action UpdateCircularRange;
+
+    public static Action MakingScarecrow;
+
+    public static Action MovingCameraToScarecrow;
 }

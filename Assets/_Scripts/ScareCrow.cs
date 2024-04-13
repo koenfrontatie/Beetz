@@ -8,10 +8,17 @@ public class ScareCrow : MonoBehaviour
     Quaternion _targetRotation;
 
     [SerializeField] private PlaybackController _controller;
+    [SerializeField] private float rotationSpeed = 10f; // Adjust this value to set the maximum rotation speed
 
-    private float _rotationSpeed = 0.005f; // Adjust this value to control the speed of rotation
-    private float _rotationProgress = 0f;
+    private void OnEnable()
+    {
+        Events.MakingScarecrow += MakeScarecrow;
+    }
 
+    private void OnDisable()
+    {
+        Events.MakingScarecrow -= MakeScarecrow;
+    }
     private void Start()
     {
         _startRotation = _stick.transform.rotation;
@@ -33,9 +40,23 @@ public class ScareCrow : MonoBehaviour
         _linkedSequencer = Instantiate(Prefabs.Instance.CircularSequencer, transform.position, Quaternion.identity, transform);
         _linkedSequencer.Init(transform.position, SequencerManager.Instance.LastInteracted.SequencerData);
 
+
         ScarecrowManager.Instance.AddScarecrow(_linkedSequencer);
+
     }
 
+    //private void FixedUpdate()
+    //{
+    //    if (_controller.PlaybackMode != PlaybackMode.Circular || _linkedSequencer == null) return;
+
+    //    var totalSteps = _linkedSequencer.StepAmount;
+    //    var degreesPerStep = 360f / totalSteps;
+
+    //    var euler = new Vector3(0f, (_linkedSequencer.CurrentStep - 1) * degreesPerStep + Metronome.Instance.GetStepProgression() * degreesPerStep, 0f);
+    //    _targetRotation = _startRotation * Quaternion.Euler(euler); // Calculate target rotation
+
+    //    _stick.rotation = _targetRotation;
+    //}
     private void FixedUpdate()
     {
         if (_controller.PlaybackMode != PlaybackMode.Circular || _linkedSequencer == null) return;
@@ -46,8 +67,8 @@ public class ScareCrow : MonoBehaviour
         var euler = new Vector3(0f, (_linkedSequencer.CurrentStep - 1) * degreesPerStep + Metronome.Instance.GetStepProgression() * degreesPerStep, 0f);
         _targetRotation = _startRotation * Quaternion.Euler(euler); // Calculate target rotation
 
-        // Smoothly interpolate towards the target rotation
-        _rotationProgress += Time.deltaTime * _rotationSpeed;
-        _stick.rotation = Quaternion.Lerp(_stick.rotation, _targetRotation, _rotationProgress);
+        // Use Quaternion.RotateTowards to smoothly rotate towards the target rotation
+        _stick.rotation = Quaternion.RotateTowards(_stick.rotation, _targetRotation, rotationSpeed * Time.deltaTime);
     }
+
 }

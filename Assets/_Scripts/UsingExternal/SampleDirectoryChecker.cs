@@ -30,7 +30,7 @@ public class SampleDirectoryChecker : MonoBehaviour
         for (int i = 0; i < betterfiles.Length; i++)
         {
 
-                Debug.Log(betterfiles[i]);
+                //Debug.Log(betterfiles[i]);
                 NumberOfBaseSamples++;
             // ---------------------------------------------- finds files to check in persistentdata
             await ReadBaseSamples(betterfiles[i]);

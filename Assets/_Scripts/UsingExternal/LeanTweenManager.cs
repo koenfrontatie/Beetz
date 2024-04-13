@@ -8,6 +8,7 @@ public class LeanTweenManager : MonoBehaviour
     private void OnEnable()
     {
         Events.OnScaleBounce += ScaleBounce;
+        Events.MovingCameraToScarecrow += AnimateCamToScarecrow;
 
         Events.AnimateButton += AnimateButton;
     }
@@ -15,7 +16,7 @@ public class LeanTweenManager : MonoBehaviour
     private void OnDisable()
     {
         Events.OnScaleBounce -= ScaleBounce;
-
+        Events.MovingCameraToScarecrow -= AnimateCamToScarecrow;
         Events.AnimateButton -= AnimateButton;
     }
 
@@ -49,5 +50,11 @@ public class LeanTweenManager : MonoBehaviour
         if(obj.LeanIsTweening()) return;
 
         LeanTween.moveY(rect, -button.DownwardPixels, .06f).setEaseOutCubic().setLoopPingPong(1); ;
+    }
+
+    void AnimateCamToScarecrow()
+    {
+       
+        LeanTween.move(Camera.main.gameObject, new Vector3(0f, Camera.main.transform.position.y, 5f), .3f).setEaseInOutSine();
     }
 }

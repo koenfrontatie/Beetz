@@ -13,8 +13,7 @@ public class ParticleController : MonoBehaviour
     void OnSampleSpawned(Vector3 pos)
     {
         transform.position = pos;
-
-        _dirtParticleSystem.Play();
+        Instantiate(_dirtParticleSystem, pos, transform.rotation);
     }
 
     void OnDisable()

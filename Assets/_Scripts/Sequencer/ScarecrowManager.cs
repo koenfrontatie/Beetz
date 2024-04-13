@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class ScarecrowManager : MonoBehaviour
 {
@@ -29,21 +30,51 @@ public class ScarecrowManager : MonoBehaviour
 
     public void AddScarecrow(Sequencer sequencer)
     {
+        ActiveScarecrows.Clear(); //quick hack
         ActiveScarecrows.Add(sequencer);
-        UpdateSongRange();
+
+        // UpdateSongRange asynchronously
+        UpdateSongRangeAsync(sequencer);
     }
 
-    void UpdateSongRange()
+    private async void UpdateSongRangeAsync(Sequencer sequencer)
     {
-        SongRange[0] = 1;
+        await Task.Run(() => UpdateSongRange(sequencer));
 
-        for (int i = 0;i < ActiveScarecrows.Count; i++)
+        // Invoke events on the main thread
+        if (ActiveScarecrows.Count < 1) return;
+        Events.UpdateCircularRange?.Invoke();
+    }
+
+    public void CheckRemove(Sequencer sequencer)
+    {
+        if (sequencer == null) return;
+        if(ActiveScarecrows.Count < 1) return;
+        if (sequencer.SequencerData == null) return;
+
+        if (sequencer.SequencerData.ID == ActiveScarecrows[0].SequencerData.ID)
         {
-            if (ActiveScarecrows[i].SequencerData.Dimensions.x > SongRange[1])
-            {
-                SongRange[1] = (int)ActiveScarecrows[i].SequencerData.Dimensions.x;
-            }
+            Destroy(ActiveScarecrows[0].gameObject);
+            ActiveScarecrows.Clear();
         }
+    }
+
+    void UpdateSongRange(Sequencer sequencer)
+    {
+        //SongRange[0] = 1;
+
+        //for (int i = 0; i < ActiveScarecrows.Count; i++)
+        //{
+        //    if (ActiveScarecrows[i].SequencerData.Dimensions.x > SongRange[1])
+        //    {
+        //        SongRange[1] = (int)ActiveScarecrows[i].SequencerData.Dimensions.x;
+        //    }
+        //}
+        SongRange[1] = (int)sequencer.SequencerData.Dimensions.x;
+
+        //quick hack that works for 1 scarecrow
+        //SongRange[1] = (int)ActiveScarecrows[i].SequencerData.Dimensions.x;
+
     }
 
     void UpdatePos ()

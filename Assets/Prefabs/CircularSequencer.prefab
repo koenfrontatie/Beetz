@@ -70,6 +70,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Steps: []
   _rowSpacing: 0.5
+  _innerOffset: 1
+  _circularSoil: {fileID: 7614406174663404449}
 --- !u!114 &3655581288236942449
 MonoBehaviour:
   m_ObjectHideFlags: 0

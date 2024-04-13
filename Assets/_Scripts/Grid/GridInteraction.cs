@@ -89,17 +89,19 @@ public class GridInteraction : MonoBehaviour
 
                         if (matchingStep.GetSampleObject() != null)
                         {
-                            Debug.Log("Sample object is not null");
+                            //Debug.Log("Sample object is not null");
 
                             matchingStep.UnAssignSample();
 
                         } else
                         {
-                            Debug.Log("Instantiating new object");
+                            //Debug.Log("Instantiating new object");
 
                             var sample = Instantiate(SampleManager.Instance.SelectedSample, matchingStep.transform);
 
                             matchingStep.AssignSample(sample);
+
+                            Events.SampleSpawned?.Invoke(sample.transform.position);
                         }
                     }
 
@@ -168,6 +170,7 @@ public class GridInteraction : MonoBehaviour
                 if (t.gameObject.tag == "ContextRemove")
                 {
                     Destroy(_lastSequencer.gameObject);
+                    ScarecrowManager.Instance.CheckRemove(_lastSequencer);
                     SetState(InteractionState.Default);
 
                     return;
@@ -182,6 +185,15 @@ public class GridInteraction : MonoBehaviour
                     _drawInstance.DrawQuad(t.position, _lastSequencer.SequencerData.Dimensions);
 
                     SetState(InteractionState.Copying);
+
+                    return;
+                }
+
+                if (t.gameObject.tag == "ContextScarecrow")
+                {
+                    Events.MakingScarecrow?.Invoke();
+                    Events.MovingCameraToScarecrow.Invoke();
+                    SetState(InteractionState.Default);
 
                     return;
                 }
@@ -236,14 +248,16 @@ public class GridInteraction : MonoBehaviour
             case InteractionState.Default:
                 if (t.parent.parent != null && t.parent.parent.TryGetComponent<Sequencer>(out var seq))
                 {
-                    //------------------------------------------------------------------- open context menu 
-                    //var step = t.GetSiblingIndex() + 1;
-                    //var worldPosition = seq.transform.position + Vector3.forward * Config.CellSize * 2f + new Vector3(Config.CellSize * (seq.StepAmount - 1) * .5f, 0, 0);
-                    //var screenPosition = _cam.WorldToScreenPoint(worldPosition);//+ Vector3.forward * Config.CellSize
-                    //_draggerHitbox.transform.position = worldPosition;
-                    //_draggerHitbox.transform.parent = seq.transform;
-                    //_contextColliders.transform.position = screenPosition;
-                    SequencerManager.Instance.LastInteracted = seq;
+                    if (!t.parent.parent.TryGetComponent<LinearDisplayer>(out _)) return;
+                    
+                        //------------------------------------------------------------------- open context menu 
+                        //var step = t.GetSiblingIndex() + 1;
+                        //var worldPosition = seq.transform.position + Vector3.forward * Config.CellSize * 2f + new Vector3(Config.CellSize * (seq.StepAmount - 1) * .5f, 0, 0);
+                        //var screenPosition = _cam.WorldToScreenPoint(worldPosition);//+ Vector3.forward * Config.CellSize
+                        //_draggerHitbox.transform.position = worldPosition;
+                        //_draggerHitbox.transform.parent = seq.transform;
+                        //_contextColliders.transform.position = screenPosition;
+                        SequencerManager.Instance.LastInteracted = seq;
 
                     _lastSequencer = seq;
                     

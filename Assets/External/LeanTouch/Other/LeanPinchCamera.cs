@@ -11,8 +11,9 @@ namespace Lean.Touch
 	[AddComponentMenu(LeanTouch.ComponentPathPrefix + "Pinch Camera")]
 	public class LeanPinchCamera : MonoBehaviour
 	{
-		/// <summary>The method used to find fingers to use with this component. See LeanFingerFilter documentation for more information.</summary>
-		public LeanFingerFilter Use = new LeanFingerFilter(true);
+		public bool IsZooming;
+        /// <summary>The method used to find fingers to use with this component. See LeanFingerFilter documentation for more information.</summary>
+        public LeanFingerFilter Use = new LeanFingerFilter(true);
 
 		/// <summary>The camera this component will calculate using.
 		/// None = MainCamera.</summary>
@@ -145,8 +146,10 @@ namespace Lean.Touch
 
 				zoom = TryClamp(zoom * pinchRatio);
 
-				// Zoom relative to a point on screen?
-				if (relative == true)
+                IsZooming = oldZoom != zoom;
+
+                // Zoom relative to a point on screen?
+                if (relative == true)
 				{
 					var screenPoint = default(Vector2);
 
@@ -176,8 +179,9 @@ namespace Lean.Touch
 			// Lerp the current value to the target one
 			currentZoom = Mathf.Lerp(currentZoom, zoom, factor);
 
-			// Set the new zoom
-			SetZoom(currentZoom);
+            // Set the new zoom
+            SetZoom(currentZoom);
+
 
 			// Dampen remainingDelta
 			var newRemainingTranslation = Vector3.Lerp(remainingTranslation, Vector3.zero, factor);

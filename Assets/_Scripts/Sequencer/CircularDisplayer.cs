@@ -8,6 +8,10 @@ public class CircularDisplayer : MonoBehaviour, IDisplayer
 
     [SerializeField] private float _rowSpacing = .5f;
 
+    [SerializeField] private float _innerOffset = 1f;
+
+    [SerializeField] private Transform _circularSoil;
+
     private Sequencer _sequencer;
     public Step GetStepFromIndex(int index)
     {
@@ -32,8 +36,8 @@ public class CircularDisplayer : MonoBehaviour, IDisplayer
                 var rowIncrement = _rowSpacing * (j + 1);
                 
                 
-                float x = Mathf.Sin(radians) * (rowIncrement + variableInnerOffset);
-                float z = Mathf.Cos(radians) * (rowIncrement + variableInnerOffset);
+                float x = Mathf.Sin(radians) * (rowIncrement + variableInnerOffset + _innerOffset);
+                float z = Mathf.Cos(radians) * (rowIncrement + variableInnerOffset + _innerOffset);
                 
                 Vector3 spawnPos = new Vector3(x, 0, z);
                 Quaternion spawnRot = Quaternion.Euler(0f, -angle, 0f);
@@ -45,6 +49,10 @@ public class CircularDisplayer : MonoBehaviour, IDisplayer
                 Steps.Add(step);
             }
         }
+
+        var inc = _rowSpacing * (_sequencer.RowAmount + 1) * 2;
+        var offset = variableInnerOffset * 2 + _innerOffset * 2;
+        _circularSoil.localScale = new Vector3(inc + offset, inc + offset, 1f);
 
         Events.OnStepsPlaced(gameObject);
     }
