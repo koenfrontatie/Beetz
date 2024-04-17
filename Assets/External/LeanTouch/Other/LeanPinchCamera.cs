@@ -171,10 +171,16 @@ namespace Lean.Touch
 						}
 					}
 				}
-			}
+            }
+            else
+            {
+                // If the pinch ratio is 1.0f, it means the pinch gesture has ended or is not active
+                // Therefore, we should set IsZooming to false
+                IsZooming = false;
+            }
 
-			// Get t value
-			var factor = CwHelper.DampenFactor(damping, Time.deltaTime);
+            // Get t value
+            var factor = CwHelper.DampenFactor(damping, Time.deltaTime);
 
 			// Lerp the current value to the target one
 			currentZoom = Mathf.Lerp(currentZoom, zoom, factor);

@@ -16,7 +16,7 @@ public class BlinkCanvas : MonoBehaviour
 
     private void OnEnable()
     {
-        LeanTween.value(gameObject, .2f, .5f, _time).setOnUpdate(setAlpha).setLoopPingPong();
+        LeanTween.value(gameObject, .5f, .8f, _time).setOnUpdate(setAlpha).setLoopPingPong();
     }
 
     private void OnDisable()

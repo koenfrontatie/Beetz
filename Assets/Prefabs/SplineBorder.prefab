@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 466398094323733304}
   - component: {fileID: 7113944755358956974}
   - component: {fileID: 1117423572544089098}
+  - component: {fileID: 2960909332020420903}
+  - component: {fileID: 3191574226655559024}
   m_Layer: 0
   m_Name: SplineBorder
   m_TagString: Untagged
@@ -68,11 +70,11 @@ MonoBehaviour:
       TangentIn:
         x: 0
         y: 0
-        z: -0.13
+        z: 0
       TangentOut:
         x: 0
         y: 0
-        z: 0.13
+        z: 0
       Rotation:
         value:
           x: 0
@@ -86,11 +88,11 @@ MonoBehaviour:
       TangentIn:
         x: 0
         y: 0
-        z: -0.13
+        z: 0
       TangentOut:
         x: 0
         y: 0
-        z: 0.13
+        z: 0
       Rotation:
         value:
           x: 0
@@ -104,17 +106,17 @@ MonoBehaviour:
       TangentIn:
         x: 0
         y: 0
-        z: -0.13
+        z: 0
       TangentOut:
         x: 0
         y: 0
-        z: 0.13
+        z: 0
       Rotation:
         value:
           x: 0
-          y: 0.9238796
+          y: 0.9238797
           z: 0
-          w: -0.38268313
+          w: -0.3826832
     - Position:
         x: 0
         y: 0
@@ -122,11 +124,11 @@ MonoBehaviour:
       TangentIn:
         x: 0
         y: 0
-        z: -0.13
+        z: 0
       TangentOut:
         x: 0
         y: 0
-        z: 0.13
+        z: 0
       Rotation:
         value:
           x: 0
@@ -134,13 +136,13 @@ MonoBehaviour:
           z: -0
           w: 0.92387956
     m_MetaData:
-    - Mode: 3
+    - Mode: 1
       Tension: 0.5
-    - Mode: 3
+    - Mode: 1
       Tension: 0.5
-    - Mode: 3
+    - Mode: 1
       Tension: 0.5
-    - Mode: 3
+    - Mode: 1
       Tension: 0.5
     m_Closed: 1
     m_IntData:
@@ -201,11 +203,47 @@ MonoBehaviour:
   m_ScaleOffset:
     setup: 1
     min: {x: -0.9, y: -0.9, z: -0.9}
-    max: {x: 0.1, y: 0.1, z: 0.1}
-    randomX: 0
-    randomY: 0
-    randomZ: 0
+    max: {x: -0.8, y: -0.8, z: -0.8}
+    randomX: 1
+    randomY: 1
+    randomZ: 1
     space: 0
   m_DeprecatedInstances: []
   m_AutoRefresh: 1
-  m_Seed: 258976215
+  m_Seed: 1806170581
+--- !u!114 &2960909332020420903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 746755759613720366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7e6ceffd7fc83046a7733733b2e8ba7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _splineContainer: {fileID: 7113944755358956974}
+  _splineInstantiate: {fileID: 1117423572544089098}
+  _paddingValue: 0.05
+--- !u!114 &3191574226655559024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 746755759613720366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a808283817f60514c8a3cbd83a185ae2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabs:
+  - {fileID: 6359112800851457702, guid: c0695e50372965840badd7b84ed57617, type: 3}
+  - {fileID: 8944619187265165564, guid: c2cb5e8a081a26c4a94df01eb6c4e44c, type: 3}
+  probabilities:
+  - 70
+  - 30
+  spacing: 0.5
+  knots: []
+  _paddingValue: 0.025

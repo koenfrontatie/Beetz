@@ -64,33 +64,78 @@ public class Toolbar : MonoBehaviour
 
     void OnProjectDataLoaded(ProjectData projectData)
     {
+        if (_toolbarSampleObjects[0] != null)
+        {
+            foreach(var so in _toolbarSampleObjects)
+            {
+                Destroy(so.gameObject);
+            }
+        }
+
         var copy = new List<string>(projectData.IDCollection.IDC);
         AssignItems(copy);
 
         SetToolbarItemsTransparent();
     }
 
+    //void OnItemSwap(InventorySlot targetSlot, DragDropUI one, DragDropUI two)
+    //{
+    //    if (!one.transform.TryGetComponent<SampleObject>(out var oneSO)) return;
+
+    //    int oldIndexOne = Array.IndexOf(_toolbarSampleObjects, oneSO);
+
+    //    if(two == null)
+    //    {
+    //        int targetSlotIndex = Array.IndexOf(_containers, targetSlot);
+
+    //        _toolbarSampleObjects[targetSlotIndex] = oneSO;
+    //        _containers[targetSlotIndex].Bind(oneSO);
+    //        _toolbarSampleObjects[oldIndexOne] = null;
+    //        _containers[oldIndexOne].Bind(null);
+
+    //        return;
+    //    }
+
+    //    if (!two.transform.TryGetComponent<SampleObject>(out var twoSO)) return;
+
+    //    int oldIndexTwo = Array.IndexOf(_toolbarSampleObjects, twoSO);
+
+    //    _toolbarSampleObjects[oldIndexOne] = twoSO;
+    //    _containers[oldIndexOne].Bind(twoSO);
+    //    _toolbarSampleObjects[oldIndexTwo] = oneSO;
+    //    _containers[oldIndexTwo].Bind(oneSO);
+    //}
+
     void OnItemSwap(InventorySlot targetSlot, DragDropUI one, DragDropUI two)
     {
         if (!one.transform.TryGetComponent<SampleObject>(out var oneSO)) return;
 
         int oldIndexOne = Array.IndexOf(_toolbarSampleObjects, oneSO);
-        
-        if(two == null)
+
+        int targetSlotIndex = Array.IndexOf(_containers, targetSlot);
+        if (targetSlotIndex < 0 || targetSlotIndex >= _containers.Length)
         {
-            int targetSlotIndex = Array.IndexOf(_containers, targetSlot);
-            
+            Debug.LogError("Target index is out of bounds.");
+            return;
+        }
+
+        if (two == null)
+        {
             _toolbarSampleObjects[targetSlotIndex] = oneSO;
             _containers[targetSlotIndex].Bind(oneSO);
             _toolbarSampleObjects[oldIndexOne] = null;
             _containers[oldIndexOne].Bind(null);
-
             return;
         }
 
         if (!two.transform.TryGetComponent<SampleObject>(out var twoSO)) return;
 
         int oldIndexTwo = Array.IndexOf(_toolbarSampleObjects, twoSO);
+        if (oldIndexTwo < 0 || oldIndexTwo >= _toolbarSampleObjects.Length)
+        {
+            Debug.LogError("SampleObject index is out of bounds.");
+            return;
+        }
 
         _toolbarSampleObjects[oldIndexOne] = twoSO;
         _containers[oldIndexOne].Bind(twoSO);

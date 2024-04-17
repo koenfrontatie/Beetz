@@ -23,6 +23,7 @@ public class Metronome : MonoBehaviour
     // time division
     public int BeatsPerBar;
     public int StepsPerBeat;
+    public Denominators Denominator;
    
     public static UnityAction NewBeat;
     public static UnityAction NewStep;
@@ -45,6 +46,9 @@ public class Metronome : MonoBehaviour
     }
     void Start()
     {
+        Denominator = Denominators.Quarter;
+        SetDenominator(Denominator);
+
         Reset();
     }
 
@@ -140,5 +144,119 @@ public class Metronome : MonoBehaviour
     {
         return stepProgression;
     }
+
+    public void SetBpm(int bpm)
+    {
+        BPM = bpm;
+        lastBeatTime = AudioSettings.dspTime;
+        beatInterval = Halftime ? 120f / BPM : 60f / BPM;
+
+    }
+
+    public void SetBpm(string input)
+    {
+        if(float.TryParse(input, out float result)) {
+            BPM = Mathf.Clamp((int)result, 0, 200);
+        };
+
+        lastBeatTime = AudioSettings.dspTime;
+        beatInterval = Halftime ? 120f / BPM : 60f / BPM;
+
+        //Reset();
+    }
+
+    public void DecBpm()
+    {
+        SetBpm((int)BPM - 1);
+    }
+
+    public void IncBpm()
+    {
+        SetBpm((int)BPM + 1);
+    }
+
+    public void ChangeNumerator(bool b)
+    {
+        if (b)
+        {
+            if (BeatsPerBar == 16)
+            {
+                SetNumerator(1);
+            }
+            else
+            {
+                SetNumerator(BeatsPerBar + 1);
+            }
+        } else
+        {
+            if (BeatsPerBar == 1)
+            {
+                SetNumerator(16);
+            }
+            else
+            {
+                SetNumerator(BeatsPerBar - 1);
+            }
+        }
+    }
+
+    public void ChangeDenominator(bool b)
+    {
+        if (b)
+        {
+            SetDenominator(Denominator.NextEnumValue());
+
+            //if (Denominator == Denominators.Sixteenth)
+            //{
+            //    SetDenominator(Denominators.Half);
+            //}
+            //else
+            //{
+            //    SetDenominator(Denominator.NextEnumValue());
+            //}
+        }
+        else
+        {
+            SetDenominator(Denominator.LastEnumValue());
+
+            //if(Denominator == Denominators.Half)
+            //{
+            //    SetDenominator(Denominators.Sixteenth);
+            //}
+            //else
+            //{
+            //    SetDenominator(Denominator.LastEnumValue());
+            //}
+        }
+    }
+
+    public void SetNumerator(int numerator)
+    {
+        BeatsPerBar = Mathf.Clamp(numerator, 1, 16);
+        TempoChanged?.Invoke();
+        Reset();
+    }
+
+    public void SetDenominator(Denominators val)
+    {
+        switch(val) {
+            case Denominators.Half: StepsPerBeat = 2; break;
+            case Denominators.Quarter: StepsPerBeat = 4; break;
+            case Denominators.Eight: StepsPerBeat = 8;  break;
+            case Denominators.Sixteenth: StepsPerBeat = 16; break;
+        }
+
+        Denominator = val;
+
+        TempoChanged?.Invoke();
+        Reset();
+    }
+}
+public enum Denominators
+{
+    Half,
+    Quarter,
+    Eight,
+    Sixteenth
 }
 

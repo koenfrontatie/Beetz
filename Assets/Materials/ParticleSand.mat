@@ -26,10 +26,11 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _COLORCOLOR_ON
+  - _EMISSION
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords:
   - _FLIPBOOKBLENDING_OFF
-  m_LightmapFlags: 4
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
   m_CustomRenderQueue: 3000
@@ -227,11 +228,11 @@ Material:
     - _UseRampColor: 1
     - _ZWrite: 0
     m_Colors:
-    - _BaseColor: {r: 0.509434, g: 0.3392026, b: 0.1321645, a: 1}
+    - _BaseColor: {r: 0.8207547, g: 0.5989509, b: 0.33681917, a: 1}
     - _BaseColorAddSubDiff: {r: 1, g: 0, b: 0, a: 0}
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-    - _Color: {r: 0.509434, g: 0.33920258, b: 0.13216445, a: 1}
-    - _EmissionColor: {r: 1, g: 0.07142857, b: 0, a: 1}
+    - _Color: {r: 0.8207547, g: 0.5989509, b: 0.33681914, a: 1}
+    - _EmissionColor: {r: 0.5283019, g: 0.25650713, b: 0.072267726, a: 1}
     - _FaceFrontDirection: {r: 0, g: 0, b: 1, a: 0}
     - _FaceRightDirection: {r: 1, g: 0, b: 0, a: 0}
     - _HairSpecColor: {r: 0, g: 0, b: 0, a: 1}

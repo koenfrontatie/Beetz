@@ -23,7 +23,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        UpdateState(GameState.Menu);
+        UpdateState(GameState.Gameplay);
+        DataStorage.Instance.OpenNewProject();
     }
 
     public void UpdateState(GameState state)
@@ -44,6 +45,14 @@ public class GameManager : MonoBehaviour
         }
 
         StateChanged?.Invoke(state);
+    }
+    public void OpenMenu()
+    {
+        UpdateState(GameState.Menu);
+    }
+    public void ExitApplication()
+    {
+        Application.Quit();
     }
 }
 

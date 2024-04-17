@@ -39,6 +39,7 @@ public class DataStorage : MonoBehaviour
     {
         //SaveLoader.Instance.LoadProjectDataAsyncFullPath(Path.Combine(Application.streamingAssetsPath, "ProjectData.json"), Events.ProjectDataLoaded);
         SaveLoader.Instance.DeserializeProjectData(Path.Combine(Application.streamingAssetsPath, "ProjectData.json"));
+        Events.OpenNewProject?.Invoke();
     }
 
     public void OnProjectDataLoaded(ProjectData data)

@@ -13,13 +13,12 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - USE_RT
-  - USE_S
   m_InvalidKeywords:
   - _RTEFFECT_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2000
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -55,11 +54,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _GroundTex:
-        m_Texture: {fileID: 2800000, guid: 3bdb253988c80934a896d3e88de65024, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: e1f3da621d899e341b0c9d832b1d57d0, type: 3}
+        m_Texture: {fileID: 2800000, guid: 4e1d764fa7e47f34eae88e37253c2542, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -92,19 +91,19 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _FadeDistanceEnd: 40
-    - _FadeDistanceStart: 20
+    - _FadeDistanceEnd: 31.59
+    - _FadeDistanceStart: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _GrassCut: 0
     - _GrassSaturation: 1
-    - _GrassShading: 0.5
+    - _GrassShading: 0.331
     - _GrassThinness: 1.165
     - _GrassThinnessIntersection: 0.01
     - _Metallic: 0
     - _Mode: 0
-    - _NoisePower: 2.57
+    - _NoisePower: 0.76
     - _NumberOfStacks: 0
     - _OcclusionStrength: 1
     - _OffsetValue: 2.5
@@ -120,29 +119,29 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _TilingN1: 6.09
+    - _TilingN1: 5
     - _TilingN2: 0.1
     - _TilingN3: 1
     - _UVSec: 0
     - _UseAmbientLight: 0
     - _UsePR: 0
     - _UseRT: 1
-    - _UseShadow: 1
+    - _UseShadow: 0
     - _UseShadowCast: 0
     - _UseTP: 0
     - _UseVP: 0
     - _UseVR: 0
     - _UseWC: 0
     - _WindForce: 0.1
-    - _WindMovement: 0.03
+    - _WindMovement: 0.5
     - _WorldRotation: 0
     - _WorldScale: 1
     - _ZWrite: 1
     - __NumberOfStacks: 17
     m_Colors:
-    - _Color: {r: 0.6832923, g: 0.7433963, b: 0.60453546, a: 1}
+    - _Color: {r: 0.8327348, g: 0.8773585, b: 0.624911, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _GroundColor: {r: 1, g: 0.96862745, b: 0.83137256, a: 1}
+    - _GroundColor: {r: 1, g: 0.714012, b: 0.454, a: 1}
     - _OffsetVector: {r: 0, g: 0, b: 0, a: 0}
     - _PJShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _ProjectedShadowColor: {r: 0.42537785, g: 0.7075472, b: 0.056737285, a: 1}

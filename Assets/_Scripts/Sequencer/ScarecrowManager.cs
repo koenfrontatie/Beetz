@@ -26,6 +26,18 @@ public class ScarecrowManager : MonoBehaviour
     {
         Metronome.NewStep += UpdatePos;
         Metronome.ResetMetronome += () => CurrentPosition = SongRange[0];
+        Events.OpenNewProject += OnNewProject;
+
+    }
+
+    private void OnDisable()
+    {
+        
+            Metronome.NewStep -= UpdatePos;
+            Metronome.ResetMetronome -= () => CurrentPosition = SongRange[0];
+            Events.OpenNewProject -= OnNewProject;
+
+        
     }
 
     public void AddScarecrow(Sequencer sequencer)
@@ -53,6 +65,16 @@ public class ScarecrowManager : MonoBehaviour
         if (sequencer.SequencerData == null) return;
 
         if (sequencer.SequencerData.ID == ActiveScarecrows[0].SequencerData.ID)
+        {
+            Destroy(ActiveScarecrows[0].gameObject);
+            ActiveScarecrows.Clear();
+        }
+    }
+
+    void OnNewProject()
+    {
+        if (ActiveScarecrows.Count == 0) return;
+        if (ActiveScarecrows[0] != null)
         {
             Destroy(ActiveScarecrows[0].gameObject);
             ActiveScarecrows.Clear();

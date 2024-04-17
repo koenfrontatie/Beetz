@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.Splines;
-using Unity.Mathematics;
-using System.Collections.Generic;
+
 
 public class SplineDrawer : MonoBehaviour
 {
     [SerializeField] private SplineContainer _splineContainer;
+    [SerializeField] private SplineInstantiate _splineInstantiate;
 
     [SerializeField] private float _paddingValue = .05f * Config.CellSize;
 
@@ -14,10 +14,15 @@ public class SplineDrawer : MonoBehaviour
 
     void Start()
     {
-        var border = _splineContainer.Spline.ToArray()[0];
+        //var border = _splineContainer.Spline.ToArray()[0];
         //if(FindObjectOfType<Grid>());
         if (transform.parent.TryGetComponent<Sequencer>(out var seq))
         {
+            _splineInstantiate.Clear();
+            //_splineContainer.RemoveSplineAt(0);
+
+            //var spline = SplineFactory.CreateLinear();
+
             var offset = (Vector3.forward + Vector3.left) * halfCell;
 
             var knot0 = _splineContainer.Spline.ToArray()[0];
@@ -39,6 +44,13 @@ public class SplineDrawer : MonoBehaviour
             knot3.Position = _splineContainer.transform.InverseTransformPoint(seq.transform.position + Vector3.back * seq.SequencerData.Dimensions.y) * Config.CellSize + offset + new Vector3(-_paddingValue, 0, -_paddingValue);
             knot3.Rotation = Quaternion.Inverse(_splineContainer.transform.rotation) * seq.transform.rotation;
             _splineContainer.Spline.SetKnot(3, knot3);
+            
+            _splineInstantiate.UpdateInstances();
+
+            var spline = _splineContainer.Spline;
+
+            Debug.Log($"{(int)spline.GetLength()} length count");
+            Debug.Log($"{spline.GetFloatDataKeys()} float data keys");
         }
 
     }

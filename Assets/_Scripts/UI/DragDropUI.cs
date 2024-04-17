@@ -57,10 +57,13 @@ public class DragDropUI : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
                 transform.position = droppedContainer.transform.position;
 
                
+                if(swapWith != null)
+                {
+                    Events.ItemSwap?.Invoke(droppedContainer, this, swapWith);
+                    Events.OnInventoryChange?.Invoke();
+
+                }
                 
-                Events.ItemSwap?.Invoke(droppedContainer, this, swapWith);
-                
-                Events.OnInventoryChange?.Invoke();
             }
         }
 

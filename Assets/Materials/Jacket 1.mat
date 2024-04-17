@@ -114,7 +114,7 @@ Material:
     - _BumpScale: 1
     - _Cull: 0
     - _Cutoff: 1
-    - _DiffuseStep: -0.19
+    - _DiffuseStep: -0.748
     - _DitherTexelSize: 1
     - _DitherThreshold: 1
     - _DstBlend: 0
@@ -186,7 +186,7 @@ Material:
     - _OutlineColor: {r: 0.122641504, g: 0.122641504, b: 0.122641504, a: 1}
     - _OutlineDistancFade: {r: -50, g: 50, b: 0, a: 0}
     - _RimColor: {r: 1, g: 1, b: 1, a: 0.147}
-    - _ShadowColor: {r: 0.509434, g: 0.18502942, b: 0.18502942, a: 1}
+    - _ShadowColor: {r: 0.509434, g: 0.18502867, b: 0.18502867, a: 1}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
     - _SpherizeNormalOrigin: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

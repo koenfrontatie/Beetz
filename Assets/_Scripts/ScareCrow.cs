@@ -25,13 +25,13 @@ public class ScareCrow : MonoBehaviour
         _targetRotation = _startRotation; // Initialize target rotation to start rotation
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            MakeScarecrow();
-        }
-    }
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.Alpha1))
+    //    {
+    //        MakeScarecrow();
+    //    }
+    //}
 
     void MakeScarecrow()
     {

@@ -15,6 +15,8 @@ public class DragWindowUI : MonoBehaviour, IDragHandler, IBeginDragHandler
         _offset = eventData.position - (Vector2)_rectTransform.localPosition;
     }
 
+    
+
     public void OnDrag(PointerEventData eventData)
     {
         _targetPos = (eventData.position - _offset);
@@ -23,6 +25,23 @@ public class DragWindowUI : MonoBehaviour, IDragHandler, IBeginDragHandler
         clampedPos.x = Mathf.Clamp(_targetPos.x, _startPos.x + _xRange.x, _startPos.x + _xRange.x);
         _rectTransform.localPosition = clampedPos * _dragDirection;
     }
+
+    //public void OnEndDrag(PointerEventData eventData)
+    //{
+    //    if (_dragDirection.y != 1) return;
+
+    //    var endedPos = _rectTransform.localPosition;
+
+    //    var ychange = endedPos.y - _startPos.y;
+
+    //    if (ychange > 0)
+    //    {
+    //        Events.AnimateRectToTarget?.Invoke(_rectTransform, new Vector2(endedPos.x, _yRange.y));
+    //    } else
+    //    {
+    //        Events.AnimateRectToTarget?.Invoke(_rectTransform, new Vector2(endedPos.x, _yRange.x));
+    //    }
+    //}
 
     void Start()
     {

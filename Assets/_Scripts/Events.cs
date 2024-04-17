@@ -69,4 +69,8 @@ public static class Events
     public static Action MakingScarecrow;
 
     public static Action MovingCameraToScarecrow;
+
+    public static Action OpenNewProject;
+
+    //public static Action<RectTransform, Vector2> AnimateRectToTarget;
 }

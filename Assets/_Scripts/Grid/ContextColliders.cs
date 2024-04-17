@@ -47,31 +47,29 @@ public class ContextColliders : MonoBehaviour
     }
     public void PositionHitboxes(Sequencer sequencer)
     {
-        var dWorldPosition = sequencer.transform.position + Vector3.back * Config.CellSize * (sequencer.RowAmount - 1) / 2f + new Vector3(Config.CellSize * (sequencer.StepAmount - 1) * .5f, 0, 0);
+        //var horizontalOffset = new Vector3(Config.CellSize * 2, 0, 0);
+        var offset = (sequencer.StepAmount - 1) * .334f * Config.CellSize;
+        if(offset < Config.CellSize * 2) offset = Config.CellSize * 2;
 
-        
-        var dScreenPosition = _cam.WorldToScreenPoint(dWorldPosition);//+ Vector3.forward * Config.CellSize
-
+        var horizontalOffset = new Vector3(offset, 0, 0);
         var upperCenter = sequencer.transform.position + Vector3.forward * Config.CellSize * 2f + new Vector3(Config.CellSize * (sequencer.StepAmount - 1) * .5f, 0, 0);
-        var scScreenPosition = _cam.WorldToScreenPoint(upperCenter);
+        var middleCenter = sequencer.transform.position + Vector3.back * Config.CellSize * ((sequencer.RowAmount - 1) * .5f) + new Vector3(Config.CellSize * (sequencer.StepAmount - 1) * .5f, 0, 0);
+        //var lowerCenter = sequencer.transform.position + Vector3.back * Config.CellSize * (sequencer.RowAmount) + new Vector3(Config.CellSize * (sequencer.StepAmount - 1) * .5f, 0, 0);
+
+        _dragger.transform.position = middleCenter;
+        _draggerUI.position = _cam.WorldToScreenPoint(middleCenter);
 
         _scareCrow.transform.position = upperCenter;
-        _scareCrowUI.position = scScreenPosition;
+        _scareCrowUI.position = _cam.WorldToScreenPoint(upperCenter);
 
-        _dragger.transform.position = dWorldPosition;
-        _draggerUI.position = dScreenPosition;
+        var middleRight = middleCenter + horizontalOffset;
 
-        var offset = new Vector3(Config.CellSize * 2, 0, 0);
-        var rWorldPosition = upperCenter + offset;
-        var rScreenPosition = _cam.WorldToScreenPoint(rWorldPosition);
+        _remove.transform.position = middleRight;
+        _removeUI.position = _cam.WorldToScreenPoint(middleRight);
 
-        _remove.transform.position = rWorldPosition;
-        _removeUI.position = rScreenPosition;
+        var middleLeft = middleCenter - horizontalOffset;
 
-        var cWorldPosition = upperCenter - offset;
-        var cScreenPosition = _cam.WorldToScreenPoint(cWorldPosition);
-
-        _copy.transform.position = cWorldPosition;
-        _copyUI.position = cScreenPosition;
+        _copy.transform.position = middleLeft;
+        _copyUI.position = _cam.WorldToScreenPoint(middleLeft);
     }
 }

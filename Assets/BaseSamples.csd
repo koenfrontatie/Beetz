@@ -3,8 +3,8 @@
 -odac ; activate real-time audio output
 </CsOptions>
 <CsInstruments>
-sr 	= 	44100
-kr = 100
+sr 	= 	4410
+kr = 10
 ksmps 	= 	441
 nchnls 	= 	1	
 
@@ -69,7 +69,34 @@ kSpeed  init     1           ; playback speed
 iSkip   init     0           ; inskip into file (in seconds)
 iLoop   init     0           ; looping switch (0=off 1=on)
 ; read audio from disk using diskin2 opcode
-a1      diskin2  "7snare2.wav", kSpeed, iSkip, iLoop
+a1      diskin2  "7tab05.wav", kSpeed, iSkip, iLoop
+        outs      a1          ; send audio to outputs
+  endin
+  
+  instr	8 ; play audio from disk
+kSpeed  init     1           ; playback speed
+iSkip   init     0           ; inskip into file (in seconds)
+iLoop   init     0           ; looping switch (0=off 1=on)
+; read audio from disk using diskin2 opcode
+a1      diskin2  "8khat3.wav", kSpeed, iSkip, iLoop
+        outs      a1          ; send audio to outputs
+  endin
+  
+  instr	9 ; play audio from disk
+kSpeed  init     1           ; playback speed
+iSkip   init     0           ; inskip into file (in seconds)
+iLoop   init     0           ; looping switch (0=off 1=on)
+; read audio from disk using diskin2 opcode
+a1      diskin2  "9walk.wav", kSpeed, iSkip, iLoop
+        outs      a1          ; send audio to outputs
+  endin
+  
+  instr	10 ; play audio from disk
+kSpeed  init     1           ; playback speed
+iSkip   init     0           ; inskip into file (in seconds)
+iLoop   init     0           ; looping switch (0=off 1=on)
+; read audio from disk using diskin2 opcode
+a1      diskin2  "10chant.wav", kSpeed, iSkip, iLoop
         outs      a1          ; send audio to outputs
   endin
 </CsInstruments>

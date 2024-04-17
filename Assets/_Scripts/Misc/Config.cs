@@ -11,7 +11,7 @@ public static class Config
 
     public static float CircularStepDistance = .5f;
     public static float CircularRowDistance = .5f;
-    public static int ToolbarCount = 9;
+    public static int ToolbarCount = 10;
 
     public static bool Log = true;
 }

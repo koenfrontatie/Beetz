@@ -141,7 +141,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 0
-    - _DiffuseStep: 0.038
+    - _DiffuseStep: -0.27
     - _DitherTexelSize: 1
     - _DitherThreshold: 1
     - _DstBlend: 0
@@ -150,7 +150,7 @@ Material:
     - _FaceShadowMapEnabled: 0
     - _FaceShadowMapPow: 0.2
     - _FaceShadowSmoothness: 0
-    - _FlattenGI: 0
+    - _FlattenGI: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossinessSource: 0

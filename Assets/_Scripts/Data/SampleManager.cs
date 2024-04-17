@@ -49,6 +49,7 @@ public class SampleManager : MonoBehaviour
     public void SetSelectedTemplateSample(SampleObject sample)
     {
         SelectedSample = Prefabs.Instance.BaseObjects[sample.SampleData.Template];
+        Events.OnScoreEvent?.Invoke($"i {(int)(SelectedSample.SampleData.Template + 1)} 0 6");
     }
 
     void LoadToolbar()

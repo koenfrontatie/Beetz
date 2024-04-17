@@ -23,6 +23,28 @@ public static class Extensions
 
         return values[nextIndex];
     }
+
+    public static T LastEnumValue<T>(this T current) where T : struct, IConvertible
+    {
+        if (!typeof(T).IsEnum)
+        {
+            throw new ArgumentException("T must be an enumerated type");
+        }
+
+        T[] values = (T[])Enum.GetValues(typeof(T));
+
+        int currentIndex = Array.IndexOf(values, current);
+
+        // Calculate the previous index, ensuring it wraps around correctly
+        int previousIndex = currentIndex - 1;
+        if (previousIndex < 0)
+        {
+            previousIndex = values.Length - 1; // Wrap around to the last element
+        }
+
+        return values[previousIndex];
+    }
+
     public static float Remap(this float value, float from1, float to1, float from2, float to2)
     {
         return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
@@ -50,6 +72,14 @@ public static class Extensions
 
     public static void ToggleCanvasGroup(this CanvasGroup canvasGroup, bool on)
     {
+        canvasGroup.alpha = on ? 1 : 0;
+        canvasGroup.interactable = on;
+        canvasGroup.blocksRaycasts = on;
+    }
+
+    public static void ToggleCanvasGroup(this CanvasGroup canvasGroup)
+    {
+        bool on = canvasGroup.alpha < 1;
         canvasGroup.alpha = on ? 1 : 0;
         canvasGroup.interactable = on;
         canvasGroup.blocksRaycasts = on;

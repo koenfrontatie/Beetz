@@ -19,10 +19,11 @@ public class SequencerManager : MonoBehaviour
             Instance = this;
         }
     }
-    private void Start()
+    private void OnEnable()
     {
         Events.BuildingSequencer += BuildSequencer;
         Events.CopyingSequencer += CloneSequencer;
+        Events.OpenNewProject += ClearAllSequencers;
     }
 
     public void BuildSequencer(Vector3 worldPosition, SequencerData data)
@@ -43,11 +44,18 @@ public class SequencerManager : MonoBehaviour
         BuildSequencer(worldPosition, newData);
     }
 
+    void ClearAllSequencers()
+    {
+        if (ActiveSequencers.Count == 0) return;
+        //ActiveSequencers.Clear();   
+        transform.DestroyChildren();
+    }
     //public void ChangeDisplayType() => DisplayType = DisplayType.NextEnumValue();
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         Events.BuildingSequencer -= BuildSequencer;
         Events.CopyingSequencer -= CloneSequencer;
+        Events.OpenNewProject -= ClearAllSequencers;
     }
 }
