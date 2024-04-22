@@ -48,8 +48,16 @@ public class GameManager : MonoBehaviour
     }
     public void OpenMenu()
     {
-        UpdateState(GameState.Menu);
+        if (State != GameState.Menu)
+        {
+            UpdateState(GameState.Menu);
+        }
+        else
+        {
+            UpdateState(GameState.Gameplay);
+        }
     }
+
     public void ExitApplication()
     {
         Application.Quit();

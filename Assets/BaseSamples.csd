@@ -61,7 +61,7 @@ iSkip   init     0           ; inskip into file (in seconds)
 iLoop   init     0           ; looping switch (0=off 1=on)
 ; read audio from disk using diskin2 opcode
 a1      diskin2  "6kick808.wav", kSpeed, iSkip, iLoop
-        outs      a1         ; send audio to outputs
+        outs      a1    * 2     ; send audio to outputs
   endin
   
     instr	7 ; play audio from disk
@@ -88,7 +88,7 @@ iSkip   init     0           ; inskip into file (in seconds)
 iLoop   init     0           ; looping switch (0=off 1=on)
 ; read audio from disk using diskin2 opcode
 a1      diskin2  "9walk.wav", kSpeed, iSkip, iLoop
-        outs      a1          ; send audio to outputs
+        outs      a1 * 2         ; send audio to outputs
   endin
   
   instr	10 ; play audio from disk
@@ -97,7 +97,7 @@ iSkip   init     0           ; inskip into file (in seconds)
 iLoop   init     0           ; looping switch (0=off 1=on)
 ; read audio from disk using diskin2 opcode
 a1      diskin2  "10chant.wav", kSpeed, iSkip, iLoop
-        outs      a1          ; send audio to outputs
+        outs      a1  * 3        ; send audio to outputs
   endin
 </CsInstruments>
 

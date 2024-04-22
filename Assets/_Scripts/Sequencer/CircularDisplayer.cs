@@ -12,6 +12,9 @@ public class CircularDisplayer : MonoBehaviour, IDisplayer
 
     [SerializeField] private Transform _circularSoil;
 
+    private float _radius;
+    public float GetRadius () => _radius;
+
     private Sequencer _sequencer;
     public Step GetStepFromIndex(int index)
     {
@@ -52,7 +55,10 @@ public class CircularDisplayer : MonoBehaviour, IDisplayer
 
         var inc = _rowSpacing * (_sequencer.RowAmount + 1) * 2;
         var offset = variableInnerOffset * 2 + _innerOffset * 2;
+        
         _circularSoil.localScale = new Vector3(inc + offset, inc + offset, 1f);
+
+        _radius = _rowSpacing * (_sequencer.RowAmount + 1) * Config.CellSize;
 
         Events.OnStepsPlaced(gameObject);
     }

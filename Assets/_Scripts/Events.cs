@@ -16,6 +16,7 @@ public static class Events
     public static Action OnNewSongRange;
 
     public static Action<string> OnScoreEvent;
+    public static Action<string> OnQueueScoreEvent;
     //public static Action<Vector3Int> OnNewGridTarget;
     public static UnityAction OnBaseSamplesLoaded;
 

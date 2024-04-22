@@ -35,10 +35,10 @@ public class RockPlacer : MonoBehaviour
         //_pathVectors.Add(transform.InverseTransformPoint(seqPosition) + Vector3.right * seqDimensions.x + Vector3.back * seqDimensions.y * Config.CellSize + offset + new Vector3(_paddingValue, 0, -_paddingValue));
         //_pathVectors.Add(transform.InverseTransformPoint(seqPosition) + Vector3.back * seqDimensions.y * Config.CellSize + offset + new Vector3(-_paddingValue, 0, -_paddingValue));
         
-        _pathVectors.Add((seqPosition) + offset + new Vector3(-_paddingValue, 0, _paddingValue));
-        _pathVectors.Add((seqPosition) + Vector3.right * seqDimensions.x * Config.CellSize + offset + new Vector3(_paddingValue, 0, _paddingValue));
-        _pathVectors.Add((seqPosition) + Vector3.right * seqDimensions.x * Config.CellSize + Vector3.back * seqDimensions.y * Config.CellSize + offset + new Vector3(_paddingValue, 0, -_paddingValue));
-        _pathVectors.Add((seqPosition) + Vector3.back * seqDimensions.y * Config.CellSize + offset + new Vector3(-_paddingValue, 0, -_paddingValue));
+        _pathVectors.Add((seqPosition) + offset + new Vector3(-_paddingValue, transform.position.y, _paddingValue));
+        _pathVectors.Add((seqPosition) + Vector3.right * seqDimensions.x * Config.CellSize + offset + new Vector3(_paddingValue, transform.position.y, _paddingValue));
+        _pathVectors.Add((seqPosition) + Vector3.right * seqDimensions.x * Config.CellSize + Vector3.back * seqDimensions.y * Config.CellSize + offset + new Vector3(_paddingValue, transform.position.y, -_paddingValue));
+        _pathVectors.Add((seqPosition) + Vector3.back * seqDimensions.y * Config.CellSize + offset + new Vector3(-_paddingValue, transform.position.y, -_paddingValue));
 
 
         if (_pathVectors.Count < 2 ) { Debug.Log("not enough path vectors!"); return; }
