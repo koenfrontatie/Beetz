@@ -1,7 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CsoundController : MonoBehaviour
 {
@@ -10,6 +9,11 @@ public class CsoundController : MonoBehaviour
     public CsoundUnity CsoundUnity;
 
     public List<string> queuedEvents = new List<string>();
+
+    public List<string> channelNames = new List<string>();
+    public List<Slider> sliders = new List<Slider>();
+    public List<float> multipliers = new List<float>();
+
 
 
     private void Awake()
@@ -36,6 +40,8 @@ public class CsoundController : MonoBehaviour
 
     private void LateUpdate()
     {
+        SetControlChannels();
+
         if (queuedEvents.Count > 0)
         {
             PlayQueue();
@@ -51,6 +57,22 @@ public class CsoundController : MonoBehaviour
 
         queuedEvents.Clear();
     }
+
+    void SetControlChannels()
+    {
+        if (!CsoundUnity.IsInitialized) return;
+        if (channelNames.Count == 0 || sliders.Count == 0) return;
+        
+        for(int i = 0; i < channelNames.Count; i++)
+        {
+            CsoundUnity.SetChannel(channelNames[i], (double)sliders[i].value * multipliers[0]);
+        }
+    }
+
+    //private void OnApplicationQuit()
+    //{
+    //    CsoundUnity.CsoundReset();
+    //}
 
     private void OnEnable()
     {

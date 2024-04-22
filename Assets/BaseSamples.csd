@@ -1,3 +1,7 @@
+;<Cabbage>
+;form caption("Dist Slider")
+;hslider channel("distortion"), text("Dist Slider"), range(0, 10, 0)
+;</Cabbage>
 <CsoundSynthesizer>
 <CsOptions>
 -odac ; activate real-time audio output
@@ -6,33 +10,44 @@
 sr 	= 	4410
 kr = 10
 ksmps 	= 	441
-nchnls 	= 	1	
+nchnls 	= 	2	
 
-  instr	1 ; play audio from disk
-kSpeed  init     1           ; playback speed
-iSkip   init     0           ; inskip into file (in seconds)
-iLoop   init     0           ; looping switch (0=off 1=on)
-; read audio from disk using diskin2 opcode
-a1      diskin2  "1kick.wav", kSpeed, iSkip, iLoop
-        out      a1          ; send audio to outputs
-  endin
+chn_k "distortion", 1
+
+instr	1 ; play audio from disk
+    kSpeed  init     1           ; playback speed
+    
+	a1 diskin2  "1kick.wav", kSpeed, 0, 0
+
+    kDistortion chnget "distortion"
+
+    aDist distort1 a1, kDistortion, 10, .4, 0, 0
+
+    outs1      aDist          ; send audio to outputs
+endin
   
   instr	2 ; play audio from disk
-kSpeed  init     1           ; playback speed
-iSkip   init     0           ; inskip into file (in seconds)
-iLoop   init     0           ; looping switch (0=off 1=on)
-; read audio from disk using diskin2 opcode
-a1      diskin2  "2hat.wav", kSpeed, iSkip, iLoop
-        out      a1          ; send audio to outputs
+	kSpeed  init     1           ; playback speed
+    
+	a1 diskin2  "2hat.wav", kSpeed, 0, 0
+
+    kDistortion chnget "distortion"
+
+    aDist distort1 a1, kDistortion, 10, .4, 0, 0
+
+    outs1      aDist          ; send audio to outputs
   endin
   
   instr	3 ; play audio from disk
 kSpeed  init     1           ; playback speed
-iSkip   init     0           ; inskip into file (in seconds)
-iLoop   init     0           ; looping switch (0=off 1=on)
-; read audio from disk using diskin2 opcode
-a1      diskin2  "3clap.wav", kSpeed, iSkip, iLoop
-        out      a1          ; send audio to outputs
+    
+	a1 diskin2  "3clap.wav", kSpeed, 0, 0
+
+    kDistortion chnget "distortion"
+
+    aDist distort1 a1, kDistortion, 10, .4, 0, 0
+
+    outs1      aDist          ; send audio to outputs
   endin
   
   instr	4 ; play audio from disk
@@ -61,7 +76,7 @@ iSkip   init     0           ; inskip into file (in seconds)
 iLoop   init     0           ; looping switch (0=off 1=on)
 ; read audio from disk using diskin2 opcode
 a1      diskin2  "6kick808.wav", kSpeed, iSkip, iLoop
-        outs      a1    * 2     ; send audio to outputs
+        outs      a1         ; send audio to outputs
   endin
   
     instr	7 ; play audio from disk
@@ -88,7 +103,7 @@ iSkip   init     0           ; inskip into file (in seconds)
 iLoop   init     0           ; looping switch (0=off 1=on)
 ; read audio from disk using diskin2 opcode
 a1      diskin2  "9walk.wav", kSpeed, iSkip, iLoop
-        outs      a1 * 2         ; send audio to outputs
+        outs      a1          ; send audio to outputs
   endin
   
   instr	10 ; play audio from disk
@@ -97,7 +112,7 @@ iSkip   init     0           ; inskip into file (in seconds)
 iLoop   init     0           ; looping switch (0=off 1=on)
 ; read audio from disk using diskin2 opcode
 a1      diskin2  "10chant.wav", kSpeed, iSkip, iLoop
-        outs      a1  * 3        ; send audio to outputs
+        outs      a1          ; send audio to outputs
   endin
 </CsInstruments>
 

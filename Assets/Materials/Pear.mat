@@ -25,7 +25,6 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _FACE_SHADOW_MAP
   - _HALFTONESHAPE_STRIPE
   - _OUTLINE
   - _RECEIVE_SHADOWS_OFF
@@ -119,15 +118,15 @@ Material:
     - _BumpScale: 1
     - _Cull: 0
     - _Cutoff: 1
-    - _DiffuseStep: -0.443
+    - _DiffuseStep: -0.08
     - _DitherTexelSize: 1
     - _DitherThreshold: 1
     - _DstBlend: 0
     - _EnabledHairSpec: 0
-    - _FaceShadowMapEnabled: 1
+    - _FaceShadowMapEnabled: 0
     - _FaceShadowMapPow: 0.2
     - _FaceShadowSmoothness: 0
-    - _FlattenGI: 0
+    - _FlattenGI: 1
     - _GlossinessSource: 0
     - _HairSpecExponent: 128
     - _HairSpecNoiseStrength: 1
@@ -157,20 +156,20 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 0
     - _RimEnabled: 0
-    - _RimLightAlign: 0
+    - _RimLightAlign: 0.2
     - _RimLightSmoothness: 0
-    - _RimPower: 0.37
+    - _RimPower: 0.533
     - _Shininess: 0
     - _SizeFalloff: 0
     - _Smoothness: 0.5
     - _SmoothnessSource: 0
     - _SpecClipMaskScale: 1
-    - _SpecShadowStrength: 0.567
+    - _SpecShadowStrength: 0.517
     - _SpecSource: 0
-    - _SpecularClipStrength: 0
-    - _SpecularFalloff: 0.51
+    - _SpecularClipStrength: 0.509
+    - _SpecularFalloff: 0.53
     - _SpecularHighlights: 0
-    - _SpecularSize: 0.261
+    - _SpecularSize: 0.287
     - _SpherizeNormalEnabled: 0
     - _SrcBlend: 1
     - _StencilComp: 0
@@ -180,7 +179,7 @@ Material:
     - _UseRampColor: 0
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.35893556, g: 0.6981132, b: 0.5575967, a: 1}
+    - _BaseColor: {r: 0.051886797, g: 1, b: 0.53336364, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0.01886791, g: 0.004301581, b: 0, a: 1}
     - _FaceFrontDirection: {r: 0, g: 0, b: 1, a: 0}
