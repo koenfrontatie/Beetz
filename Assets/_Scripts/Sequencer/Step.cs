@@ -91,7 +91,7 @@ public class Step : MonoBehaviour
 
     void SendScoreEvent()
     {
-        Events.OnQueueScoreEvent?.Invoke($"i {(int)(_sampleObject.SampleData.Template + 1)} 0 6");
+        Events.QueueForPlayback?.Invoke(_sampleObject.SampleData.ID);
         //CsoundController.Instance.SendEventToQueue
 
     }

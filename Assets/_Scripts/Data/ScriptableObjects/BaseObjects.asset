@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 977cf8cb916e2ea47bf9b62e5a61371b, type: 3}
-  m_Name: SampleObjectsSO
+  m_Name: BaseObjects
   m_EditorClassIdentifier: 
   Collection:
   - {fileID: 7923883598592556601, guid: 0f57b6294429a8e45b0b207d91ffb746, type: 3}
@@ -20,3 +20,6 @@ MonoBehaviour:
   - {fileID: 7923883598592556601, guid: db678531e4ae45b42ad940284ee2529e, type: 3}
   - {fileID: 5832259474361513505, guid: 506b15d3bc4f6e241adc9dc3ee0aeb8c, type: 3}
   - {fileID: 9131234337920790415, guid: ac56dccd8fd17394aaa042177c6e61a3, type: 3}
+  - {fileID: 9131234337920790415, guid: 9cbab221598f51349bb5f44de25a245b, type: 3}
+  - {fileID: 9131234337920790415, guid: 0288bd963e0164e408c11e9fdd2dcc4b, type: 3}
+  - {fileID: 9131234337920790415, guid: 21ef2d1d98611f042943718de822c1a7, type: 3}

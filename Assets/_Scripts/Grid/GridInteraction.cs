@@ -49,7 +49,7 @@ public class GridInteraction : MonoBehaviour
                     var data = tappedSequencer.SequencerData;
 
                     var index = transform.GetSiblingIndex();
-                    var selectedSample = SampleManager.Instance.SelectedSample;
+                    var selectedSample = AssetBuilder.Instance.GetSampleObject(AssetBuilder.Instance.SelectedGuid);
 
                     if (selectedSample == null) return;
 
@@ -97,7 +97,7 @@ public class GridInteraction : MonoBehaviour
                         {
                             //Debug.Log("Instantiating new object");
 
-                            var sample = Instantiate(SampleManager.Instance.SelectedSample, matchingStep.transform);
+                            var sample = Instantiate(AssetBuilder.Instance.GetSampleObject(AssetBuilder.Instance.SelectedGuid), matchingStep.transform);
 
                             matchingStep.AssignSample(sample);
 

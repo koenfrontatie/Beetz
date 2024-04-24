@@ -7,8 +7,8 @@ using System;
 
 public class SampleDirectoryChecker : MonoBehaviour
 {
-    public List<string> SamplePaths = new List<string>();
-    private int coroutineCounter, existingSamples;
+    //public List<string> SamplePaths = new List<string>();
+    //private int coroutineCounter, existingSamples;
 
     public int NumberOfBaseSamples;
     async void Start()

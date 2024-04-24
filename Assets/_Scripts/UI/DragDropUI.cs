@@ -12,10 +12,10 @@ public class DragDropUI : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     //}
     public void OnDrag(PointerEventData eventData)
     {
-        Vector3 vec = Prefabs.Instance.CanvasCamera.WorldToScreenPoint(transform.position);
-        vec.x += eventData.delta.x;
-        vec.y += eventData.delta.y;
-        transform.position = Prefabs.Instance.CanvasCamera.ScreenToWorldPoint(vec);
+        //Vector3 vec = Camera.main.WorldToScreenPoint(transform.position);
+        //vec.x += eventData.delta.x;
+        //vec.y += eventData.delta.y;
+        transform.position = eventData.position;
         //myRectTransform.anchoredPosition = eventData.position / myCanvas.scaleFactor;
     }
     public void OnBeginDrag(PointerEventData eventData)

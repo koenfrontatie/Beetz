@@ -5,7 +5,7 @@
     "PositionIDData": [],
     "SequencerCorners": []
   },
-  "IDCollection": {
+  "ToolbarConfiguration": {
     "IDC": [
       "0",
       "1",
@@ -18,6 +18,9 @@
       "8",
 	  "9"
     ]
+  },
+  "SampleCollection": {
+    "IDC": []
   },
   "SequencerDataCollection": []
 }

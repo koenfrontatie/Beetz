@@ -39,6 +39,8 @@ public class GameManager : MonoBehaviour
             case GameState.Gameplay:
 
                 break;
+            case GameState.Library:
+                break;
             case GameState.Saving:
 
                 break;
@@ -68,5 +70,6 @@ public enum GameState
 {
     Menu,
     Gameplay,
+    Library,
     Saving
 }

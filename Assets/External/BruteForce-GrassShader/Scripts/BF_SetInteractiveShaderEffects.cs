@@ -18,7 +18,7 @@ public class BF_SetInteractiveShaderEffects : MonoBehaviour
         Shader.SetGlobalTexture(GlobalTexName, rt);
         Shader.SetGlobalFloat("_HasRT", 1);
     }
-    private void Update()
+    private void LateUpdate()
     {
         if (transformToFollow != null)
         {

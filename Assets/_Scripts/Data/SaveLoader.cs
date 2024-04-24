@@ -1,19 +1,21 @@
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Linq;
 using UnityEngine;
 using Newtonsoft.Json;
 using System;
-using System.Net.Http;
 using UnityEngine.Networking;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 
 public class SaveLoader : MonoBehaviour
 {
     public static SaveLoader Instance;
     
     private string _projectPath;
-    private IDataService _dataService = new JsonDataService();
+    //private IDataService _dataService = new JsonDataService();
+    public IDCollection Library;
 
     private void Awake()
     {
@@ -26,6 +28,13 @@ public class SaveLoader : MonoBehaviour
             Instance = this;
         }
     }
+
+    private async void Start()
+    {
+        Library = await GetCustomSampleCollection();
+    }
+
+    #region Serialization methods
 
     public void SerializeProjectData()
     {
@@ -73,6 +82,8 @@ public class SaveLoader : MonoBehaviour
         }
     }
 
+    #endregion
+
     #region Deserialization methods
     /// <summary>
     /// This loads a json from a path and invokes Events.ProjectDataLoaded when ProjectData is deserialized.
@@ -119,128 +130,55 @@ public class SaveLoader : MonoBehaviour
         return await Task.Run(() => JsonConvert.DeserializeObject<ProjectData>(json));
     }
     #endregion
-
+    
     public string NewGuid()
     {
         return Guid.NewGuid().ToString();
     }
 
-    //public ProjectData LoadProjectData(string id)
-    //{
-    //    _relativeProjectPath = $"{Path.DirectorySeparatorChar}SaveFiles{Path.DirectorySeparatorChar}Projects{Path.DirectorySeparatorChar}{id}";
+    public async Task<IDCollection> GetCustomSampleCollection()
+    {
+        var strings = new List<string>();
 
-    //    var path = $"{_relativeProjectPath}{Path.DirectorySeparatorChar}ProjectData.json";
+        var samplesPath = Utils.SampleSavepath;
 
-    //    ProjectData data = _dataService.LoadData<ProjectData>(path);
+        await Task.Run(() =>
+        {
+            var sortedFiles = new DirectoryInfo(samplesPath).GetDirectories().OrderBy(f => f.LastWriteTime).ToList();
 
-    //    // if id  is null or smt create blank project?
+            for(int i = 0; i < sortedFiles.Count; i++)
+            {
 
-    //    return data;
-    //}
+                if (sortedFiles[i].Name == "BaseSamples") continue;
 
-    //public ProjectData LoadProjectDataFullPath(string id)
-    //{
-    //    var path = id;
-
-    //    ProjectData data = _dataService.LoadDataFullPath<ProjectData>(path);
-
-    //    // if id  is null or smt create blank project?
-
-    //    return data;
-    //}
-
-    //public void LoadProjectDataAsyncFullPath(string id, Action<ProjectData> callback)
-    //{
-    //    var path = id;
-
-    //    _dataService.LoadDataAsyncFullPath<ProjectData>(path, callback);
-
-    //    // if id  is null or smt create blank project?
-    //}
-
-    //public void LoadProjectInfoAsync(string id, Action<ProjectData> callback)
-    //{
-    //    _relativeProjectPath = $"{Path.DirectorySeparatorChar}SaveFiles{Path.DirectorySeparatorChar}Projects{Path.DirectorySeparatorChar}{id}";
-    //    var path = $"{_relativeProjectPath}{Path.DirectorySeparatorChar}ProjectData.json";
-
-    //    try
-    //    {
-    //        _dataService.LoadDataAsync<ProjectData>(path, data =>
-    //        {
-    //            // Ensure callback is not null before invoking
-    //            callback?.Invoke(data);
-    //            Debug.Log("ProjectData loaded successfully.");
-    //        });
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        Debug.LogError($"Failed to load ProjectData: {e.Message}");
-    //    }
-    //}
-
-    //public void SaveListToBfc(List<string> list)
-    //{
-    //    var path = $"{_projectPath}{Path.DirectorySeparatorChar}library.bfc";
-
-    //    StringBuilder sb = new StringBuilder();
-
-    //    for(int i = 0; i < list.Count; i++)
-    //    {
-    //        sb.Append($"{list[i]},");
-    //    }
-
-    //    if (sb.Length > 0)
-    //    {
-    //        sb.Remove(sb.Length - 1, 1);
-    //    }
-
-    //    var content = sb.ToString();
-
-    //    File.WriteAllText(path, content);
-    //}
-
-    //public List<string> LoadProjectLibrary()
-    //{
-    //    var libraryPath = $"{_projectPath}{Path.DirectorySeparatorChar}library.bfc";
-
-    //    if (!Utils.CheckForFile(libraryPath)) CreateLibrary();
-
-    //    var content = File.ReadAllText(libraryPath);
-
-    //    string[] entries = content.Split(",");
-
-    //    List<string> loadedList = new List<string>();
-
-    //    for(int i =0; i < entries.Length; i++)
-    //    {
-    //        loadedList.Add(entries[i]);
-    //    }
-
-    //    return loadedList;
-    //}
-
-    //void CreateLibrary()
-    //{
-    //    Debug.Log("Creating new library.");
-    //    List<string> newLib = new List<string>();
-
-    //    for (int i = 1; i <= 5; i++)
-    //    {
-    //        newLib.Add(i.ToString());
-    //    }
-
-    //    SaveListToBfc(newLib);
-    //}
-
-    //public async void InitializeProject()
-    //{
-
-    //}
-
-    //public async Task LoadProjectInfo(string guid)
-    //{
-    //    var libraryPath = $"{_projectPath}{Path.DirectorySeparatorChar}ProjectInfo.json";
-    //}
+                strings.Add(sortedFiles[i].Name);
+            }
 
 
+
+        });
+
+        return new IDCollection(strings);
+    }
+
+    public async Task<Texture2D> GetIconFromGuid(string guid)
+    {
+        var iconPath = Path.Combine(Utils.SampleSavepath, guid, "ico.png");
+        //Texture2D iconTexture = new Texture2D(150, 150, TextureFormat.ARGB32, false);
+        Debug.Log(iconPath);
+        
+        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(iconPath))
+        {
+            await www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError(www.error);
+                return null;
+            }
+            Texture2D texture = DownloadHandlerTexture.GetContent(www);
+
+            return texture;
+        }
+    }
 }

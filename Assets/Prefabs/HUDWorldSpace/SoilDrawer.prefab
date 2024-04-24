@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 6491047803801540266}
   - component: {fileID: 6491047803801540267}
   m_Layer: 1
-  m_Name: SeqArea
+  m_Name: SoilDrawer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

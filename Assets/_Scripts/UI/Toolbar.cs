@@ -11,8 +11,6 @@ public class Toolbar : MonoBehaviour
     private InventorySlot[] _containers;
     private SampleObject[] _toolbarSampleObjects;
 
-    [SerializeField] private ObjectMaker _objectMaker;
-
     private DragDropUI _dragDropUI;
 
 
@@ -29,10 +27,18 @@ public class Toolbar : MonoBehaviour
         _containers = new InventorySlot[Config.ToolbarCount]; // Ensure _containers is initialized properly
         _toolbarSampleObjects = new SampleObject[Config.ToolbarCount];
 
-        for (int i = 0; i < _containers.Length; i++)
-        {
+        int slotCount = 0;
 
-            _containers[i] = _TBC.GetChild(i).GetComponent<InventorySlot>();
+        for (int i = 0; i < _TBC.childCount; i++)
+        {
+            if (_TBC.GetChild(i).TryGetComponent<InventorySlot>(out var slot))
+            {
+                _containers[slotCount] = slot;
+                slotCount++;
+            } else
+            {
+                continue;
+            }
         }
     }
 
@@ -42,10 +48,14 @@ public class Toolbar : MonoBehaviour
         {
             for (int i = 0; i < library.Count; i++)
             {
+                if (i >= _containers.Length) return;
+
                 if (library[i] == "-1") { continue; }
                 
-                var item = _objectMaker.ToolbarItem(library[i]);
+                //var item = _objectMaker.ToolbarItem(library[i]);
                 
+                var item = AssetBuilder.Instance.GetToolbarItem(library[i]);
+
                 item.transform.position = _containers[i].transform.position;
 
                 item.transform.SetParent(_TBI);
@@ -72,7 +82,7 @@ public class Toolbar : MonoBehaviour
             }
         }
 
-        var copy = new List<string>(projectData.IDCollection.IDC);
+        var copy = new List<string>(projectData.ToolbarConfiguration.IDC);
         AssignItems(copy);
 
         SetToolbarItemsTransparent();

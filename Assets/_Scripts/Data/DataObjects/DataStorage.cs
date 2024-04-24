@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -7,6 +6,7 @@ public class DataStorage : MonoBehaviour
 {
     public static DataStorage Instance;
 
+    [Header("Current Project")]
     public ProjectData ProjectData;
 
     private void Awake()
@@ -44,10 +44,10 @@ public class DataStorage : MonoBehaviour
 
     public void OnProjectDataLoaded(ProjectData data)
     {
-        var newdata = new ProjectData(data.ID, data.PlaylistData, data.IDCollection, data.SequencerDataCollection);
+        var newdata = new ProjectData(data.ID, data.PlaylistData, data.ToolbarConfiguration, data.SampleCollection, data.SequencerDataCollection);
         GameManager.Instance.UpdateState(GameState.Gameplay);
         ProjectData = newdata;
-        Events.LoadingToolbar?.Invoke(data.IDCollection.IDC);
+        Events.LoadingToolbar?.Invoke(data.ToolbarConfiguration.IDC);
     }
 
     public void AddSequencer(Sequencer sequencer)
@@ -188,14 +188,16 @@ public class ProjectData
 {
     public string ID;
     public PlaylistData PlaylistData;
-    public IDCollection IDCollection;
+    public IDCollection ToolbarConfiguration;
+    public IDCollection SampleCollection;
     public List<SequencerData> SequencerDataCollection;
 
-    public ProjectData(string id, PlaylistData pdata, IDCollection idcol, List<SequencerData> sequencerData)
+    public ProjectData(string id, PlaylistData pdata, IDCollection toolbar, IDCollection idcol, List<SequencerData> sequencerData)
     {
         ID = id;
         PlaylistData = pdata;
-        IDCollection = idcol;
+        ToolbarConfiguration = toolbar;
+        SampleCollection = idcol;
         SequencerDataCollection = sequencerData;
     }
 }

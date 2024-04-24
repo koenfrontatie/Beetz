@@ -1,0 +1,31 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+public class WindowMoverUI : MonoBehaviour
+{
+    [SerializeField] private RectTransform _rectTransform;
+    [SerializeField] private Canvas _canvas;
+
+    [SerializeField]
+    float _distance;
+    
+    bool up = false;
+
+    async void ToggleAnimation()
+    {
+        if(!up)
+        {
+            //Events.AnimateRectToTarget?.Invoke(_rectTransform, _distance);
+            await Utils.LerpToTarget(_rectTransform.gameObject, _rectTransform.gameObject.transform.position + new Vector3(0, _distance * _canvas.scaleFactor, 0), .2f);
+            up = true;
+
+        } else
+        {
+            //Events.AnimateRectToTarget?.Invoke(_rectTransform, -_distance);
+            await Utils.LerpToTarget(_rectTransform.gameObject, _rectTransform.gameObject.transform.position + new Vector3(0, -_distance * _canvas.scaleFactor, 0), .2f);
+            up = false;
+        }
+    }
+}

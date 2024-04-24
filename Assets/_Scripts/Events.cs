@@ -15,13 +15,13 @@ public static class Events
    public static Action OnGridStateChanged;
     public static Action OnNewSongRange;
 
-    public static Action<string> OnScoreEvent;
-    public static Action<string> OnQueueScoreEvent;
+    //public static Action<string> OnScoreEvent;
+    public static Action<string> QueueForPlayback;
     //public static Action<Vector3Int> OnNewGridTarget;
     public static UnityAction OnBaseSamplesLoaded;
 
     public static Action<GameObject> OnScaleBounce;
-
+    public static Action<RectTransform, float> AnimateRectToTarget;
 
     // lean touch input events
     public static Action<Vector2> OnNewRaycastScreenPosition;

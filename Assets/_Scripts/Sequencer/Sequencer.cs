@@ -84,10 +84,12 @@ public class Sequencer : MonoBehaviour
         for (int i = 0; i < sequencerData.PositionIDData.Count; i++)
         {
             var stepIndex = GetStepIndexFromPosition(sequencerData.PositionIDData[i].Position);
+            
             if (_stepParent.GetChild(stepIndex).TryGetComponent<Step>(out Step selectedStep))
             {
-                var spawnedSampleObject = Prefabs.Instance.BaseObjects[int.Parse(sequencerData.PositionIDData[i].ID)];
-                
+                //var spawnedSampleObject = Prefabs.Instance.BaseObjects[int.Parse(sequencerData.PositionIDData[i].ID)];
+                var spawnedSampleObject = AssetBuilder.Instance.GetSampleObject(sequencerData.PositionIDData[i].ID);
+
                 SampleObject so = Instantiate(spawnedSampleObject, selectedStep.transform);
                 //Debug.Log($"this is i is {i} ,{selectedStep.BeatIndex}");
                 selectedStep.AssignSample(so); // TODO - load proper sampleobject

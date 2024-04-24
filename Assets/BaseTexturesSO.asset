@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: BaseTexturesSO
+  m_EditorClassIdentifier: KVDW.Core::Texture2DSO
+  Collection:
+  - {fileID: 2800000, guid: ec34f9c12407ce248874f63a67ec85c8, type: 3}
+  - {fileID: 2800000, guid: aa2389d832960a04184b8a813f71fb81, type: 3}
+  - {fileID: 2800000, guid: 48d43a37183d0db458e353161e9c2749, type: 3}
+  - {fileID: 2800000, guid: 70458f06aaaa2f343b2d62c251a4d969, type: 3}
+  - {fileID: 2800000, guid: 9c25408b3e83a7d438601cab28a264cd, type: 3}
+  - {fileID: 2800000, guid: d6bc761c5a2a8d14a8294bf622e0edeb, type: 3}
+  - {fileID: 2800000, guid: a130c378ac4dd7f46b9167bdb63078cf, type: 3}
+  - {fileID: 2800000, guid: f1813691598261a4aaeb40340d060ed8, type: 3}
+  - {fileID: 2800000, guid: 9cd9c5142b574554197a892ad4378d86, type: 3}
+  - {fileID: 2800000, guid: 4b56555092ee2224c879810110da8800, type: 3}

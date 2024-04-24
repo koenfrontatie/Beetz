@@ -1,44 +1,44 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+//using System.Collections;
+//using System.Collections.Generic;
+//using UnityEngine;
 
-public class PlaylistPlayback : MonoBehaviour
-{
-    [SerializeField] private Sequencer _sequencer;
-    private GridCounter _counter;
-    public int PlaylistStep { get; private set; }
+//public class PlaylistPlayback : MonoBehaviour
+//{
+//    [SerializeField] private Sequencer _sequencer;
+//    private GridCounter _counter;
+//    public int PlaylistStep { get; private set; }
 
-    private void OnEnable()
-    {
-        Metronome.ResetMetronome += () => ListenForPlayback();
-        Metronome.NewStep += ListenForPlayback;
-    }
-    private void OnDisable()
-    {
-        Metronome.NewStep -= ListenForPlayback;
-    }
-    private void Start()
-    {
-        _counter = GridController.Instance.GridCounter;
-        _sequencer = GetComponent<Sequencer>();
-        ListenForPlayback();
-    }
+//    private void OnEnable()
+//    {
+//        Metronome.ResetMetronome += () => ListenForPlayback();
+//        Metronome.NewStep += ListenForPlayback;
+//    }
+//    private void OnDisable()
+//    {
+//        Metronome.NewStep -= ListenForPlayback;
+//    }
+//    private void Start()
+//    {
+//        _counter = GridController.Instance.GridCounter;
+//        _sequencer = GetComponent<Sequencer>();
+//        ListenForPlayback();
+//    }
 
-    bool CounterIsInRange()
-    {
-        if (_counter.CurrentStep >= _sequencer.InstanceCellPosition.x && _counter.CurrentStep < _sequencer.InstanceCellPosition.x + _sequencer.StepAmount)
-        {
-            return true;
-        }
-            PlaylistStep = -1;
-        return false;
-    }
+//    bool CounterIsInRange()
+//    {
+//        if (_counter.CurrentStep >= _sequencer.InstanceCellPosition.x && _counter.CurrentStep < _sequencer.InstanceCellPosition.x + _sequencer.StepAmount)
+//        {
+//            return true;
+//        }
+//            PlaylistStep = -1;
+//        return false;
+//    }
 
-    void ListenForPlayback()
-    {
-        if (_counter == null || _sequencer == null) return;
-        if (!CounterIsInRange()) return;
+//    void ListenForPlayback()
+//    {
+//        if (_counter == null || _sequencer == null) return;
+//        if (!CounterIsInRange()) return;
 
-        PlaylistStep = _counter.CurrentStep - (int)_sequencer.InstanceCellPosition.x;
-    }
-}
+//        PlaylistStep = _counter.CurrentStep - (int)_sequencer.InstanceCellPosition.x;
+//    }
+//}

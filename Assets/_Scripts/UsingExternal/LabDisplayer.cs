@@ -23,8 +23,8 @@ public class LabDisplayer : MonoBehaviour
     private void OnNewBeat()
     {
         Events.OnScaleBounce?.Invoke(SelectedTemplate.gameObject);
-        string s = $"i {(int)(SelectedTemplate.SampleData.Template + 1)} 0 6";
-        Events.OnScoreEvent?.Invoke(s);
+        //string s = $"i {(int)(SelectedTemplate.SampleData.Template + 1)} 0 6";
+        Events.QueueForPlayback?.Invoke(SelectedTemplate.SampleData.ID);
     }
 
     private void Update()

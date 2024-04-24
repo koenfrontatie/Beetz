@@ -14,110 +14,130 @@ nchnls 	= 	2
 
 chn_k "distortion", 1
 
-instr	1 ; play audio from disk
-    kSpeed  init     1           ; playback speed
+instr 1
+    kSpeed init 1     
     
-	a1 diskin2  "1kick.wav", kSpeed, 0, 0
+	a1 diskin2 "BaseSamples/1kick.wav", kSpeed, 0, 0
 
     kDistortion chnget "distortion"
 
     aDist distort1 a1, kDistortion, 10, .4, 0, 0
 
-    outs1      aDist          ; send audio to outputs
+    outs      aDist, aDist     
+endin
+
+instr 2 
+	kSpeed init 1      
+    
+	a1 diskin2  "BaseSamples/2hat.wav", kSpeed, 0, 0
+
+    kDistortion chnget "distortion"
+
+    aDist distort1 a1, kDistortion, 10, .4, 0, 0
+
+    outs      aDist, aDist         
 endin
   
-  instr	2 ; play audio from disk
-	kSpeed  init     1           ; playback speed
+instr 3 
+	kSpeed  init     1           
     
-	a1 diskin2  "2hat.wav", kSpeed, 0, 0
+	a1 diskin2  "BaseSamples/3clap.wav", kSpeed, 0, 0
 
     kDistortion chnget "distortion"
 
     aDist distort1 a1, kDistortion, 10, .4, 0, 0
 
-    outs1      aDist          ; send audio to outputs
+    outs      aDist, aDist       
+endin
+  
+instr	4 
+	kSpeed  init     1          
+
+	a1      diskin2  "BaseSamples/4cow.wav", kSpeed, 0, 0
+    
+	kDistortion chnget "distortion"
+
+    aDist distort1 a1, kDistortion, 10, .4, 0, 0
+
+    outs      aDist, aDist         
+endin
+  
+instr	5 ; 
+	kSpeed  init     1          
+
+	a1      diskin2  "BaseSamples/5snare.wav", kSpeed, 0, 0
+	
+	kDistortion chnget "distortion"
+
+    aDist distort1 a1, kDistortion, 10, .4, 0, 0
+
+    outs      aDist, aDist         
+endin
+  
+instr	6 
+
+	kSpeed  init     1           
+
+	a1      diskin2  "BaseSamples/6kick808.wav", kSpeed, 0, 0
+    
+	kDistortion chnget "distortion"
+
+    aDist distort1 a1, kDistortion, 10, .4, 0, 0
+
+    outs      aDist, aDist        
   endin
   
-  instr	3 ; play audio from disk
-kSpeed  init     1           ; playback speed
-    
-	a1 diskin2  "3clap.wav", kSpeed, 0, 0
+instr	7 
+	kSpeed  init     1           
 
+	a1      diskin2  "BaseSamples/7tab05.wav", kSpeed, 0, 0
+    
+	kDistortion chnget "distortion"
+
+    aDist distort1 a1, kDistortion, 10, .4, 0, 0
+
+    outs      aDist, aDist  
+endin
+  
+instr	8 
+    kSpeed  init     1           
+
+    a1      diskin2  "BaseSamples/8khat3.wav", kSpeed, 0, 0
+        
     kDistortion chnget "distortion"
 
     aDist distort1 a1, kDistortion, 10, .4, 0, 0
 
-    outs1      aDist          ; send audio to outputs
-  endin
+    outs      aDist, aDist  
+endin
   
-  instr	4 ; play audio from disk
-kSpeed  init     1           ; playback speed
-iSkip   init     0           ; inskip into file (in seconds)
-iLoop   init     0           ; looping switch (0=off 1=on)
-; read audio from disk using diskin2 opcode
-a1      diskin2  "4cow.wav", kSpeed, iSkip, iLoop
-        out      a1          ; send audio to outputs
-  endin
+instr	9 
+    kSpeed  init     1          
+
+    a1      diskin2  "BaseSamples/9walk.wav", kSpeed, 0, 0
+    
+    kDistortion chnget "distortion"
+
+    aDist distort1 a1, kDistortion, 10, .4, 0, 0
+
+    outs      aDist, aDist  
+endin
   
-  instr	5 ; play audio from disk
-kSpeed  init     1           ; playback speed
-iSkip   init     0           ; inskip into file (in seconds)
-iLoop   init     0           ; looping switch (0=off 1=on)
-; read audio from disk using diskin2 opcode
-a1      diskin2  "5snare.wav", kSpeed, iSkip, iLoop
-        out      a1          ; send audio to outputs
-		;aL, aR  freeverb a1, a1, 0.9, 0.7, sr, 0
-		;outs a1 + aL, a1 + aR
-  endin
-  
-    instr	6 ; play audio from disk
-kSpeed  init     1           ; playback speed
-iSkip   init     0           ; inskip into file (in seconds)
-iLoop   init     0           ; looping switch (0=off 1=on)
-; read audio from disk using diskin2 opcode
-a1      diskin2  "6kick808.wav", kSpeed, iSkip, iLoop
-        outs      a1         ; send audio to outputs
-  endin
-  
-    instr	7 ; play audio from disk
-kSpeed  init     1           ; playback speed
-iSkip   init     0           ; inskip into file (in seconds)
-iLoop   init     0           ; looping switch (0=off 1=on)
-; read audio from disk using diskin2 opcode
-a1      diskin2  "7tab05.wav", kSpeed, iSkip, iLoop
-        outs      a1          ; send audio to outputs
-  endin
-  
-  instr	8 ; play audio from disk
-kSpeed  init     1           ; playback speed
-iSkip   init     0           ; inskip into file (in seconds)
-iLoop   init     0           ; looping switch (0=off 1=on)
-; read audio from disk using diskin2 opcode
-a1      diskin2  "8khat3.wav", kSpeed, iSkip, iLoop
-        outs      a1          ; send audio to outputs
-  endin
-  
-  instr	9 ; play audio from disk
-kSpeed  init     1           ; playback speed
-iSkip   init     0           ; inskip into file (in seconds)
-iLoop   init     0           ; looping switch (0=off 1=on)
-; read audio from disk using diskin2 opcode
-a1      diskin2  "9walk.wav", kSpeed, iSkip, iLoop
-        outs      a1          ; send audio to outputs
-  endin
-  
-  instr	10 ; play audio from disk
-kSpeed  init     1           ; playback speed
-iSkip   init     0           ; inskip into file (in seconds)
-iLoop   init     0           ; looping switch (0=off 1=on)
-; read audio from disk using diskin2 opcode
-a1      diskin2  "10chant.wav", kSpeed, iSkip, iLoop
-        outs      a1          ; send audio to outputs
-  endin
+instr	10
+    kSpeed  init     1
+
+    a1      diskin2  "BaseSamples/10chant.wav", kSpeed, 0, 0
+    
+    kDistortion chnget "distortion"
+
+    aDist distort1 a1, kDistortion, 10, .4, 0, 0
+
+    outs      aDist, aDist  
+endin
+
 </CsInstruments>
 
 <CsScore>
-
 
 f0 z 
 

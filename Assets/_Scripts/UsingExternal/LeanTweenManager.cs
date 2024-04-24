@@ -11,7 +11,8 @@ public class LeanTweenManager : MonoBehaviour
         Events.MovingCameraToScarecrow += AnimateCamToScarecrow;
 
         Events.AnimateButton += AnimateButton;
-        //Events.AnimateRectToTarget += AnimateRect;
+
+        Events.AnimateRectToTarget += AnimateRect;
 
     }
 
@@ -20,6 +21,7 @@ public class LeanTweenManager : MonoBehaviour
         Events.OnScaleBounce -= ScaleBounce;
         Events.MovingCameraToScarecrow -= AnimateCamToScarecrow;
         Events.AnimateButton -= AnimateButton;
+        Events.AnimateRectToTarget -= AnimateRect;
     }
 
     void Start()
@@ -54,14 +56,16 @@ public class LeanTweenManager : MonoBehaviour
         LeanTween.moveY(rect, -button.DownwardPixels, .06f).setEaseOutCubic().setLoopPingPong(1); ;
     }
 
-    //void AnimateRect(RectTransform rect, Vector2 target)
-    //{
-    //    if (rect == null) return;
+    void AnimateRect(RectTransform rect, float target)
+    {
+        if (rect == null) return;
 
-    //    if (rect.gameObject.LeanIsTweening()) return;
+        if (rect.gameObject.LeanIsTweening()) return;
 
-    //    LeanTween.move(rect, target, .06f).setEaseOutCubic().setLoopPingPong(1); ;
-    //}
+        LTRect ltRect = new LTRect(rect.rect);
+
+        LeanTween.move(ltRect, new Vector2(0, target), .2f); // Moves the UI element to (100, 200) over 1 second
+    }
 
     void AnimateCamToScarecrow()
     {

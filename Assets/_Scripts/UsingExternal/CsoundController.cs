@@ -8,7 +8,7 @@ public class CsoundController : MonoBehaviour
 
     public CsoundUnity CsoundUnity;
 
-    public List<string> queuedEvents = new List<string>();
+    public List<string> queuedScoreEvents = new List<string>();
 
     public List<string> channelNames = new List<string>();
     public List<Slider> sliders = new List<Slider>();
@@ -22,27 +22,44 @@ public class CsoundController : MonoBehaviour
         CsoundUnity = GetComponent<CsoundUnity>();
     }
 
-    public void PlayTemplate(int i)
+    public void SendGuidToQueue(string guid)
     {
-        CsoundUnity.SendScoreEvent($"i {i} 0 6");
-    }
-
-    public void SendEventToQueue(string eventString)
-    {
-        for (int i = 0; i < queuedEvents.Count; i++)
+        for (int i = 0; i < queuedScoreEvents.Count; i++)
         {
-            if (eventString == queuedEvents[i]) return;
+            if (guid == queuedScoreEvents[i]) return;
         }
 
-        queuedEvents.Add(eventString);
+        string eventString; // ---------- turns guid into score event
 
+        if (guid.Length < 3) // if template
+        {
+            eventString = $"i {int.Parse(guid) + 1} 0 6";
+        }
+        else
+        {
+            eventString = $"i {guid} 0 6";
+        }
+
+        for (int i = 0; i < queuedScoreEvents.Count; i++)
+        {
+            if (eventString == queuedScoreEvents[i]) return;
+        }
+
+        queuedScoreEvents.Add(eventString);
     }
+
+    //void SendScoreEvent()
+    //{
+        //Events.OnQueueScoreEvent?.Invoke($"i {(int)(_sampleObject.SampleData.Template + 1)} 0 6");
+        //CsoundController.Instance.SendEventToQueue
+
+    //}
 
     private void LateUpdate()
     {
         SetControlChannels();
 
-        if (queuedEvents.Count > 0)
+        if (queuedScoreEvents.Count > 0)
         {
             PlayQueue();
         }
@@ -50,12 +67,12 @@ public class CsoundController : MonoBehaviour
 
     public void PlayQueue()
     {
-        for (int i = 0; i < queuedEvents.Count; i++)
+        for (int i = 0; i < queuedScoreEvents.Count; i++)
         {
-            CsoundUnity.SendScoreEvent(queuedEvents[i]);
+            CsoundUnity.SendScoreEvent(queuedScoreEvents[i]);
         }
 
-        queuedEvents.Clear();
+        queuedScoreEvents.Clear();
     }
 
     void SetControlChannels()
@@ -76,14 +93,12 @@ public class CsoundController : MonoBehaviour
 
     private void OnEnable()
     {
-        Events.OnScoreEvent += CsoundUnity.SendScoreEvent;
-        Events.OnQueueScoreEvent += SendEventToQueue;
+        Events.QueueForPlayback += SendGuidToQueue;
     }
 
     private void OnDisable()
     {
-        Events.OnScoreEvent -= CsoundUnity.SendScoreEvent;
-        Events.OnQueueScoreEvent -= SendEventToQueue;
+        Events.QueueForPlayback -= SendGuidToQueue;
     }
 
 }

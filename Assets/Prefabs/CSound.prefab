@@ -152,30 +152,29 @@ MonoBehaviour:
   - platform: 1
     type: 0
     baseFolder: 0
-    suffix: SaveFiles\Samples\BaseSamples
+    suffix: SaveFiles\Samples
     foldout: 1
   - platform: 2
     type: 0
     baseFolder: 0
-    suffix: SaveFiles\Samples\BaseSamples
+    suffix: SaveFiles\Samples
     foldout: 1
   _csoundFileGUID: 7887d2d8fe32f54458f19c1cb4198457
-  _csoundString: "<CsoundSynthesizer>\r\n<CsOptions>\r\n-odac ; activate real-time
-    audio output\r\n</CsOptions>\r\n<CsInstruments>\r\nsr \t= \t4410\r\nkr = 10\r\nksmps
-    \t= \t441\r\nnchnls \t= \t1\t\r\n\r\n  instr\t1 ; play audio from disk\r\nkSpeed 
-    init     1           ; playback speed\r\niSkip   init     0           ; inskip
-    into file (in seconds)\r\niLoop   init     0           ; looping switch (0=off
-    1=on)\r\n; read audio from disk using diskin2 opcode\r\na1      diskin2  \"1kick.wav\",
-    kSpeed, iSkip, iLoop\r\n        out      a1          ; send audio to outputs\r\n 
-    endin\r\n  \r\n  instr\t2 ; play audio from disk\r\nkSpeed  init     1          
-    ; playback speed\r\niSkip   init     0           ; inskip into file (in seconds)\r\niLoop  
-    init     0           ; looping switch (0=off 1=on)\r\n; read audio from disk
-    using diskin2 opcode\r\na1      diskin2  \"2hat.wav\", kSpeed, iSkip, iLoop\r\n       
-    out      a1          ; send audio to outputs\r\n  endin\r\n  \r\n  instr\t3 ;
-    play audio from disk\r\nkSpeed  init     1           ; playback speed\r\niSkip  
-    init     0           ; inskip into file (in seconds)\r\niLoop   init     0          
-    ; looping switch (0=off 1=on)\r\n; read audio from disk using diskin2 opcode\r\na1     
-    diskin2  \"3clap.wav\", kSpeed, iSkip, iLoop\r\n        out      a1         
+  _csoundString: ";<Cabbage>\r\n;form caption(\"Dist Slider\")\r\n;hslider channel(\"distortion\"),
+    text(\"Dist Slider\"), range(0, 10, 0)\r\n;</Cabbage>\r\n<CsoundSynthesizer>\r\n<CsOptions>\r\n-odac
+    ; activate real-time audio output\r\n</CsOptions>\r\n<CsInstruments>\r\nsr \t=
+    \t4410\r\nkr = 10\r\nksmps \t= \t441\r\nnchnls \t= \t2\t\r\n\r\nchn_k \"distortion\",
+    1\r\n\r\ninstr\t1 ; play audio from disk\r\n    kSpeed  init     1          
+    ; playback speed\r\n    \r\n\ta1 diskin2  \"1kick.wav\", kSpeed, 0, 0\r\n\r\n   
+    kDistortion chnget \"distortion\"\r\n\r\n    aDist distort1 a1, kDistortion,
+    10, .4, 0, 0\r\n\r\n    outs      aDist, aDist          ; send audio to outputs\r\nendin\r\n 
+    \r\n  instr\t2 ; play audio from disk\r\n\tkSpeed  init     1           ; playback
+    speed\r\n    \r\n\ta1 diskin2  \"2hat.wav\", kSpeed, 0, 0\r\n\r\n    kDistortion
+    chnget \"distortion\"\r\n\r\n    aDist distort1 a1, kDistortion, 10, .4, 0, 0\r\n\r\n   
+    outs1      aDist          ; send audio to outputs\r\n  endin\r\n  \r\n  instr\t3
+    ; play audio from disk\r\nkSpeed  init     1           ; playback speed\r\n   
+    \r\n\ta1 diskin2  \"3clap.wav\", kSpeed, 0, 0\r\n\r\n    kDistortion chnget \"distortion\"\r\n\r\n   
+    aDist distort1 a1, kDistortion, 10, .4, 0, 0\r\n\r\n    outs1      aDist         
     ; send audio to outputs\r\n  endin\r\n  \r\n  instr\t4 ; play audio from disk\r\nkSpeed 
     init     1           ; playback speed\r\niSkip   init     0           ; inskip
     into file (in seconds)\r\niLoop   init     0           ; looping switch (0=off
@@ -190,33 +189,32 @@ MonoBehaviour:
     ; play audio from disk\r\nkSpeed  init     1           ; playback speed\r\niSkip  
     init     0           ; inskip into file (in seconds)\r\niLoop   init     0          
     ; looping switch (0=off 1=on)\r\n; read audio from disk using diskin2 opcode\r\na1     
-    diskin2  \"6kick808.wav\", kSpeed, iSkip, iLoop\r\n        outs      a1    *
-    2     ; send audio to outputs\r\n  endin\r\n  \r\n    instr\t7 ; play audio from
-    disk\r\nkSpeed  init     1           ; playback speed\r\niSkip   init     0          
-    ; inskip into file (in seconds)\r\niLoop   init     0           ; looping switch
-    (0=off 1=on)\r\n; read audio from disk using diskin2 opcode\r\na1      diskin2 
-    \"7tab05.wav\", kSpeed, iSkip, iLoop\r\n        outs      a1          ; send
-    audio to outputs\r\n  endin\r\n  \r\n  instr\t8 ; play audio from disk\r\nkSpeed 
+    diskin2  \"6kick808.wav\", kSpeed, iSkip, iLoop\r\n        outs      a1        
+    ; send audio to outputs\r\n  endin\r\n  \r\n    instr\t7 ; play audio from disk\r\nkSpeed 
     init     1           ; playback speed\r\niSkip   init     0           ; inskip
     into file (in seconds)\r\niLoop   init     0           ; looping switch (0=off
-    1=on)\r\n; read audio from disk using diskin2 opcode\r\na1      diskin2  \"8khat3.wav\",
+    1=on)\r\n; read audio from disk using diskin2 opcode\r\na1      diskin2  \"7tab05.wav\",
     kSpeed, iSkip, iLoop\r\n        outs      a1          ; send audio to outputs\r\n 
-    endin\r\n  \r\n  instr\t9 ; play audio from disk\r\nkSpeed  init     1          
+    endin\r\n  \r\n  instr\t8 ; play audio from disk\r\nkSpeed  init     1          
     ; playback speed\r\niSkip   init     0           ; inskip into file (in seconds)\r\niLoop  
     init     0           ; looping switch (0=off 1=on)\r\n; read audio from disk
-    using diskin2 opcode\r\na1      diskin2  \"9walk.wav\", kSpeed, iSkip, iLoop\r\n       
-    outs      a1 * 2         ; send audio to outputs\r\n  endin\r\n  \r\n  instr\t10
+    using diskin2 opcode\r\na1      diskin2  \"8khat3.wav\", kSpeed, iSkip, iLoop\r\n       
+    outs      a1          ; send audio to outputs\r\n  endin\r\n  \r\n  instr\t9
     ; play audio from disk\r\nkSpeed  init     1           ; playback speed\r\niSkip  
     init     0           ; inskip into file (in seconds)\r\niLoop   init     0          
     ; looping switch (0=off 1=on)\r\n; read audio from disk using diskin2 opcode\r\na1     
-    diskin2  \"10chant.wav\", kSpeed, iSkip, iLoop\r\n        outs      a1  * 3       
-    ; send audio to outputs\r\n  endin\r\n</CsInstruments>\r\n\r\n<CsScore>\r\n\r\n\r\nf0
-    z \r\n\r\n</CsScore>\r\n</CsoundSynthesizer>"
+    diskin2  \"9walk.wav\", kSpeed, iSkip, iLoop\r\n        outs      a1         
+    ; send audio to outputs\r\n  endin\r\n  \r\n  instr\t10 ; play audio from disk\r\nkSpeed 
+    init     1           ; playback speed\r\niSkip   init     0           ; inskip
+    into file (in seconds)\r\niLoop   init     0           ; looping switch (0=off
+    1=on)\r\n; read audio from disk using diskin2 opcode\r\na1      diskin2  \"10chant.wav\",
+    kSpeed, iSkip, iLoop\r\n        outs      a1          ; send audio to outputs\r\n 
+    endin\r\n</CsInstruments>\r\n\r\n<CsScore>\r\n\r\n\r\nf0 z \r\n\r\n</CsScore>\r\n</CsoundSynthesizer>"
   _csoundFileName: BaseSamples.csd
   _csoundAsset: {fileID: 102900000, guid: 7887d2d8fe32f54458f19c1cb4198457, type: 3}
   _channels: []
   _availableAudioChannels: []
-  _drawCsoundString: 0
+  _drawCsoundString: 1
   _drawTestScore: 1
   _drawSettings: 1
   _drawChannels: 1
@@ -243,3 +241,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CsoundUnity: {fileID: 3116979859021782599}
   queuedEvents: []
+  channelNames: []
+  sliders: []
+  multipliers: []

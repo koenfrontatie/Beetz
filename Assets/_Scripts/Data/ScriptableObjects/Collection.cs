@@ -13,8 +13,10 @@ public class GameObjectsSO : ScriptableObject
     public List<GameObject> Collection = new List<GameObject>();
 }
 
-//[CreateAssetMenu(fileName = "SampleObjectsSO", menuName = "Collections/Sample Objects", order = 1)]
-//public class SampleObjectsSO : ScriptableObject
-//{
-//    public List<SampleObject> Collection = new List<SampleObject>();
-//}
+[CreateAssetMenu(fileName = "TexturesSO", menuName = "Collections/Textures", order = 1)]
+public class Texture2DSO : ScriptableObject
+{
+    public List<Texture2D> Collection = new List<Texture2D>();
+}
+
+
