@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 1
+  m_EditorClassIdentifier: KVDW.Core::SampleObjectSO
+  ID: 1
+  Name: Bo Beat
+  Template: 1
+  SampleObject: {fileID: 326816431190379300, guid: 5999d41f1c48bfc40ad5ad4f9bb249a8,
+    type: 3}
+  Icon: {fileID: 2800000, guid: 48d43a37183d0db458e353161e9c2749, type: 3}

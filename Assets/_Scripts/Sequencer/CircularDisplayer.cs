@@ -68,7 +68,7 @@ public class CircularDisplayer : MonoBehaviour, IDisplayer
         {
             for (int i = 0; i < Steps.Count; i++)
             {
-                Steps[i].SetColor(Prefabs.Instance.PassiveStep);
+                Steps[i].SetColor(Config.PassiveStep);
             }
 
             return;
@@ -82,11 +82,11 @@ public class CircularDisplayer : MonoBehaviour, IDisplayer
 
                 if (c == ((_sequencer.CurrentStep - 1) % _sequencer.StepAmount))
                 {
-                    Steps[(r * _sequencer.StepAmount) + c].SetColor(Prefabs.Instance.ActiveStep);
+                    Steps[(r * _sequencer.StepAmount) + c].SetColor(Config.ActiveStep);
                 }
                 else
                 {
-                    Steps[(r * _sequencer.StepAmount) + c].SetColor(Prefabs.Instance.PassiveStep);
+                    Steps[(r * _sequencer.StepAmount) + c].SetColor(Config.PassiveStep);
                 }
             }
         }

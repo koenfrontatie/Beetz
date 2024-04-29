@@ -1,7 +1,7 @@
 using JetBrains.Annotations;
 using UnityEngine;
 
-public class InventorySlot : MonoBehaviour
+public class LibrarySlot : MonoBehaviour
 {
     public DragDropUI InventoryDragDropUI;
 
@@ -14,7 +14,7 @@ public class InventorySlot : MonoBehaviour
 
         InventoryDragDropUI = item;
 
-        if(item.TryGetComponent<SampleObject>(out var so))
+        if (item.TryGetComponent<SampleObject>(out var so))
         {
             GUID = so.SampleData.ID;
         }

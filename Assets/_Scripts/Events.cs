@@ -42,7 +42,9 @@ public static class Events
     public static Action<Sequencer> OnSendToScareCrow;
     public static Action<GameObject> OnStepsPlaced;
 
-    public static Action OnInventoryChange;
+    //public static Action OnInventoryChange;
+
+    public static Action<DragDropUI, InventorySlot> DragDropFoundNewContainer;
 
     public static Action<ProjectData> ProjectDataLoaded;
 

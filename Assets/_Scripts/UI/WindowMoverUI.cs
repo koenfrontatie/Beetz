@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -12,8 +13,30 @@ public class WindowMoverUI : MonoBehaviour
     float _distance;
     
     bool up = false;
+    //private void OnEnable()
+    //{
+    //    GameManager.StateChanged += OnStateChanged;
+    //}
 
-    async void ToggleAnimation()
+    ////public void OnStateChanged(GameState state)
+    ////{
+    ////    switch (state)
+    ////    {
+
+    ////        case GameState.Library:
+
+    ////            ToggleAnimation();
+
+    ////            break;
+    ////    }
+    ////}
+
+    //private void OnDisable()
+    //{
+    //    GameManager.StateChanged += OnStateChanged;
+    //}
+
+    public async void ToggleAnimation()
     {
         if(!up)
         {

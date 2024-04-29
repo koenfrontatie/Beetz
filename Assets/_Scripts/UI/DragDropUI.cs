@@ -6,23 +6,22 @@ public class DragDropUI : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
 {
     private Vector3 _startPosition;
     [SerializeField] private bool _resetPositionOnRelease = true;
-    //public void OnDrag(PointerEventData eventData)
-    //{
-    //    transform.position = eventData.position;
-    //}
+    [SerializeField] private Transform _parentWhileDragging;
+
+    private void Start()
+    {
+        _parentWhileDragging = GameObject.FindWithTag("DragParent").transform;
+    }
     public void OnDrag(PointerEventData eventData)
     {
-        //Vector3 vec = Camera.main.WorldToScreenPoint(transform.position);
-        //vec.x += eventData.delta.x;
-        //vec.y += eventData.delta.y;
         transform.position = eventData.position;
-        //myRectTransform.anchoredPosition = eventData.position / myCanvas.scaleFactor;
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (_resetPositionOnRelease)
             _startPosition = transform.position;
 
+        transform.SetParent(_parentWhileDragging);
         transform.SetAsLastSibling();
     }
 
@@ -31,39 +30,17 @@ public class DragDropUI : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         var hits = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, hits);
 
-        DragDropUI swapWith = null;
-
         foreach (var hit in hits)
         {
-            var droppedItem = hit.gameObject.GetComponent<DragDropUI>();
-
-            if (droppedItem && droppedItem != this)
-            {
-                droppedItem.transform.position = _startPosition;
-
-                swapWith = droppedItem;
-                break; 
-
-            }
-        }
-
-        foreach (var hit in hits)
-        {
-            var droppedContainer = hit.gameObject.GetComponent<InventorySlot>();
-
+            var droppedContainer = hit.gameObject.transform.GetComponent<InventorySlot>();
+            
             if (droppedContainer)
             {
-                _startPosition = droppedContainer.transform.position;
-                transform.position = droppedContainer.transform.position;
-
-               
-                if(swapWith != null)
-                {
-                    Events.ItemSwap?.Invoke(droppedContainer, this, swapWith);
-                    Events.OnInventoryChange?.Invoke();
-
-                }
+                //Debug.Log($"Dropped container is not null and is {droppedContainer.name}");
                 
+                _startPosition = droppedContainer.transform.position;  
+                
+                Events.DragDropFoundNewContainer?.Invoke(this, droppedContainer);
             }
         }
 

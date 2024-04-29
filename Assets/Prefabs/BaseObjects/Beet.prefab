@@ -79,7 +79,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SampleData:
     ID: 2
-    Name: Beet
+    Name: MC Beat
     Template: 2
 --- !u!1001 &5604027791894058703
 PrefabInstance:

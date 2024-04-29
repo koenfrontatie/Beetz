@@ -9,6 +9,7 @@ TagManager:
   - ContextDrag
   - Droppable
   - ContextScarecrow
+  - DragParent
   layers:
   - Default
   - TransparentFX

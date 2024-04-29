@@ -25,7 +25,7 @@ public class SampleDirectoryChecker : MonoBehaviour
 
         var betterfiles = BetterStreamingAssets.GetFiles("BaseSamples", "*.wav", SearchOption.AllDirectories);
         
-        Debug.Log(betterfiles.Length);
+        //Debug.Log(betterfiles.Length);
         
         for (int i = 0; i < betterfiles.Length; i++)
         {

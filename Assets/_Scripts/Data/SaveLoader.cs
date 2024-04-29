@@ -14,8 +14,6 @@ public class SaveLoader : MonoBehaviour
     public static SaveLoader Instance;
     
     private string _projectPath;
-    //private IDataService _dataService = new JsonDataService();
-    public IDCollection Library;
 
     private void Awake()
     {
@@ -27,11 +25,6 @@ public class SaveLoader : MonoBehaviour
         {
             Instance = this;
         }
-    }
-
-    private async void Start()
-    {
-        Library = await GetCustomSampleCollection();
     }
 
     #region Serialization methods
@@ -140,7 +133,7 @@ public class SaveLoader : MonoBehaviour
     {
         var strings = new List<string>();
 
-        var samplesPath = Utils.SampleSavepath;
+        var samplesPath = Path.Combine(Utils.ProjectSavepath, DataStorage.Instance.ProjectData.ID, "Samples");
 
         await Task.Run(() =>
         {
@@ -149,7 +142,7 @@ public class SaveLoader : MonoBehaviour
             for(int i = 0; i < sortedFiles.Count; i++)
             {
 
-                if (sortedFiles[i].Name == "BaseSamples") continue;
+                //if (sortedFiles[i].Name == "BaseSamples") continue;
 
                 strings.Add(sortedFiles[i].Name);
             }
@@ -163,7 +156,10 @@ public class SaveLoader : MonoBehaviour
 
     public async Task<Texture2D> GetIconFromGuid(string guid)
     {
-        var iconPath = Path.Combine(Utils.SampleSavepath, guid, "ico.png");
+        var samplesPath = Path.Combine(Utils.ProjectSavepath, DataStorage.Instance.ProjectData.ID, "Samples");
+
+        var iconPath = Path.Combine(samplesPath, guid, "ico.png");
+
         //Texture2D iconTexture = new Texture2D(150, 150, TextureFormat.ARGB32, false);
         Debug.Log(iconPath);
         
@@ -181,4 +177,17 @@ public class SaveLoader : MonoBehaviour
             return texture;
         }
     }
+
+    //-------------------------------- editor testing
+    #region
+    [SerializeField]
+    private string _projectGuidToLoadFromEditor;
+
+    public void LoadFromEditor()
+    {
+        var path = Path.Combine(Utils.ProjectSavepath, _projectGuidToLoadFromEditor, "ProjectData.json");
+        DeserializeProjectData(path);
+    }
+
+    #endregion
 }

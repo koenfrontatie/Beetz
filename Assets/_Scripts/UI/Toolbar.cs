@@ -2,44 +2,108 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using PlasticGui.WorkspaceWindow.Items;
 
 public class Toolbar : MonoBehaviour
 {
-    [SerializeField] Transform _TBC;
-    [SerializeField] Transform _TBI;
-
-    private InventorySlot[] _containers;
-    private SampleObject[] _toolbarSampleObjects;
-
-    private DragDropUI _dragDropUI;
-
-
+    //[SerializeField] Transform _TBC;
+    [SerializeField] private List<InventorySlot> _inventorySlots = new List<InventorySlot>();
+    private List<SampleObject> _toolbarSampleObjects= new List<SampleObject>();
 
     private void OnEnable()
     {
         Events.ProjectDataLoaded += OnProjectDataLoaded;
-        Events.ItemSwap += OnItemSwap;
         Events.SampleSelected += OnSampleSelected;
+        Events.DragDropFoundNewContainer += OnDragDropFoundNewContainer;
     }
 
-    private void Start()
+    private void OnDragDropFoundNewContainer(DragDropUI dragdrop, InventorySlot slot)
     {
-        _containers = new InventorySlot[Config.ToolbarCount]; // Ensure _containers is initialized properly
-        _toolbarSampleObjects = new SampleObject[Config.ToolbarCount];
+        InventorySlot oldSlot = null;
 
-        int slotCount = 0;
-
-        for (int i = 0; i < _TBC.childCount; i++)
+        for(int i = 0; i < _inventorySlots.Count; i++)
         {
-            if (_TBC.GetChild(i).TryGetComponent<InventorySlot>(out var slot))
+            if (_inventorySlots[i].InventoryDragDropUI == dragdrop)
             {
-                _containers[slotCount] = slot;
-                slotCount++;
-            } else
-            {
-                continue;
+                oldSlot = _inventorySlots[i];
+                break;
             }
         }
+
+        // swap 
+
+        DragDropUI dragDropToSwapWith = slot.InventoryDragDropUI;
+
+        if(dragDropToSwapWith != null && oldSlot != null)
+        {
+            oldSlot.Bind(dragDropToSwapWith);
+        }
+
+        slot.Bind(dragdrop);
+
+        UpdateToolbarConfiguration();
+    }
+
+    void UpdateToolbarConfiguration()
+    {
+        var data = new List<string>();
+
+        for(int i = 0; i < _inventorySlots.Count; i++)
+        {
+            if (_inventorySlots[i].InventoryDragDropUI.gameObject.TryGetComponent<SampleObject>(out var so))
+            {
+                data.Add(so.SampleData.ID);
+                _toolbarSampleObjects.Insert(i, so);
+            } else
+            {
+                data.Add("-1");
+            }
+        }
+
+        DataStorage.Instance.ProjectData.ToolbarConfiguration.IDC = data;
+    }
+
+    //private void Start()
+    //{
+    //    int slotCount = 0;
+
+    //    for (int i = 0; i < _TBC.childCount; i++)
+    //    {
+    //        if (_TBC.GetChild(i).GetChild(0).TryGetComponent<InventorySlot>(out var slot))
+    //        {
+    //            _inventorySlots.Insert(slotCount, slot);
+    //            slotCount++;
+    //        } else
+    //        {
+    //            continue;
+    //        }
+    //    }
+    //}
+
+    void OnProjectDataLoaded(ProjectData projectData)
+    {
+        // clear existing items
+        if (_toolbarSampleObjects.Count != 0)
+        {
+            foreach(var so in _toolbarSampleObjects)
+            {
+                Destroy(so.gameObject);
+            }
+
+            _toolbarSampleObjects.Clear();
+        }
+        // get project toolbar data
+        var copy = new List<string>(projectData.ToolbarConfiguration.IDC);
+       
+        AssignItems(copy);
+
+        SetToolbarItemsTransparent();
+    }
+
+    public void OnRefreshToolbar()
+    {
+        if (DataStorage.Instance.ProjectData.ToolbarConfiguration.IDC.Count == 0) return;
+        OnProjectDataLoaded(DataStorage.Instance.ProjectData);
     }
 
     public void AssignItems(List<string> library)
@@ -48,45 +112,28 @@ public class Toolbar : MonoBehaviour
         {
             for (int i = 0; i < library.Count; i++)
             {
-                if (i >= _containers.Length) return;
+                if (i >= _inventorySlots.Count) return;
 
                 if (library[i] == "-1") { continue; }
                 
-                //var item = _objectMaker.ToolbarItem(library[i]);
-                
                 var item = AssetBuilder.Instance.GetToolbarItem(library[i]);
 
-                item.transform.position = _containers[i].transform.position;
-
-                item.transform.SetParent(_TBI);
-
-                if (item.transform.TryGetComponent<SampleObject>(out var so))
+                if (item.transform.TryGetComponent<DragDropUI>(out var dragdrop))
                 {
-                    _containers[i].Bind(so);
-                    _toolbarSampleObjects[i] = so;
+                    _inventorySlots[i].Bind(dragdrop);
+                }
+
+                if(item.transform.TryGetComponent<SampleObject>(out var so))
+                {
+                    _toolbarSampleObjects.Insert(i, so);
                 }
 
                 item.transform.localScale = Vector3.one;
             }
         }
-        Events.OnInventoryChange?.Invoke();
     }
 
-    void OnProjectDataLoaded(ProjectData projectData)
-    {
-        if (_toolbarSampleObjects[0] != null)
-        {
-            foreach(var so in _toolbarSampleObjects)
-            {
-                Destroy(so.gameObject);
-            }
-        }
 
-        var copy = new List<string>(projectData.ToolbarConfiguration.IDC);
-        AssignItems(copy);
-
-        SetToolbarItemsTransparent();
-    }
 
     //void OnItemSwap(InventorySlot targetSlot, DragDropUI one, DragDropUI two)
     //{
@@ -116,46 +163,46 @@ public class Toolbar : MonoBehaviour
     //    _containers[oldIndexTwo].Bind(oneSO);
     //}
 
-    void OnItemSwap(InventorySlot targetSlot, DragDropUI one, DragDropUI two)
-    {
-        if (!one.transform.TryGetComponent<SampleObject>(out var oneSO)) return;
+    //void OnItemSwap(InventorySlot targetSlot, DragDropUI one, DragDropUI two)
+    //{
+    //    if (!one.transform.TryGetComponent<SampleObject>(out var oneSO)) return;
 
-        int oldIndexOne = Array.IndexOf(_toolbarSampleObjects, oneSO);
+    //    int oldIndexOne = Array.IndexOf(_toolbarSampleObjects, oneSO);
 
-        int targetSlotIndex = Array.IndexOf(_containers, targetSlot);
-        if (targetSlotIndex < 0 || targetSlotIndex >= _containers.Length)
-        {
-            Debug.LogError("Target index is out of bounds.");
-            return;
-        }
+    //    int targetSlotIndex = Array.IndexOf(_containers, targetSlot);
+    //    if (targetSlotIndex < 0 || targetSlotIndex >= _containers.Length)
+    //    {
+    //        Debug.LogError("Target index is out of bounds.");
+    //        return;
+    //    }
 
-        if (two == null)
-        {
-            _toolbarSampleObjects[targetSlotIndex] = oneSO;
-            _containers[targetSlotIndex].Bind(oneSO);
-            _toolbarSampleObjects[oldIndexOne] = null;
-            _containers[oldIndexOne].Bind(null);
-            return;
-        }
+    //    if (two == null)
+    //    {
+    //        _toolbarSampleObjects[targetSlotIndex] = oneSO;
+    //        _containers[targetSlotIndex].Bind(oneSO);
+    //        _toolbarSampleObjects[oldIndexOne] = null;
+    //        _containers[oldIndexOne].Bind(null);
+    //        return;
+    //    }
 
-        if (!two.transform.TryGetComponent<SampleObject>(out var twoSO)) return;
+    //    if (!two.transform.TryGetComponent<SampleObject>(out var twoSO)) return;
 
-        int oldIndexTwo = Array.IndexOf(_toolbarSampleObjects, twoSO);
-        if (oldIndexTwo < 0 || oldIndexTwo >= _toolbarSampleObjects.Length)
-        {
-            Debug.LogError("SampleObject index is out of bounds.");
-            return;
-        }
+    //    int oldIndexTwo = Array.IndexOf(_toolbarSampleObjects, twoSO);
+    //    if (oldIndexTwo < 0 || oldIndexTwo >= _toolbarSampleObjects.Length)
+    //    {
+    //        Debug.LogError("SampleObject index is out of bounds.");
+    //        return;
+    //    }
 
-        _toolbarSampleObjects[oldIndexOne] = twoSO;
-        _containers[oldIndexOne].Bind(twoSO);
-        _toolbarSampleObjects[oldIndexTwo] = oneSO;
-        _containers[oldIndexTwo].Bind(oneSO);
-    }
+    //    _toolbarSampleObjects[oldIndexOne] = twoSO;
+    //    _containers[oldIndexOne].Bind(twoSO);
+    //    _toolbarSampleObjects[oldIndexTwo] = oneSO;
+    //    _containers[oldIndexTwo].Bind(oneSO);
+    //}
 
     void OnSampleSelected(SampleObject sampleObject)
     {
-        for(int i = 0; i < _toolbarSampleObjects.Length; i++) {
+        for(int i = 0; i < _toolbarSampleObjects.Count; i++) {
 
             if (_toolbarSampleObjects[i] == null) continue;
 
@@ -179,7 +226,7 @@ public class Toolbar : MonoBehaviour
 
     void SetToolbarItemsTransparent()
     {
-        for (int i = 0; i < _toolbarSampleObjects.Length; i++)
+        for (int i = 0; i < _toolbarSampleObjects.Count; i++)
         {
 
             if (_toolbarSampleObjects[i] == null) continue;
@@ -198,7 +245,9 @@ public class Toolbar : MonoBehaviour
     private void OnDisable()
     {
         Events.ProjectDataLoaded -= OnProjectDataLoaded;
-        Events.ItemSwap -= OnItemSwap;
+        //Events.ItemSwap -= OnItemSwap;
+        Events.DragDropFoundNewContainer -= OnDragDropFoundNewContainer;
+
         Events.SampleSelected -= OnSampleSelected;
     }
 }

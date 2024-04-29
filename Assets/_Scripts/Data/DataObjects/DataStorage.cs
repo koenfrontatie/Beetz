@@ -48,6 +48,8 @@ public class DataStorage : MonoBehaviour
         GameManager.Instance.UpdateState(GameState.Gameplay);
         ProjectData = newdata;
         Events.LoadingToolbar?.Invoke(data.ToolbarConfiguration.IDC);
+        AssetBuilder.Instance.SearchForCustomSamples();
+        //AssetBuilder.Instance.FindCustomTextures();
     }
 
     public void AddSequencer(Sequencer sequencer)

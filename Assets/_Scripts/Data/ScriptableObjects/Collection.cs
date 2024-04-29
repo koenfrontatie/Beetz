@@ -19,4 +19,15 @@ public class Texture2DSO : ScriptableObject
     public List<Texture2D> Collection = new List<Texture2D>();
 }
 
+[CreateAssetMenu(fileName = "SampleObjectSO", menuName = "SampleObject", order = 1)]
+public class SampleObjectSO : ScriptableObject
+{
+    public string ID;
+    public string Name;
+    public int Template;
+    
+    public SampleObject SampleObject;
+    public Texture2D Icon;
+}
+
 

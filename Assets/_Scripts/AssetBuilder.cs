@@ -1,4 +1,5 @@
 
+using Codice.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,13 +44,13 @@ public class AssetBuilder : MonoBehaviour
     private void OnEnable()
     {
         Events.SampleSelected += (so) => SelectedGuid = so.SampleData.ID;
-
+        //Events.ProjectDataLoaded += (data) => SearchForCustomSamples();
     }
 
-    private void Start()
-    {
-        SearchForCustomSamples();
-    }
+    //private void Start()
+    //{
+    //    SearchForCustomSamples();
+    //}
     //void Update()
     //{
     //    if (Input.GetKeyDown(KeyCode.Backspace))
@@ -59,13 +60,14 @@ public class AssetBuilder : MonoBehaviour
     //    }
     //}
     
-    async void SearchForCustomSamples()
+    public async void SearchForCustomSamples()
     {
         CustomSamples = await SaveLoader.Instance.GetCustomSampleCollection();
-        //FindCustomTextures();
+        //DataStorage.Instance.Cu
+        FindCustomTextures();
     }
 
-    async void FindCustomTextures()
+    public async void FindCustomTextures()
     {
         for (int i = 0; i < CustomSamples.IDC.Count; i++)
         {
@@ -77,7 +79,7 @@ public class AssetBuilder : MonoBehaviour
     {
         if (guid.Length < 3) // if template
         {
-            return (_templateSampleObjects.Collection[int.Parse(guid)]);
+            return _templateSampleObjects.Collection[int.Parse(guid)];
         } else
         {
             throw new NotImplementedException();
@@ -110,14 +112,17 @@ public class AssetBuilder : MonoBehaviour
 
             var template = int.Parse(guid);
 
-            image.texture = Prefabs.Instance.BaseIcons[template];
+            image.texture = _templateIcons.Collection[template];
 
-            so.SampleData = Prefabs.Instance.BaseObjects[template].SampleData;
+            so.SampleData = _templateSampleObjects.Collection[template].SampleData;
 
             return item;
         }
 
         // to do ---- load non templates
+
+        image.texture = AssetBuilder.Instance.CustomSampleIcons[0];
+        so.SampleData = _templateSampleObjects.Collection[0].SampleData;
 
         return item;
     }

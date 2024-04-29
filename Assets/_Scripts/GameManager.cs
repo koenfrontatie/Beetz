@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviour
 
         StateChanged?.Invoke(state);
     }
-    public void OpenMenu()
+    public void OpenMenu() // for button
     {
         if (State != GameState.Menu)
         {
@@ -59,7 +59,17 @@ public class GameManager : MonoBehaviour
             UpdateState(GameState.Gameplay);
         }
     }
-
+    public void OpenLibrary() // for button
+    {
+        if (State != GameState.Library)
+        {
+            UpdateState(GameState.Library);
+        }
+        else
+        {
+            UpdateState(GameState.Gameplay);
+        }
+    }
     public void ExitApplication()
     {
         Application.Quit();
