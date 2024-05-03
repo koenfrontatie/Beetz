@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: BaseTexturesSO
+  m_Name: TexturesSO
   m_EditorClassIdentifier: KVDW.Core::Texture2DSO
   Collection:
   - {fileID: 2800000, guid: ec34f9c12407ce248874f63a67ec85c8, type: 3}

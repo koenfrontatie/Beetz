@@ -110,6 +110,14 @@ public class SampleData
     public string Name;
     public int Template;
 
+    public string fx1;
+    public string fx2;
+    public string fx3;
+
+    public float fx1Value;
+    public float fx2Value;
+    public float fx3Value;
+
     public SampleData(string id, string name, int template)
     {
         ID = id;

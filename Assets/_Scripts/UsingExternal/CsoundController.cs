@@ -82,7 +82,7 @@ public class CsoundController : MonoBehaviour
         
         for(int i = 0; i < channelNames.Count; i++)
         {
-            CsoundUnity.SetChannel(channelNames[i], (double)sliders[i].value * multipliers[0]);
+            CsoundUnity.SetChannel(channelNames[i], (float)sliders[i].value * multipliers[0]);
         }
     }
 
