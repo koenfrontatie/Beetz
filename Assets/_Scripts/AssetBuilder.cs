@@ -21,9 +21,9 @@ public class AssetBuilder : MonoBehaviour
     [Space(10)]
     [Header("Template Prefabs")]
     [SerializeField]
-    private SampleObjectsSO _templateSampleObjects;
+    private SampleObjectCollection _templateSampleObjects;
     [SerializeField]
-    private Texture2DSO _templateIcons;
+    private TextureCollection _templateIcons;
 
     [SerializeField]
     private GameObject _toolbarItemTemplate;

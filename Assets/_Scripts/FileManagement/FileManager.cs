@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine.Android;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace FileManagement
 {
@@ -146,6 +147,7 @@ namespace FileManagement
         public async void MakeSelectedIntoUnique()
         {
             await MakeSamplePathIntoUnique(SelectedSamplePath);
+            RefreshUnique();
         }
 
         void CheckAndroidPermissions()
@@ -172,5 +174,25 @@ namespace FileManagement
             SelectedSamplePath = path;
             NewSampleSelected?.Invoke(SelectedSamplePath);
         }
+
+        public void DeleteUniqueSample()
+        {
+            //Directory.Delete(path, true);
+            //InitializeUniqueSamples();
+
+            FileInfo fInfo = new FileInfo(SelectedSamplePath);
+
+            var dirName = fInfo.Directory.Name;
+
+            if(dirName.Contains("BaseSamples"))
+            {
+                Debug.Log("Attempted to delete base sample");
+                return;
+            }
+
+            Directory.Delete(fInfo.Directory.FullName, true);
+
+            RefreshUnique();
+        }   
     }
 }

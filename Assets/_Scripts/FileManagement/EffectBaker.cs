@@ -2,22 +2,95 @@ using UnityEngine;
 using NWaves.Audio;
 using NWaves.Effects;
 using System.IO;
-using NWaves.Utils;
-using NWaves.Signals;
+using Un4seen.Bass;
+using System;
+using Un4seen.Bass.AddOn.Enc;
 
 namespace FileManagement
 {
     public class EffectBaker : MonoBehaviour
     {
         FileManager _fileviewer;
+
         private void Awake()
         {
             _fileviewer = GameObject.FindObjectOfType<FileManager>();
         }
+        private void Start()
+        {
+            bool isInitialized = Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero);
+            if (!isInitialized)
+            {
+                Debug.LogError("Failed to initialize BASS library.");
+                return;
+            }
+        }
+
+
+#region DSP
+        
+        private byte[] _encbuffer = new byte[12048];
+        public void AddReverbToSelectedSample()
+        {
+            var renameOriginal = _fileviewer.SelectedSamplePath.Remove(_fileviewer.SelectedSamplePath.Length - 4, 4) + $"{System.DateTime.Now.GetHashCode()}.wav";
+            File.Move(_fileviewer.SelectedSamplePath, renameOriginal);
+            AddReverb(renameOriginal, _fileviewer.SelectedSamplePath);
+            File.Delete(renameOriginal);
+        }
+        public void AddReverb(string inputSamplePath, string outputSamplePath)
+        {
+
+            var decoder = Bass.BASS_StreamCreateFile(inputSamplePath, 0, 0, BASSFlag.BASS_STREAM_DECODE);
+            
+            BASS_CHANNELINFO info = Bass.BASS_ChannelGetInfo(decoder);
+            
+            Debug.Log(info.origres);
+
+            BASSEncode fpflag = BASSEncode.BASS_ENCODE_DEFAULT;
+            
+            
+            if (info.origres != 0)
+            {
+                if (info.origres > 24) fpflag = BASSEncode.BASS_ENCODE_FP_32BIT;
+
+                else if (info.origres > 16) fpflag = BASSEncode.BASS_ENCODE_FP_24BIT;
+
+                else if (info.origres > 8) fpflag = BASSEncode.BASS_ENCODE_FP_16BIT;
+
+                else if (info.origres != 0) fpflag = BASSEncode.BASS_ENCODE_FP_8BIT;
+            }
+
+            var rev = BASSFXType.BASS_FX_DX8_REVERB;
+            int effectHandle = Bass.BASS_ChannelSetFX(decoder, rev, 1);
+
+            BASS_DX8_REVERB reverbParameters = new BASS_DX8_REVERB
+            {
+                fInGain = -3f,
+                fReverbMix = -5f,
+                fReverbTime = 900f,
+                fHighFreqRTRatio = 0.5f,
+            };
+
+            if (!Bass.BASS_FXSetParameters(effectHandle, reverbParameters))
+            {
+                Debug.LogError("Failed to set reverb parameters.");
+                return;
+            }
+
+            var encoder = BassEnc.BASS_Encode_Start(decoder, outputSamplePath, BASSEncode.BASS_ENCODE_PCM | BASSEncode.BASS_ENCODE_AUTOFREE | fpflag, null, IntPtr.Zero);
+
+            int counter = 0;
+            
+            while (Bass.BASS_ChannelIsActive(decoder) == BASSActive.BASS_ACTIVE_PLAYING && BassEnc.BASS_Encode_IsActive(encoder) == BASSActive.BASS_ACTIVE_PLAYING && counter < 80000)
+            {
+                Bass.BASS_ChannelGetData(decoder, _encbuffer, 6500);
+                Debug.Log("Encoding");
+                counter++;
+            }
+        }
         public void AddDistortion()
         {
             var path = _fileviewer.SelectedSamplePath;
-
             WaveFile waveFile;
             
             FileStream readStream;
@@ -35,152 +108,15 @@ namespace FileManagement
 
             FileStream writeStream;
 
-            waveFile.SaveTo(writeStream = new FileStream($"{Path.Combine(Application.persistentDataPath, path)}", FileMode.Create));
-
+            //waveFile.SaveTo(writeStream = new FileStream($"{Path.Combine(Application.persistentDataPath, path)}", FileMode.Create));
+            waveFile.SaveTo(writeStream = new FileStream(path, FileMode.Create));
             writeStream.Close();
         }
 
-        public void AddReverb()
+#endregion
+        void OnDestroy()
         {
-            var path = _fileviewer.SelectedSamplePath;
-
-            WaveFile waveFile;
-
-            FileStream readStream;
-
-            using (readStream = new FileStream(path, FileMode.Open))
-            {
-                waveFile = new WaveFile(readStream);
-            }
-
-            readStream.Close();
-
-            var rev = new Reverb(.99f, .2f);
-            var outputsignal = rev.ApplyTo(waveFile.Signals[0]);
-            waveFile.Signals[0] = outputsignal;
-
-            FileStream writeStream;
-
-            waveFile.SaveTo(writeStream = new FileStream($"{Path.Combine(Application.persistentDataPath, path)}", FileMode.Create));
-
-            writeStream.Close();
-        }
-
-
-        //public void AddReverb()
-        //{
-        //    var path = _fileviewer.SelectedSamplePath;
-
-        //    WaveFile waveFile;
-
-        //    using (var stream = new FileStream(path, FileMode.Open))
-        //    {
-        //        waveFile = new WaveFile(stream);
-        //    }
-
-        //    // Define delay parameters to simulate reverb
-        //    var samplingRate = waveFile.Signals[0].SamplingRate; // Use the sample rate of the wave file
-        //    var delayTimes = new[] { 0.1f, 0.11f, 0.12f }; // Array of delay times in seconds
-        //    var feedback = 0.7f; // Feedback factor (0 to 1)
-        //    var interpolationMode = InterpolationMode.Linear; // Choose an interpolation mode
-        //    var reserveDelay = 1.0f; // Reserve delay time in seconds
-
-        //    // Initialize a signal to hold the output
-        //    DiscreteSignal outputSignal = waveFile.Signals[0].Copy();
-
-        //    // Apply multiple delay effects to simulate reverb
-        //    foreach (var delayTime in delayTimes)
-        //    {
-        //        var delay = new DelayEffect(samplingRate, delayTime, feedback, interpolationMode, reserveDelay);
-        //        var delayedSignal = delay.ApplyTo(waveFile.Signals[0], NWaves.Filters.Base.FilteringMethod.DifferenceEquation);
-        //        outputSignal = outputSignal + delayedSignal; // Use the + operator for superimposition
-        //    }
-
-        //    // Normalize the output signal to prevent clipping
-        //    outputSignal.NormalizeMax(1);
-
-        //    // Replace the original signal with the processed signal
-        //    waveFile.Signals[0] = outputSignal;
-
-        //    // Save the processed wave file to a new file
-        //    using (var outputStream = new FileStream(path, FileMode.Create))
-        //    {
-        //        waveFile.SaveTo(outputStream);
-        //    }
-        //}
-
-
-        // Update is called once per frame
-        void Update()
-        {
-            //WaveFile waveFile;
-
-            //using (var stream = new FileStream($"{Path.Combine(Application.persistentDataPath, "snare.wav")}", FileMode.Open))
-            //{
-            //    waveFile = new WaveFile(stream);
-            //}
-            //var dist = new DistortionEffect(DistortionMode.SoftClipping, 40, -20);
-            //var outputsignal = dist.ApplyTo(waveFile.Signals[0], NWaves.Filters.Base.FilteringMethod.DifferenceEquation);
-            //waveFile.Signals[0] = outputsignal;
-            //waveFile.SaveTo(new FileStream($"{Path.Combine(Application.persistentDataPath, "babebabebab.wav")}", FileMode.Create));
-
-            //WaveFile waveFile;
-
-            //// Load the original wave file
-            //using (var stream = new FileStream($"{Path.Combine(Application.persistentDataPath, "input.wav")}", FileMode.Open))
-            //{
-            //    waveFile = new WaveFile(stream);
-            //}
-
-            //// Create silence segment
-            //var silenceDuration = 0.2; // in seconds
-            //var silenceLength = (int)(silenceDuration * waveFile.Signals[0].SamplingRate);
-            //var silenceSignal = DiscreteSignal.Constant(0, silenceLength, waveFile.Signals[0].SamplingRate);
-
-            //// Concatenate input with silence
-            //var concatenatedSignal = new DiscreteSignal(waveFile.Signals[0].SamplingRate * 10 * (waveFile.Signals[0].Length + silenceLength * 10));
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    concatenatedSignal.AddRange(waveFile.Signals[0]);
-            //    concatenatedSignal.AddRange(silenceSignal);
-            //}
-
-            //// Convolution (block convolution or any other method you prefer)
-            //// This step is optional depending on your specific requirements
-
-            //// Save the convolved signal
-            //WaveFile convolvedWaveFile = new WaveFile(waveFile.Signals[0].SamplingRate, waveFile.BitsPerSample, waveFile.Channels);
-            //convolvedWaveFile.SetData(0, concatenatedSignal);
-            //convolvedWaveFile.SaveTo(new FileStream($"{Path.Combine(Application.persistentDataPath, "output.wav")}", FileMode.Create));
-
-
-
-            //WaveFile waveFile;
-
-            //// Load the original wave file
-            //using (var stream = new FileStream($"{Path.Combine(Application.persistentDataPath, "snare.wav")}", FileMode.Open))
-            //{
-            //    waveFile = new WaveFile(stream);
-            //}
-
-            //// Apply distortion effect
-            //var dist = new DistortionEffect(DistortionMode.SoftClipping, 40, -20);
-            //var outputsignal = dist.ApplyTo(waveFile.Signals[0], NWaves.Filters.Base.FilteringMethod.DifferenceEquation);
-            //waveFile.Signals[0] = outputsignal;
-
-            //// Repeat the signal 10 times with 0.2 seconds of silence in between
-            //var repeatedSignal = new DiscreteSignal(outputsignal.SamplingRate * 10 * (outputsignal.Signals[0].Length + (int)(0.2 * outputsignal.SamplingRate)));
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    repeatedSignal.Concatenate(outputsignal);
-            //    repeatedSignal.Concatenate(DiscreteSignal.Constant((int)(0.2 * outputsignal.SamplingRate)));
-            //}
-
-            //// Update the wave file with the repeated signal
-            //waveFile.Signals[0] = repeatedSignal;
-
-            //// Save the modified wave file
-            //waveFile.SaveTo(new FileStream($"{Path.Combine(Application.persistentDataPath, "babebabebab.wav")}", FileMode.Create));
+            Bass.BASS_Free();
         }
     }
 }

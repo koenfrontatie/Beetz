@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LabDisplayer : MonoBehaviour
 {
-    [SerializeField] SampleObjectsSO _templateObjects;
+    [SerializeField] SampleObjectCollection _templateObjects;
 
     public SampleObject SelectedTemplate;
 

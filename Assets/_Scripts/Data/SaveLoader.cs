@@ -133,7 +133,7 @@ public class SaveLoader : MonoBehaviour
     {
         var strings = new List<string>();
 
-        var samplesPath = Path.Combine(Utils.ProjectSavepath, DataStorage.Instance.ProjectData.ID, "Samples");
+        var samplesPath = Path.Combine(Utils.SaveFilesPath, "Samples", DataStorage.Instance.ProjectData.ID);
 
         await Task.Run(() =>
         {
