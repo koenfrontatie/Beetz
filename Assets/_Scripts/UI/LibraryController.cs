@@ -20,7 +20,7 @@ public class LibraryController : MonoBehaviour
         {
             for (int i = 0; i < _infoTiles.Count; i++)
             {
-                Destroy(_infoTiles[i].gameObject);
+                if(_infoTiles[i].gameObject != null) Destroy(_infoTiles[i].gameObject);
             }
         }
 

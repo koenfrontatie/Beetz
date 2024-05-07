@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -50,15 +51,19 @@ public class AssetBuilder : MonoBehaviour
     //{
     //    SearchForCustomSamples();
     //}
-    //void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.Backspace))
-    //    {
-    //        Debug.Log("Backspace");
-    //        FindCustomTextures();
-    //    }
-    //}
-    
+    void Update()
+    {
+        //if (Input.GetKeyDown(KeyCode.Backspace))
+        //{
+        //    Debug.Log("Backspace");
+        //    FindCustomTextures();
+        //}
+
+        if (Input.GetKeyDown(KeyCode.S)) {
+            SaveLoader.Instance.SaveData(Path.Combine(Utils.SampleSavepath, _templateSampleObjects.Collection[int.Parse(SelectedGuid)].SampleData.ID, ".json"), _templateSampleObjects.Collection[int.Parse(SelectedGuid)].SampleData);
+        }
+    }
+
     public async void SearchForCustomSamples()
     {
         CustomSamples = await SaveLoader.Instance.GetCustomSampleCollection();
@@ -70,7 +75,18 @@ public class AssetBuilder : MonoBehaviour
     {
         for (int i = 0; i < CustomSamples.IDC.Count; i++)
         {
-            CustomSampleIcons.Insert(i, await SaveLoader.Instance.GetIconFromGuid(CustomSamples.IDC[i]));
+            var icon = await SaveLoader.Instance.GetIconFromGuid(CustomSamples.IDC[i]);
+
+            if (icon == null)
+            {
+                Debug.LogError("Icon is null");
+                //CustomSampleIcons.Insert(i, await SaveLoader.Instance.GetIconFromGuid("2"));
+                continue;
+            } else
+            {
+                CustomSampleIcons.Insert(i, icon);
+            }
+
         }
     }
 

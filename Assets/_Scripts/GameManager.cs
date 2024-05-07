@@ -23,8 +23,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        UpdateState(GameState.Gameplay);
-        DataStorage.Instance.OpenNewProject();
+        DataStorage.Instance.OpenLastProject();
     }
 
     public void UpdateState(GameState state)

@@ -162,5 +162,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SampleData:
     ID: 4
-    Name: Carrot
+    Name: Jim Carrot
     Template: 4
+    Effects: 
+    EffectValues: []

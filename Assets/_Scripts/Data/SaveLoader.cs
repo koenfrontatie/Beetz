@@ -13,8 +13,6 @@ public class SaveLoader : MonoBehaviour
 {
     public static SaveLoader Instance;
     
-    private string _projectPath;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -30,17 +28,15 @@ public class SaveLoader : MonoBehaviour
     #region Serialization methods
 
     public void SerializeProjectData()
-    {
-        _projectPath = Path.Combine(Utils.ProjectSavepath, DataStorage.Instance.ProjectData.ID);
+    {        
+        var _filePath = Path.Combine(DataStorage.Instance.ProjectPath, "ProjectData.json");
         
-        var _filePath = Path.Combine(_projectPath, "ProjectData.json");
-        
-        Utils.CheckForCreateDirectory(_projectPath);
+        Utils.CheckForCreateDirectory(DataStorage.Instance.ProjectPath);
 
         SaveData(_filePath, DataStorage.Instance.ProjectData);
     }
 
-    private bool SaveData<T>(string path, T data)
+    public bool SaveData<T>(string path, T data)
     {
         try
         {
@@ -83,23 +79,45 @@ public class SaveLoader : MonoBehaviour
     /// </summary>
     /// <param name="url">full path to json file</param>
     /// 
-    public async void DeserializeProjectData(string url)
+    //public async void DeserializeProjectData(string url)
+    //{
+
+    //    //var _filePath = Path.Combine(_projectPath, "ProjectData.json");
+
+    //    //Utils.CheckForCreateDirectory(_projectPath);
+
+    //    //SaveData(_filePath, DataStorage.Instance.ProjectData);
+
+    //    string jsonData = await FetchJsonDataAsync(url);
+
+    //    ProjectData projectData = await DeserializeJsonAsync(jsonData);
+
+    //    if(projectData.ID == "1") // if new project
+    //    {
+    //        projectData.ID = NewGuid();
+    //        //Utils.CheckForCreateDirectory(Path.Combine(Utils.ProjectSavepath, projectData.ID));
+    //        SaveData(Path.Combine(Utils.ProjectSavepath, projectData.ID, "ProjectData.json"), projectData);
+    //        //Debug.Log($"{url} {projectData}");
+    //    }
+        
+    //    var projectDir = Path.Combine(Utils.ProjectSavepath, projectData.ID);
+    //    Utils.CheckForCreateDirectory(projectDir);
+    //    DataStorage.Instance.ProjectPath = projectDir;
+
+    //    Events.ProjectDataLoaded?.Invoke(projectData);
+
+
+    //    Debug.Log($"Deserialized object: {projectData}");
+    //}
+
+    public async Task<ProjectData> DeserializeProjectData(string url)
     {
-        //_projectPath = Path.Combine(Utils.ProjectSavepath, DataStorage.Instance.ProjectData.ID);
-
-        //var _filePath = Path.Combine(_projectPath, "ProjectData.json");
-
-        //Utils.CheckForCreateDirectory(_projectPath);
-
-        //SaveData(_filePath, DataStorage.Instance.ProjectData);
 
         string jsonData = await FetchJsonDataAsync(url);
 
-        ProjectData myObject = await DeserializeJsonAsync(jsonData);
+        ProjectData projectData = await DeserializeJsonAsync(jsonData);
 
-        Events.ProjectDataLoaded?.Invoke(myObject);
-
-        Debug.Log($"Deserialized object: {myObject}");
+        return projectData;
     }
 
     private async Task<string> FetchJsonDataAsync(string url)
@@ -133,7 +151,9 @@ public class SaveLoader : MonoBehaviour
     {
         var strings = new List<string>();
 
-        var samplesPath = Path.Combine(Utils.SaveFilesPath, "Samples", DataStorage.Instance.ProjectData.ID);
+        var samplesPath = Path.Combine(Utils.SampleSavepath, DataStorage.Instance.ProjectData.ID);
+        Debug.Log($"samplespath= {samplesPath}");
+        Utils.CheckForCreateDirectory(samplesPath);
 
         await Task.Run(() =>
         {
@@ -156,13 +176,11 @@ public class SaveLoader : MonoBehaviour
 
     public async Task<Texture2D> GetIconFromGuid(string guid)
     {
-        var samplesPath = Path.Combine(Utils.ProjectSavepath, DataStorage.Instance.ProjectData.ID, "Samples");
-
-        var iconPath = Path.Combine(samplesPath, guid, "ico.png");
+        var iconPath = Path.Combine(Utils.SampleSavepath, DataStorage.Instance.ProjectData.ID, guid, "ico.png");
 
         //Texture2D iconTexture = new Texture2D(150, 150, TextureFormat.ARGB32, false);
         Debug.Log(iconPath);
-        
+
         using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(iconPath))
         {
             await www.SendWebRequest();

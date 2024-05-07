@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class DataStorage : MonoBehaviour
@@ -8,6 +10,8 @@ public class DataStorage : MonoBehaviour
 
     [Header("Current Project")]
     public ProjectData ProjectData;
+
+    public string ProjectPath;
 
     private void Awake()
     {
@@ -20,33 +24,60 @@ public class DataStorage : MonoBehaviour
             Instance = this;
         }
     }
-    private void OnEnable()
-    {
-        Events.ProjectDataLoaded += OnProjectDataLoaded;
-    }
 
-    private void OnDisable()
-    {
-        Events.ProjectDataLoaded -= OnProjectDataLoaded;
-    }
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.S)) SaveLoader.Instance.SerializeProjectData();
+        //if (Input.GetKeyDown(KeyCode.S)) /*SaveLoader.Instance.SerializeProjectData();*/ SaveLoader.Instance.SaveData(int.Parse(AssetBuilder.Instance.SelectedGuid));
         //if (Input.GetKeyDown(KeyCode.L)) SaveLoader.Instance.LoadProjectInfoAsync("1", Events.ProjectDataLoaded);
     }
 
-    public void OpenNewProject()
+    public async void OpenLastProject()
     {
-        //SaveLoader.Instance.LoadProjectDataAsyncFullPath(Path.Combine(Application.streamingAssetsPath, "ProjectData.json"), Events.ProjectDataLoaded);
-        SaveLoader.Instance.DeserializeProjectData(Path.Combine(Application.streamingAssetsPath, "ProjectData.json"));
-        Events.OpenNewProject?.Invoke();
+        var dirInfo = new DirectoryInfo(Utils.ProjectSavepath);
+        var projectDirectories = dirInfo.GetDirectories().OrderByDescending(d => d.LastWriteTime).ToList();
+
+        if (projectDirectories.Count > 0) // if there are projects available, open the most recent
+        {
+            ProjectPath = projectDirectories[0].FullName;
+            var projectDataPath = Path.Combine(ProjectPath, "ProjectData.json");
+            //SaveLoader.Instance.DeserializeProjectData(projectDataPath);
+            var projectData = await SaveLoader.Instance.DeserializeProjectData(projectDataPath);
+            OnProjectDataLoaded(projectData);
+
+            //Events.OpenNewProject?.Invoke();
+        }
+        else // if there are no projects available, open a new project
+        {
+            await OpenNewProject();
+        }
+
+        Events.ProjectDataLoaded?.Invoke(ProjectData);
+    }
+
+    public async void OpenNewProjectVoid() {
+        await OpenNewProject();
+    }
+    
+    public async Task OpenNewProject()
+    {
+        var newGUID = SaveLoader.Instance.NewGuid();
+        ProjectPath = Path.Combine(Utils.ProjectSavepath, newGUID);
+        var newSampleDirectory = Path.Combine(Utils.SampleSavepath, newGUID);
+        Utils.CheckForCreateDirectory(ProjectPath);
+        Utils.CheckForCreateDirectory(newSampleDirectory);
+        var projectData = await SaveLoader.Instance.DeserializeProjectData(Path.Combine(Application.streamingAssetsPath, "ProjectData.json"));
+        projectData.ID = newGUID;
+        SaveLoader.Instance.SaveData(Path.Combine(ProjectPath, "ProjectData.json"), projectData);
+        OnProjectDataLoaded(projectData);
+
+        Events.ProjectDataLoaded?.Invoke(ProjectData);
     }
 
     public void OnProjectDataLoaded(ProjectData data)
     {
         var newdata = new ProjectData(data.ID, data.PlaylistData, data.ToolbarConfiguration, data.SampleCollection, data.SequencerDataCollection);
-        GameManager.Instance.UpdateState(GameState.Gameplay);
         ProjectData = newdata;
+        GameManager.Instance.UpdateState(GameState.Gameplay);
         Events.LoadingToolbar?.Invoke(data.ToolbarConfiguration.IDC);
         AssetBuilder.Instance.SearchForCustomSamples();
         //AssetBuilder.Instance.FindCustomTextures();
@@ -110,20 +141,25 @@ public class SampleData
     public string Name;
     public int Template;
 
-    public string fx1;
-    public string fx2;
-    public string fx3;
+    public List<EffectType> Effects;
+    public List<float> EffectValues;
 
-    public float fx1Value;
-    public float fx2Value;
-    public float fx3Value;
-
-    public SampleData(string id, string name, int template)
+    public SampleData(string id, string name, int template, List<EffectType> effects, List<float> effectValues)
     {
         ID = id;
         Name = name;
         Template = template;
+        Effects = effects;
+        EffectValues = effectValues;
     }
+}
+
+public enum EffectType
+{
+    Reverb,
+    Distortion,
+    Delay,
+    Chorus
 }
 
 [System.Serializable]

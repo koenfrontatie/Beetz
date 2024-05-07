@@ -79,8 +79,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SampleData:
     ID: 2
-    Name: MC Beat
+    Name: Bo Beat
     Template: 2
+    Effects: 
+    EffectValues: []
 --- !u!1001 &5604027791894058703
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -9,9 +9,9 @@ public static class Utils
     public static readonly string SaveFilesPath = Path.Combine(PersistentDataPath, "SaveFiles");
 
     public static readonly string ProjectSavepath = Path.Combine(SaveFilesPath, "Projects");
-    public static readonly string SampleSavepath = Path.Combine(SaveFilesPath, "Samples");
-    public static readonly string PersistentBaseSamples = Path.Combine(SampleSavepath, "BaseSamples");
-    public static readonly string SequencerSavepath = Path.Combine(SaveFilesPath, "Sequencers");
+    public static readonly string SampleSavepath = Path.Combine(SaveFilesPath, "UniqueSamples");
+    public static readonly string PersistentBaseSamples = Path.Combine(SaveFilesPath, "BaseSamples");
+    //public static readonly string SequencerSavepath = Path.Combine(SaveFilesPath, "Sequencers");
     //public static readonly string SaveFilesSolarSystems = SaveFilesPath + "/SolarSystems";
     //public static readonly string SaveFilesSolarSystemsScreenshots = SaveFilesSolarSystems + "/screenshots
 
@@ -24,6 +24,7 @@ public static class Utils
         Directory.CreateDirectory(directory);
         return false;
     }
+
 
     public static bool CheckForFile(string path)
     {

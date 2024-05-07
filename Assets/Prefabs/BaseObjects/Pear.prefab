@@ -79,8 +79,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SampleData:
     ID: 8
-    Name: Pear
+    Name: Pete Pear
     Template: 8
+    Effects: 
+    EffectValues: []
 --- !u!1001 &7565425342184728906
 PrefabInstance:
   m_ObjectHideFlags: 0

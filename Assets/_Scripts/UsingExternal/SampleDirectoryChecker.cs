@@ -15,10 +15,15 @@ public class SampleDirectoryChecker : MonoBehaviour
     {
         BetterStreamingAssets.Initialize();
         
+        Utils.CheckForCreateDirectory(Utils.ProjectSavepath);
+        Utils.CheckForCreateDirectory(Utils.SampleSavepath);
+        //Utils.CheckForCreateDirectory(Utils.ProjectSavepath);
+
         Utils.CheckForCreateDirectory(Utils.PersistentBaseSamples);
 
+
         // --------------------------------------------------- finds all basesamples in streamingassets
- 
+
         var targetDir = Utils.PersistentBaseSamples;
         
         Utils.CheckForCreateDirectory(targetDir);
@@ -44,7 +49,7 @@ public class SampleDirectoryChecker : MonoBehaviour
 
     async Task ReadBaseSamples(string url)
     {
-        string pathToCheck = Path.Combine(Utils.SampleSavepath, url);
+        string pathToCheck = Path.Combine(Utils.SaveFilesPath, url);
         await Task.Run(() =>
         {
             if (!File.Exists(pathToCheck))

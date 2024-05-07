@@ -421,8 +421,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SampleData:
     ID: 5
-    Name: Cauliflower
+    Name: Cari Cauliflower
     Template: 5
+    Effects: 
+    EffectValues: []
 --- !u!1 &5037278375174605050
 GameObject:
   m_ObjectHideFlags: 0
