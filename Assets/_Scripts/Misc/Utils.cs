@@ -49,4 +49,22 @@ public static class Utils
 
         obj.transform.position = targetPosition;
     }
+
+    public async static Task LerpRectToTarget(RectTransform rect, Vector3 targetPosition, float duration)
+    {
+        var LerpCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+        Vector3 initialPosition = rect.position;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            float t = elapsedTime / duration;
+            float curveValue = LerpCurve.Evaluate(t);
+            rect.position = Vector3.Lerp(initialPosition, targetPosition, curveValue);
+            await Task.Yield();
+            elapsedTime += Time.deltaTime;
+        }
+
+        rect.position = targetPosition;
+    }
 }

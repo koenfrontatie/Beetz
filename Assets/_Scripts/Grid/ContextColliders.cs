@@ -9,8 +9,9 @@ public class ContextColliders : MonoBehaviour
     [SerializeField] private CanvasGroup _cg;
     private void Start()
     {
+        //_cam = GameObject.FindWithTag("OverlayCamera").GetComponent<Camera>();
+        //_cam = Prefabs.Instance.CanvasCamera;
         _cam = Camera.main;
-
         //SetContextMenu(false);
     }
 
@@ -48,7 +49,7 @@ public class ContextColliders : MonoBehaviour
     public void PositionHitboxes(Sequencer sequencer)
     {
         //var horizontalOffset = new Vector3(Config.CellSize * 2, 0, 0);
-        var offset = (sequencer.StepAmount - 1) * .334f * Config.CellSize;
+        var offset = (sequencer.StepAmount - 1) * .5f * Config.CellSize;
         if(offset < Config.CellSize * 2) offset = Config.CellSize * 2;
 
         var horizontalOffset = new Vector3(offset, 0, 0);
@@ -57,19 +58,23 @@ public class ContextColliders : MonoBehaviour
         //var lowerCenter = sequencer.transform.position + Vector3.back * Config.CellSize * (sequencer.RowAmount) + new Vector3(Config.CellSize * (sequencer.StepAmount - 1) * .5f, 0, 0);
 
         _dragger.transform.position = middleCenter;
-        _draggerUI.position = _cam.WorldToScreenPoint(middleCenter);
+        _draggerUI.position = /*_cam.WorldToScreenPoint(middleCenter);*/ middleCenter;
 
         _scareCrow.transform.position = upperCenter;
-        _scareCrowUI.position = _cam.WorldToScreenPoint(upperCenter);
+        //_scareCrowUI.position = _cam.WorldToScreenPoint(upperCenter); 
+        _scareCrowUI.position = upperCenter; 
 
         var middleRight = middleCenter + horizontalOffset;
 
         _remove.transform.position = middleRight;
-        _removeUI.position = _cam.WorldToScreenPoint(middleRight);
+        //_removeUI.position = _cam.WorldToScreenPoint(middleRight);
+        _removeUI.position = middleRight;
 
         var middleLeft = middleCenter - horizontalOffset;
 
         _copy.transform.position = middleLeft;
-        _copyUI.position = _cam.WorldToScreenPoint(middleLeft);
+        //_copyUI.position = _cam.WorldToScreenPoint(middleLeft);
+        _copyUI.position = middleLeft;
+
     }
 }

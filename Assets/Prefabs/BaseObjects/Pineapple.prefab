@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 7583690305373619644}
   - component: {fileID: 5681952213028483446}
   m_Layer: 0
-  m_Name: Geo
+  m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

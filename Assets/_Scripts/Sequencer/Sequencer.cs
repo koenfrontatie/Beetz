@@ -77,7 +77,7 @@ public class Sequencer : MonoBehaviour
         Events.UpdateLinearRange?.Invoke();
     }
 
-    public void InitSamplesFromInfo(SequencerData sequencerData)
+    public async void InitSamplesFromInfo(SequencerData sequencerData)
     {
         if (sequencerData.PositionIDData.Count == 0) return;
 
@@ -88,11 +88,18 @@ public class Sequencer : MonoBehaviour
             if (_stepParent.GetChild(stepIndex).TryGetComponent<Step>(out Step selectedStep))
             {
                 //var spawnedSampleObject = Prefabs.Instance.BaseObjects[int.Parse(sequencerData.PositionIDData[i].ID)];
-                var spawnedSampleObject = AssetBuilder.Instance.GetSampleObject(sequencerData.PositionIDData[i].ID);
+                //var spawnedSampleObject = await AssetBuilder.Instance.GetSampleObject(sequencerData.PositionIDData[i].ID);
 
-                SampleObject so = Instantiate(spawnedSampleObject, selectedStep.transform);
+                //SampleObject so = Instantiate(spawnedSampleObject, selectedStep.transform);
+
+                var instance = await AssetBuilder.Instance.GetSampleObject(sequencerData.PositionIDData[i].ID);
+                //var instance = Instantiate(await AssetBuilder.Instance.GetSampleObject(selectedGuid), matchingStep.transform);
+                instance.transform.SetParent(selectedStep.transform);
+                instance.transform.position = selectedStep.transform.position;
+
+                //matchingStep.AssignSample(instance);
                 //Debug.Log($"this is i is {i} ,{selectedStep.BeatIndex}");
-                selectedStep.AssignSample(so); // TODO - load proper sampleobject
+                selectedStep.AssignSample(instance); // TODO - load proper sampleobject
             }
         }
     }

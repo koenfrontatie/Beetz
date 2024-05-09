@@ -5,6 +5,7 @@ using UnityEngine.Android;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace FileManagement
 {
@@ -22,8 +23,47 @@ namespace FileManagement
         public static Action BaseSamplesInitialized;
         public static Action UniqueSamplesInitialized;
         public static Action<string> NewSampleSelected;
+
+        void OnEnable()
+        {
+            Events.ProjectDataLoaded += (data) =>
+            {
+                ProjectGuid = data.ID;
+                InitializeSamples();
+            };
+
+            //Events.SetSelectedSample += (so) =>
+            //{
+            //    SetPathFromGuid(so.SampleData.ID);
+            //};
+
+            Events.SetSelectedGuid += (guid) =>
+            {
+                SetPathFromGuid(guid);
+            };
+        }
+
+        void OnDisable()
+        {
+            Events.ProjectDataLoaded -= (data) =>
+            {
+                ProjectGuid = data.ID;
+                InitializeSamples();
+            };
+
+            //Events.SetSelectedSample -= (so) =>
+            //{
+            //    SetPathFromGuid(so.SampleData.ID);
+            //};
+
+            Events.SetSelectedGuid -= (guid) =>
+            {
+                SetPathFromGuid(guid);
+            };
+        }
+
         #region SampleInitialization
-        async void Start()
+        async void InitializeSamples()
         {
             CheckAndroidPermissions();
 
@@ -35,13 +75,13 @@ namespace FileManagement
 
             BaseSamplesDirectory = Path.Combine(Application.persistentDataPath, "BaseSamples");
             
-            Debug.Log($"BaseSamplesDirectory {BaseSamplesDirectory}");
+            //Debug.Log($"BaseSamplesDirectory {BaseSamplesDirectory}");
             await CheckOrMakeDirectory(BaseSamplesDirectory);
 
-            UniqueSamplesDirectory = Path.Combine(Application.persistentDataPath, "SaveFiles", "Samples", ProjectGuid);
+            UniqueSamplesDirectory = Path.Combine(Application.persistentDataPath, "SaveFiles", "UniqueSamples", ProjectGuid);
 
             await CheckOrMakeDirectory(UniqueSamplesDirectory);
-            Debug.Log($"UniqueSamplesDirectory {BaseSamplesDirectory}");
+            //Debug.Log($"UniqueSamplesDirectory {BaseSamplesDirectory}");
             await InitializeBaseSamples();
 
             await InitializeUniqueSamples();
@@ -73,7 +113,7 @@ namespace FileManagement
             {
                 var pathToCheck = Path.Combine(Application.persistentDataPath, betterfiles[i]);
                 BaseSamplesPathCollection.Add(pathToCheck);
-                Debug.Log($"Checking {betterfiles[i]}");
+                //Debug.Log($"Checking {betterfiles[i]}");
                 await Task.Run(() =>
                 {
                     if (!File.Exists(pathToCheck))
@@ -112,8 +152,8 @@ namespace FileManagement
 
                     for (int j = 0; j < files.Length; j++)
                     {
-                        files[j].Name.EndsWith(".wav");
-                        UniqueSamplesPathCollection.Add(files[j].FullName);
+                        if(files[j].Name.EndsWith(".wav"))
+                            UniqueSamplesPathCollection.Add(files[j].FullName);
                     }
                 }
             });
@@ -123,10 +163,13 @@ namespace FileManagement
 
         async Task MakeSamplePathIntoUnique(string path)
         {
-            var filename = Path.GetFileName(path);
-
-            var newSampleDirectory = Path.Combine(UniqueSamplesDirectory, Guid.NewGuid().ToString());
-            var newFilePath = Path.Combine(newSampleDirectory, filename);
+            //var filename = Path.GetFileName(path);
+            
+            var newName = SaveLoader.Instance.NewGuid();
+            
+            var newSampleDirectory = Path.Combine(UniqueSamplesDirectory, newName);
+            
+            var newFilePath = Path.Combine(newSampleDirectory, newName + ".wav");
 
             await CheckOrMakeDirectory(newSampleDirectory);
 
@@ -172,6 +215,22 @@ namespace FileManagement
         public void SetSelectedSamplePath(string path)
         {
             SelectedSamplePath = path;
+            NewSampleSelected?.Invoke(SelectedSamplePath);
+        }
+
+        public void SetPathFromGuid(string guid)
+        {
+            if(guid.Length < 3)
+            {
+                SelectedSamplePath = BaseSamplesPathCollection[int.Parse(guid)];
+                Events.BaseSampleSelected?.Invoke(true);
+            }
+            else
+            {
+                SelectedSamplePath = Path.Combine(UniqueSamplesDirectory, ProjectGuid, guid + ".wav");
+                Events.BaseSampleSelected?.Invoke(false);
+            }
+
             NewSampleSelected?.Invoke(SelectedSamplePath);
         }
 

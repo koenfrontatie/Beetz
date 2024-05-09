@@ -38,7 +38,7 @@ public class GridInteraction : MonoBehaviour
         Events.OnFingerUpdate += FingerUpdateHandler;
     }
 
-    private void FingerTapHandler(Transform transform, Vector3 vector)
+    private async void FingerTapHandler(Transform transform, Vector3 vector)
     {
         switch (State)
         {
@@ -49,9 +49,10 @@ public class GridInteraction : MonoBehaviour
                     var data = tappedSequencer.SequencerData;
 
                     var index = transform.GetSiblingIndex();
-                    var selectedSample = AssetBuilder.Instance.GetSampleObject(AssetBuilder.Instance.SelectedGuid);
-
-                    if (selectedSample == null) return;
+                    var selectedGuid = AssetBuilder.Instance.SelectedGuid;
+                    //var selectedGuid = AssetBuilder.Instance.SelectedSampleObject;
+                    
+                    if (string.IsNullOrEmpty(selectedGuid)) return;
 
                     // ------ update referenced sequencer data class
                     if (tappedStep.GetSampleObject() != null)
@@ -66,15 +67,8 @@ public class GridInteraction : MonoBehaviour
                         }
                     } else
                     {
-                        string idCopy = selectedSample.SampleData.ID;
 
-                        if (string.IsNullOrEmpty(selectedSample.SampleData.ID))
-                        {
-                            idCopy = selectedSample.SampleData.Template.ToString();
-                        }
-
-                        var posID = new PositionID(idCopy, tappedSequencer.GetPositionFromSiblingIndex(index));
-
+                        var posID = new PositionID(selectedGuid, tappedSequencer.GetPositionFromSiblingIndex(index));
                         data.PositionIDData.Add(posID);
                     }
 
@@ -96,12 +90,14 @@ public class GridInteraction : MonoBehaviour
                         } else
                         {
                             //Debug.Log("Instantiating new object");
+                            var instance = await AssetBuilder.Instance.GetSampleObject(selectedGuid);
+                            //var instance = Instantiate(await AssetBuilder.Instance.GetSampleObject(selectedGuid), matchingStep.transform);
+                            instance.transform.SetParent(matchingStep.transform);
+                            instance.transform.position = matchingStep.transform.position;
 
-                            var sample = Instantiate(AssetBuilder.Instance.GetSampleObject(AssetBuilder.Instance.SelectedGuid), matchingStep.transform);
+                            matchingStep.AssignSample(instance);
 
-                            matchingStep.AssignSample(sample);
-
-                            Events.SampleSpawned?.Invoke(sample.transform.position);
+                            Events.SampleSpawned?.Invoke(instance.transform.position);
                         }
                     }
 

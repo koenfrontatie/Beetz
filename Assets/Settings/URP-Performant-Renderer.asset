@@ -76,5 +76,5 @@ MonoBehaviour:
   m_Active: 1
   mask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 33
   Event: 250

@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5787720537b58ce408d6892d8710e4bb, type: 3}
+  m_Name: SampleDataCollection
+  m_EditorClassIdentifier: 
+  Collection:
+  - ID: 0
+    Name: Peggy Pumpkin
+    Template: 0
+    Effects: 
+    EffectValues: []
+  - ID: 1
+    Name: Florence Orange
+    Template: 1
+    Effects: 
+    EffectValues: []
+  - ID: 2
+    Name: Bo Beat
+    Template: 2
+    Effects: 
+    EffectValues: []
+  - ID: 3
+    Name: MC Potato
+    Template: 3
+    Effects: 
+    EffectValues: []
+  - ID: 4
+    Name: Jim Carrot
+    Template: 4
+    Effects: 
+    EffectValues: []
+  - ID: 5
+    Name: Cari Cauliflower
+    Template: 5
+    Effects: 
+    EffectValues: []
+  - ID: 6
+    Name: Big Tom
+    Template: 6
+    Effects: 
+    EffectValues: []
+  - ID: 7
+    Name: Luna Leek
+    Template: 7
+    Effects: 
+    EffectValues: []
+  - ID: 8
+    Name: Pete Pear
+    Template: 8
+    Effects: 
+    EffectValues: []
+  - ID: 9
+    Name: Polly Pineapple
+    Template: 9
+    Effects: 
+    EffectValues: []

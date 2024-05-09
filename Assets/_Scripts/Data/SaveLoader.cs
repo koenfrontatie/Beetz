@@ -110,14 +110,23 @@ public class SaveLoader : MonoBehaviour
     //    Debug.Log($"Deserialized object: {projectData}");
     //}
 
-    public async Task<ProjectData> DeserializeProjectData(string url)
+    public async Task<ProjectData> DeserializeProjectData(string jsonPath)
     {
 
-        string jsonData = await FetchJsonDataAsync(url);
+        string jsonData = await FetchJsonDataAsync(jsonPath);
 
-        ProjectData projectData = await DeserializeJsonAsync(jsonData);
+        ProjectData projectData = await Task.Run(() => JsonConvert.DeserializeObject<ProjectData>(jsonData));
 
         return projectData;
+    }
+
+    public async Task<SampleData> DeserializeSampleData(string jsonPath)
+    {
+        string jsonData = await FetchJsonDataAsync(jsonPath);
+
+        SampleData sampleData = await Task.Run(() => JsonConvert.DeserializeObject<SampleData>(jsonData));
+
+        return sampleData;
     }
 
     private async Task<string> FetchJsonDataAsync(string url)
@@ -128,6 +137,7 @@ public class SaveLoader : MonoBehaviour
 
             if (www.result != UnityWebRequest.Result.Success)
             {
+                Debug.LogError("url is: " + url);
                 Debug.LogError(www.error);
                 return null;
             }
@@ -136,12 +146,17 @@ public class SaveLoader : MonoBehaviour
         }
     }
 
-    private async Task<ProjectData> DeserializeJsonAsync(string json)
-    {
-        return await Task.Run(() => JsonConvert.DeserializeObject<ProjectData>(json));
-    }
+    //private async Task<ProjectData> DeserializeProjectDataJsonAsync(string json)
+    //{
+    //    return await Task.Run(() => JsonConvert.DeserializeObject<ProjectData>(json));
+    //}
+
+    //private async Task<SampleData> DeserializeSampleDataJsonAsync(string json)
+    //{
+    //    return await Task.Run(() => JsonConvert.DeserializeObject<SampleData>(json));
+    //}
     #endregion
-    
+
     public string NewGuid()
     {
         return Guid.NewGuid().ToString();
@@ -152,7 +167,7 @@ public class SaveLoader : MonoBehaviour
         var strings = new List<string>();
 
         var samplesPath = Path.Combine(Utils.SampleSavepath, DataStorage.Instance.ProjectData.ID);
-        Debug.Log($"samplespath= {samplesPath}");
+        //Debug.Log($"samplespath= {samplesPath}");
         Utils.CheckForCreateDirectory(samplesPath);
 
         await Task.Run(() =>
@@ -172,6 +187,17 @@ public class SaveLoader : MonoBehaviour
         });
 
         return new IDCollection(strings);
+    }
+
+    public async Task<SampleData> GetCustomSampleData(string guid)
+    {
+        var samplePath = Path.Combine(Utils.SampleSavepath, DataStorage.Instance.ProjectData.ID, guid, "SampleData.json");
+
+        string jsonData = await FetchJsonDataAsync(samplePath);
+
+        SampleData sampleData = await DeserializeSampleData(jsonData);
+
+        return sampleData;
     }
 
     public async Task<Texture2D> GetIconFromGuid(string guid)

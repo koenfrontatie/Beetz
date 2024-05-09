@@ -13,25 +13,22 @@ public class InfoTile : MonoBehaviour
     }
 
 
-    public void AssignObject()
+    public async void AssignObject()
     {
-        //var sampleObject = AssetBuilder.Instance.CustomSamples.GetSampleObject(guid);
-        //_inventorySlot.Bind(sampleObject);
-        //SetNameText(sampleObject.Name);
         var replace = _librarySlot.InventoryDragDropUI;
 
         if (replace != null)
         {
 
 #if UNITY_EDITOR
-            DestroyImmediate(replace.transform.gameObject);
+            DestroyImmediate(_librarySlot.InventoryDragDropUI.gameObject);
 #else
-            Destroy(replace.transform.gameObject);
+            Destroy(_librarySlot.InventoryDragDropUI.gameObject);
 #endif
-            //_librarySlot.InventoryDragDropUI = null;
+            _librarySlot.InventoryDragDropUI = null;
         }
 
-        var item = AssetBuilder.Instance.GetToolbarItem(_guid);
+        var item = await AssetBuilder.Instance.GetToolbarItem(_guid);
 
         _librarySlot.Bind(item.GetComponent<DragDropUI>());
 
@@ -40,17 +37,24 @@ public class InfoTile : MonoBehaviour
         item.transform.localScale = Vector3.one;
     }
 
-    public void AssignObject(string guid)
+    public async void AssignSampleData(string guid)
     {
         //var sampleObject = AssetBuilder.Instance.CustomSamples.GetSampleObject(guid);
         //_inventorySlot.Bind(sampleObject);
         //SetNameText(sampleObject.Name);
 
-        var item = AssetBuilder.Instance.GetToolbarItem(guid);
+
+        var item = await AssetBuilder.Instance.GetToolbarItem(guid);
+
+        var sampleData = await AssetBuilder.Instance.GetSampleData(guid);
+
+        _guid = sampleData.ID;
+
+        item.GetComponent<SampleObject>().SampleData = sampleData;
 
         _librarySlot.Bind(item.GetComponent<DragDropUI>());
 
-        SetNameText(item.GetComponent<SampleObject>().SampleData.Name);
+        SetNameText(sampleData.Name);
 
         item.transform.localScale = Vector3.one;
     }

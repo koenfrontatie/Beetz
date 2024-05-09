@@ -33,12 +33,12 @@ public class GameManager : MonoBehaviour
         switch (state)
         {
             case GameState.Menu:
-
                 break;
             case GameState.Gameplay:
 
                 break;
             case GameState.Library:
+
                 break;
             case GameState.Saving:
 

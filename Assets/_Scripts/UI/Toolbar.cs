@@ -2,110 +2,135 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.XR;
 
 public class Toolbar : MonoBehaviour
 {
-    //[SerializeField] Transform _TBC;
     [SerializeField] private List<InventorySlot> _inventorySlots = new List<InventorySlot>();
-    private List<SampleObject> _toolbarSampleObjects= new List<SampleObject>();
+    //private List<string> _toolbarSampleCollection= new List<string>();
+    [SerializeField]
+    private IDCollection _toolbarSampleCollection;
+    [SerializeField]
+    private List<GameObject> _toolbarButtons = new List<GameObject>();
+    public static Toolbar Instance;
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     private void OnEnable()
     {
         Events.ProjectDataLoaded += OnProjectDataLoaded;
-        Events.SampleSelected += OnSampleSelected;
+        Events.SetSelectedGuid += SetToolbarSelection;
         Events.DragDropFoundNewContainer += OnDragDropFoundNewContainer;
+        GameManager.StateChanged += OnNewGameMode;
     }
 
-    private void OnDragDropFoundNewContainer(DragDropUI dragdrop, InventorySlot slot)
+    public void OnDragDropFoundNewContainer(DragDropUI dragdrop, InventorySlot slot)
     {
         InventorySlot oldSlot = null;
 
-        for(int i = 0; i < _inventorySlots.Count; i++)
+        if (slot == null && dragdrop.isLibraryItem)
         {
-            if (_inventorySlots[i].InventoryDragDropUI == dragdrop)
+            Destroy(dragdrop.gameObject);
+            return;
+        }
+
+        if (!dragdrop.isLibraryItem)
+        {
+            for (int i = 0; i < _inventorySlots.Count; i++)
             {
-                oldSlot = _inventorySlots[i];
-                break;
+                if (_inventorySlots[i].InventoryDragDropUI == dragdrop)
+                {
+                    oldSlot = _inventorySlots[i];
+                    break;
+                }
             }
         }
 
-        // swap 
-
-        DragDropUI dragDropToSwapWith = slot.InventoryDragDropUI;
-
-        if(dragDropToSwapWith != null && oldSlot != null)
+        if (!dragdrop.isLibraryItem) // if in toolbar
         {
-            oldSlot.Bind(dragDropToSwapWith);
+            // swap 
+            DragDropUI dragDropToSwapWith = slot.InventoryDragDropUI;
+
+            if (dragDropToSwapWith != null && oldSlot != null)
+            {
+                oldSlot.Bind(dragDropToSwapWith);
+            }
+            slot.Bind(dragdrop);
+
         }
 
-        slot.Bind(dragdrop);
+        if (dragdrop.isLibraryItem) // if from library
+        {
+            slot.Clear();
+            GameObject copy = Instantiate(dragdrop.gameObject, slot.transform.position, Quaternion.identity, slot.transform);
+            
+            slot.Bind(copy.GetComponent<DragDropUI>());
+
+            Destroy(dragdrop.gameObject);
+            
+            // i dont understand why unity disables instantiated components on objects that arent prefabs
+            copy.GetComponent<RawImage>().enabled = true;
+            copy.GetComponent<PointerSelect>().enabled = true;
+            copy.GetComponent<SampleObject>().enabled = true;
+            copy.GetComponent<DragDropUI>().enabled = true;
+
+        }
+
 
         UpdateToolbarConfiguration();
+
     }
 
     void UpdateToolbarConfiguration()
     {
-        var data = new List<string>();
+        List<string> collection = new List<string>();
 
-        for(int i = 0; i < _inventorySlots.Count; i++)
+        for (int i = 0; i < _inventorySlots.Count; i++)
         {
-            if (_inventorySlots[i].InventoryDragDropUI.gameObject.TryGetComponent<SampleObject>(out var so))
+            if (_inventorySlots[i].InventoryDragDropUI.transform.TryGetComponent<SampleObject>(out var so))
             {
-                data.Add(so.SampleData.ID);
-                _toolbarSampleObjects.Insert(i, so);
-            } else
+                collection.Insert(i, so.SampleData.ID);
+            }
+            else
             {
-                data.Add("-1");
+                collection.Insert(i, null);
             }
         }
 
-        DataStorage.Instance.ProjectData.ToolbarConfiguration.IDC = data;
+        _toolbarSampleCollection.IDC.Clear();
+
+        _toolbarSampleCollection.IDC = collection;
+
+        DataStorage.Instance.ProjectData.ToolbarConfiguration.IDC = _toolbarSampleCollection.IDC;
     }
-
-    //private void Start()
-    //{
-    //    int slotCount = 0;
-
-    //    for (int i = 0; i < _TBC.childCount; i++)
-    //    {
-    //        if (_TBC.GetChild(i).GetChild(0).TryGetComponent<InventorySlot>(out var slot))
-    //        {
-    //            _inventorySlots.Insert(slotCount, slot);
-    //            slotCount++;
-    //        } else
-    //        {
-    //            continue;
-    //        }
-    //    }
-    //}
 
     void OnProjectDataLoaded(ProjectData projectData)
     {
         // clear existing items
-        if (_toolbarSampleObjects.Count != 0)
+        if (_toolbarSampleCollection.IDC.Count != 0)
         {
-            foreach(var so in _toolbarSampleObjects)
-            {
-                Destroy(so.gameObject);
-            }
-
-            _toolbarSampleObjects.Clear();
+            _toolbarSampleCollection.IDC.Clear();
         }
+
         // get project toolbar data
         var copy = new List<string>(projectData.ToolbarConfiguration.IDC);
        
         AssignItems(copy);
 
-        SetToolbarItemsTransparent();
+        SetToolbarSelection(null);
     }
 
-    public void OnRefreshToolbar()
-    {
-        if (DataStorage.Instance.ProjectData.ToolbarConfiguration.IDC.Count == 0) return;
-        OnProjectDataLoaded(DataStorage.Instance.ProjectData);
-    }
 
-    public void AssignItems(List<string> library)
+    public async void AssignItems(List<string> library)
     {
         if (library.Count != 0)
         {
@@ -115,138 +140,80 @@ public class Toolbar : MonoBehaviour
 
                 if (library[i] == "-1") { continue; }
                 
-                var item = AssetBuilder.Instance.GetToolbarItem(library[i]);
+                var item = await AssetBuilder.Instance.GetToolbarItem(library[i]);
 
                 if (item.transform.TryGetComponent<DragDropUI>(out var dragdrop))
                 {
                     _inventorySlots[i].Bind(dragdrop);
                 }
 
-                if(item.transform.TryGetComponent<SampleObject>(out var so))
-                {
-                    _toolbarSampleObjects.Insert(i, so);
-                }
-
-                item.transform.localScale = Vector3.one;
+                //item.transform.localScale = Vector3.one;
             }
+
+            _toolbarSampleCollection.IDC = library;
         }
     }
 
-
-
-    //void OnItemSwap(InventorySlot targetSlot, DragDropUI one, DragDropUI two)
-    //{
-    //    if (!one.transform.TryGetComponent<SampleObject>(out var oneSO)) return;
-
-    //    int oldIndexOne = Array.IndexOf(_toolbarSampleObjects, oneSO);
-
-    //    if(two == null)
-    //    {
-    //        int targetSlotIndex = Array.IndexOf(_containers, targetSlot);
-
-    //        _toolbarSampleObjects[targetSlotIndex] = oneSO;
-    //        _containers[targetSlotIndex].Bind(oneSO);
-    //        _toolbarSampleObjects[oldIndexOne] = null;
-    //        _containers[oldIndexOne].Bind(null);
-
-    //        return;
-    //    }
-
-    //    if (!two.transform.TryGetComponent<SampleObject>(out var twoSO)) return;
-
-    //    int oldIndexTwo = Array.IndexOf(_toolbarSampleObjects, twoSO);
-
-    //    _toolbarSampleObjects[oldIndexOne] = twoSO;
-    //    _containers[oldIndexOne].Bind(twoSO);
-    //    _toolbarSampleObjects[oldIndexTwo] = oneSO;
-    //    _containers[oldIndexTwo].Bind(oneSO);
-    //}
-
-    //void OnItemSwap(InventorySlot targetSlot, DragDropUI one, DragDropUI two)
-    //{
-    //    if (!one.transform.TryGetComponent<SampleObject>(out var oneSO)) return;
-
-    //    int oldIndexOne = Array.IndexOf(_toolbarSampleObjects, oneSO);
-
-    //    int targetSlotIndex = Array.IndexOf(_containers, targetSlot);
-    //    if (targetSlotIndex < 0 || targetSlotIndex >= _containers.Length)
-    //    {
-    //        Debug.LogError("Target index is out of bounds.");
-    //        return;
-    //    }
-
-    //    if (two == null)
-    //    {
-    //        _toolbarSampleObjects[targetSlotIndex] = oneSO;
-    //        _containers[targetSlotIndex].Bind(oneSO);
-    //        _toolbarSampleObjects[oldIndexOne] = null;
-    //        _containers[oldIndexOne].Bind(null);
-    //        return;
-    //    }
-
-    //    if (!two.transform.TryGetComponent<SampleObject>(out var twoSO)) return;
-
-    //    int oldIndexTwo = Array.IndexOf(_toolbarSampleObjects, twoSO);
-    //    if (oldIndexTwo < 0 || oldIndexTwo >= _toolbarSampleObjects.Length)
-    //    {
-    //        Debug.LogError("SampleObject index is out of bounds.");
-    //        return;
-    //    }
-
-    //    _toolbarSampleObjects[oldIndexOne] = twoSO;
-    //    _containers[oldIndexOne].Bind(twoSO);
-    //    _toolbarSampleObjects[oldIndexTwo] = oneSO;
-    //    _containers[oldIndexTwo].Bind(oneSO);
-    //}
-
-    void OnSampleSelected(SampleObject sampleObject)
+    public void OnNewGameMode(GameState state)
     {
-        for(int i = 0; i < _toolbarSampleObjects.Count; i++) {
-
-            if (_toolbarSampleObjects[i] == null) continue;
-
-            RawImage img;
-
-            if (!_toolbarSampleObjects[i].TryGetComponent<RawImage>(out img))
-            {
-                continue;
-            }
-
-            if (_toolbarSampleObjects[i].SampleData.ID == sampleObject.SampleData.ID && img != null)
-            {
-                img.CrossFadeAlpha(1f, .1f, false);
-            } else
-            {
-                img.CrossFadeAlpha(.5f, .1f, false);
-            }
-        
-        }
-    }
-
-    void SetToolbarItemsTransparent()
-    {
-        for (int i = 0; i < _toolbarSampleObjects.Count; i++)
+        if(state == GameState.Library)
         {
-
-            if (_toolbarSampleObjects[i] == null) continue;
-
-            RawImage img;
-
-            if (!_toolbarSampleObjects[i].TryGetComponent<RawImage>(out img))
+            var layout = transform.GetChild(0).GetComponent<GridLayoutGroup>();
+            layout.constraintCount = 10;
+            layout.childAlignment = TextAnchor.LowerRight;
+            layout.padding.right = 40;
+            foreach (var item in _toolbarButtons)
             {
+                item.SetActive(false);
+            }
+        }
+
+        if(GameState.Gameplay == state)
+        {
+            var layout = transform.GetChild(0).GetComponent<GridLayoutGroup>();
+            layout.constraintCount = 6;
+            layout.padding.right = 0;
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            foreach (var item in _toolbarButtons)
+            {
+                item.SetActive(true);
+            }
+        }
+        
+    }
+
+    void SetToolbarSelection(string guid)
+    {
+        for(int i = 0; i < _inventorySlots.Count; i++)
+        {
+            if (_inventorySlots[i].InventoryDragDropUI == null) continue;
+
+            if (_inventorySlots[i].InventoryDragDropUI.TryGetComponent<RawImage>(out var img))
+            {
+                if(_inventorySlots[i].InventoryDragDropUI.TryGetComponent<SampleObject>(out var so))
+                {
+                    if(so.SampleData.ID == guid)
+                    {
+                        img.CrossFadeAlpha(1f, .1f, false);
+                    }
+                    else
+                    {
+                        img.CrossFadeAlpha(.5f, .1f, false);
+                    }
+                }   
                 continue;
             }
 
-            img.CrossFadeAlpha(.5f, .1f, false);
-
-        }
+        }   
     }
     private void OnDisable()
     {
         Events.ProjectDataLoaded -= OnProjectDataLoaded;
         //Events.ItemSwap -= OnItemSwap;
         Events.DragDropFoundNewContainer -= OnDragDropFoundNewContainer;
+        GameManager.StateChanged -= OnNewGameMode;
+        Events.SetSelectedGuid -= SetToolbarSelection;
 
-        Events.SampleSelected -= OnSampleSelected;
+        //Events.SampleSelected -= OnSampleSelected;
     }
 }

@@ -7,7 +7,7 @@ namespace FileManagement
     {
         public string Path;
         public TMPro.TextMeshProUGUI Text;
-
+        
         public void AssignPathToButton(string path)
         {
             Text.text = System.IO.Path.GetFileName(path);
@@ -17,6 +17,7 @@ namespace FileManagement
         public void OnPointerClick(PointerEventData eventData)
         {
             //Debug.Log($"FileButton.OnClick: {Path}");
+            Events.LoadPlayPath?.Invoke(Path);
         }
 
     }

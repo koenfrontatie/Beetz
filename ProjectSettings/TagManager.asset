@@ -10,6 +10,7 @@ TagManager:
   - Droppable
   - ContextScarecrow
   - DragParent
+  - OverlayCamera
   layers:
   - Default
   - TransparentFX

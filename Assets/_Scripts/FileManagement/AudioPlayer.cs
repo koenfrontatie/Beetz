@@ -18,6 +18,17 @@ public class AudioPlayer : MonoBehaviour
         _fileviewer = GameObject.FindObjectOfType<FileManager>();
     }
 
+    //private void OnEnable()
+    //{
+    //    Events.LoadPlayPath += LoadAndPlay;
+    //}
+
+    //private void OnDisable()
+    //{
+    //    Events.LoadPlayPath += LoadAndPlay;
+
+    //}
+
     private async Task LoadAudio(string path)
     {
         //Debug.Log("RELOADING AUDIO");
@@ -63,6 +74,12 @@ public class AudioPlayer : MonoBehaviour
     public async void LoadAndPlay()
     {
         await LoadAudio(_fileviewer.SelectedSamplePath);
+        Source.Play();
+    }
+
+    public async void LoadAndPlay(string path)
+    {
+        await LoadAudio(path);
         Source.Play();
     }
 

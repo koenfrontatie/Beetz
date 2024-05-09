@@ -7,7 +7,7 @@ public class ConsoleLogger : MonoBehaviour
     private string _log;
     private string _output;
     private string _stack;
-    [SerializeField] CanvasGroup _cg;
+    //[SerializeField] CanvasGroup _cg;
     [SerializeField] TMP_Text text;
 
     void OnEnable()
@@ -32,20 +32,20 @@ public class ConsoleLogger : MonoBehaviour
         text.text = _log;
     }
 
-    public void ToggleCanvasGroup()
-    {
-        if (_cg.alpha != 0)
-        {
-            _cg.alpha = 0f;
-            _cg.blocksRaycasts = false;
+    //public void ToggleCanvasGroup()
+    //{
+    //    if (_cg.alpha != 0)
+    //    {
+    //        _cg.alpha = 0f;
+    //        _cg.blocksRaycasts = false;
 
-        }
-        else
-        {
-            _cg.alpha = 1f;
-            _cg.blocksRaycasts = true;
-        }
-    }
+    //    }
+    //    else
+    //    {
+    //        _cg.alpha = 1f;
+    //        _cg.blocksRaycasts = true;
+    //    }
+    //}
 }
 
 

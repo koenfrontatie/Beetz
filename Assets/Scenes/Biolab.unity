@@ -923,7 +923,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c9a4326e5cbfa46b410fb25c56d6c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _templateObjects: {fileID: 11400000, guid: 89b051d0fc2563a49a92acf8deee655c, type: 2}
+  _templateObjects: {fileID: 11400000, guid: 7c305ab0ac0187843951bb32e0f67378, type: 2}
   SelectedTemplate: {fileID: 0}
   DeformerGroup: {fileID: 1785888186}
 --- !u!114 &737248975
@@ -1010,6 +1010,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: CSound
+      objectReference: {fileID: 0}
+    - target: {fileID: 290530476986146733, guid: 02007eef19f7c214d895f48eba7b671e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 905733259904936663, guid: 02007eef19f7c214d895f48eba7b671e,
         type: 3}

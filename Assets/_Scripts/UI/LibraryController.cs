@@ -31,7 +31,7 @@ public class LibraryController : MonoBehaviour
 
             _infoTiles.Add(tile);
 
-            _infoTiles[i].AssignObject(AssetBuilder.Instance.CustomSamples.IDC[i]);
+            _infoTiles[i].AssignSampleData(AssetBuilder.Instance.CustomSamples.IDC[i]);
         }
         
     }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,10 +20,14 @@ public class AssetBuilder : MonoBehaviour
     [Header("Current Selection")]
     public string SelectedGuid;
 
+    public SampleObject SelectedSampleObject;
+
     [Space(10)]
     [Header("Template Prefabs")]
     [SerializeField]
     private SampleObjectCollection _templateSampleObjects;
+    [SerializeField]
+    private SampleDataCollection _templateSampleData;
     [SerializeField]
     private TextureCollection _templateIcons;
 
@@ -43,22 +48,37 @@ public class AssetBuilder : MonoBehaviour
 
     private void OnEnable()
     {
-        Events.SampleSelected += (so) => SelectedGuid = so.SampleData.ID;
-        //Events.ProjectDataLoaded += (data) => SearchForCustomSamples();
+        //Events.SetSelectedSample += (so) =>
+        //{
+        //    SelectedGuid = so.SampleData.ID;
+        //    SelectedSampleObject = so;
+        //    Events.SampleSelected?.Invoke(SelectedSampleObject);
+        //};
+
+        Events.SetSelectedGuid += (guid) =>
+        {
+            SelectedGuid = guid;
+        };
+
     }
 
-    //private void Start()
-    //{
-    //    SearchForCustomSamples();
-    //}
+    void OnDisable()
+    {
+        //Events.SetSelectedSample += (so) =>
+        //{
+        //    SelectedGuid = so.SampleData.ID;
+        //    SelectedSampleObject = so;
+        //    Events.SampleSelected?.Invoke(SelectedSampleObject);
+        //};
+
+        Events.SetSelectedGuid -= (guid) =>
+        {
+            SelectedGuid = guid;
+        };
+    }
+
     void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.Backspace))
-        //{
-        //    Debug.Log("Backspace");
-        //    FindCustomTextures();
-        //}
-
         if (Input.GetKeyDown(KeyCode.S)) {
             SaveLoader.Instance.SaveData(Path.Combine(Utils.SampleSavepath, _templateSampleObjects.Collection[int.Parse(SelectedGuid)].SampleData.ID, ".json"), _templateSampleObjects.Collection[int.Parse(SelectedGuid)].SampleData);
         }
@@ -67,7 +87,6 @@ public class AssetBuilder : MonoBehaviour
     public async void SearchForCustomSamples()
     {
         CustomSamples = await SaveLoader.Instance.GetCustomSampleCollection();
-        //DataStorage.Instance.Cu
         FindCustomTextures();
     }
 
@@ -90,24 +109,42 @@ public class AssetBuilder : MonoBehaviour
         }
     }
 
-    public SampleObject GetSampleObject(string guid)
+    public async Task<SampleObject> GetSampleObject(string guid)
     {
         if (guid.Length < 3) // if template
         {
-            return _templateSampleObjects.Collection[int.Parse(guid)];
-        } else
+            var copy = Instantiate(_templateSampleObjects.Collection[int.Parse(guid)]);
+            return copy;
+        }
+        else
         {
-            throw new NotImplementedException();
+            var sampleData = await GetSampleData(guid);
+            
+            var copy = Instantiate(_templateSampleObjects.Collection[sampleData.Template]);
+
+            copy.SampleData = sampleData;
+            // set unique data
+            return copy;
+            //throw new NotImplementedException();
         }
     }
 
-    private void OnDisable()
+    public async Task<SampleData> GetSampleData(string guid)
     {
-        Events.SampleSelected -= (so) => SelectedGuid = so.SampleData.ID;
-
+        if (guid.Length < 3) // if template
+        {
+            return _templateSampleObjects.Collection[int.Parse(guid)].SampleData;
+        }
+        else
+        {
+            var sampleData = await SaveLoader.Instance.DeserializeSampleData(Path.Combine(Utils.SampleSavepath, DataStorage.Instance.ProjectData.ID, guid, guid + ".json"));
+            
+            return sampleData;
+            //throw new NotImplementedException();
+        }
     }
 
-    public GameObject GetToolbarItem(string guid)
+    public async Task<GameObject> GetToolbarItem(string guid)
     {
         GameObject item = Instantiate(_toolbarItemTemplate);
 
@@ -129,16 +166,18 @@ public class AssetBuilder : MonoBehaviour
 
             image.texture = _templateIcons.Collection[template];
 
-            so.SampleData = _templateSampleObjects.Collection[template].SampleData;
+            so.SampleData = _templateSampleData.Collection[template];
 
             return item;
         }
+        else
+        {
 
-        // to do ---- load non templates
+            so.SampleData = await GetSampleData(guid);
 
-        image.texture = AssetBuilder.Instance.CustomSampleIcons[0];
-        so.SampleData = _templateSampleObjects.Collection[0].SampleData;
+            image.texture = await SaveLoader.Instance.GetIconFromGuid(guid);
 
-        return item;
+            return item;
+        }
     }
 }

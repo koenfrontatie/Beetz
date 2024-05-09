@@ -23,13 +23,13 @@ namespace FileManagement {
             _fileManager = GameObject.FindObjectOfType<FileManager>();
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Tab))
-            {
-                _canvasGroup.ToggleCanvasGroup();
-            }
-        }
+        //private void Update()
+        //{
+        //    if (Input.GetKeyDown(KeyCode.Tab))
+        //    {
+        //        _canvasGroup.ToggleCanvasGroup();
+        //    }
+        //}
         private void OnEnable()
         {
             FileManager.BaseSamplesInitialized += OnBaseSamplesInitialized;
