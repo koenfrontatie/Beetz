@@ -74,12 +74,16 @@ public static class Events
     public static Action MovingCameraToScarecrow;
 
     public static Action OpenNewProject;
-
+    public static Action BioMakeUniqueComplete;
     public static Action<string> LoadPlayPath;
     public static Action<string> LoadPlayGuid;
     public static Action<SampleObject> SetSelectedSample;
     public static Action<string> SetSelectedGuid;
     //public static Action<RectTransform, Vector2> AnimateRectToTarget;
-
+    public static Action<string> BioMakeUnique;
     public static Action<bool> BaseSampleSelected;
+    public static Action CustomDataLoaded;
+    public static Action<string> DeleteTile;
+
+
 }

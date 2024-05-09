@@ -29,7 +29,7 @@ public class AssetBuilder : MonoBehaviour
     [SerializeField]
     private SampleDataCollection _templateSampleData;
     [SerializeField]
-    private TextureCollection _templateIcons;
+    private TextureCollection _templateIcons, _customIcons;
 
     [SerializeField]
     private GameObject _toolbarItemTemplate;
@@ -60,6 +60,8 @@ public class AssetBuilder : MonoBehaviour
             SelectedGuid = guid;
         };
 
+        Events.DeleteTile += OnDeleteTile;
+
     }
 
     void OnDisable()
@@ -75,38 +77,60 @@ public class AssetBuilder : MonoBehaviour
         {
             SelectedGuid = guid;
         };
+        Events.DeleteTile -= OnDeleteTile;
+
     }
 
-    void Update()
+    void OnDeleteTile(string id)
     {
-        if (Input.GetKeyDown(KeyCode.S)) {
-            SaveLoader.Instance.SaveData(Path.Combine(Utils.SampleSavepath, _templateSampleObjects.Collection[int.Parse(SelectedGuid)].SampleData.ID, ".json"), _templateSampleObjects.Collection[int.Parse(SelectedGuid)].SampleData);
+        for(int i = 0; i < CustomSamples.IDC.Count; i++)
+        {
+            if (CustomSamples.IDC[i] == id)
+            {
+                CustomSamples.IDC.RemoveAt(i);
+                //CustomSampleIcons.RemoveAt(i);
+                break;
+            }
         }
     }
 
+    //void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.S)) {
+    //        SaveLoader.Instance.SaveData(Path.Combine(Utils.SampleSavepath, _templateSampleObjects.Collection[int.Parse(SelectedGuid)].SampleData.ID, ".json"), _templateSampleObjects.Collection[int.Parse(SelectedGuid)].SampleData);
+    //    }
+    //}
+
     public async void SearchForCustomSamples()
     {
-        CustomSamples = await SaveLoader.Instance.GetCustomSampleCollection();
-        FindCustomTextures();
+        //CustomSamples.IDC.Clear();
+        ////CustomSamples.IDC.Count = 0;
+
+        //CustomSamples = await SaveLoader.Instance.GetCustomSampleCollection();
+        //FindCustomTextures();
     }
 
     public async void FindCustomTextures()
     {
-        for (int i = 0; i < CustomSamples.IDC.Count; i++)
-        {
-            var icon = await SaveLoader.Instance.GetIconFromGuid(CustomSamples.IDC[i]);
+        //CustomSampleIcons.Clear();
 
-            if (icon == null)
-            {
-                Debug.LogError("Icon is null");
-                //CustomSampleIcons.Insert(i, await SaveLoader.Instance.GetIconFromGuid("2"));
-                continue;
-            } else
-            {
-                CustomSampleIcons.Insert(i, icon);
-            }
+        //for (int i = 0; i < CustomSamples.IDC.Count; i++)
+        //{
+        //    var icon = await SaveLoader.Instance.GetIconFromGuid(CustomSamples.IDC[i]);
 
-        }
+        //    if (icon == null)
+        //    {
+        //        Debug.LogError("Icon is null");
+        //        //CustomSampleIcons.Insert(i, await SaveLoader.Instance.GetIconFromGuid("2"));
+        //        continue;
+        //    } else
+        //    {
+        //        CustomSampleIcons.Insert(i, icon);
+        //    }
+
+        //}
+
+        //Events.CustomDataLoaded?.Invoke();
     }
 
     public async Task<SampleObject> GetSampleObject(string guid)
@@ -127,6 +151,11 @@ public class AssetBuilder : MonoBehaviour
             return copy;
             //throw new NotImplementedException();
         }
+    }
+
+    public async void BioMakeUnique()
+    {
+        Events.BioMakeUnique?.Invoke(SelectedGuid);
     }
 
     public async Task<SampleData> GetSampleData(string guid)

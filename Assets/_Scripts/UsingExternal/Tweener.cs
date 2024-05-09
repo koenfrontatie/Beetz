@@ -31,6 +31,9 @@ public class Tweener : MonoBehaviour
 
     private void OnEnable()
     {
+        transform.position = _startPositionv3;
+        transform.rotation = Quaternion.Euler(_startRotationv3);
+
         LeanTween.cancel(gameObject);
 
         transform.localPosition = new Vector3(transform.localPosition.x, _startVert, transform.localPosition.z);

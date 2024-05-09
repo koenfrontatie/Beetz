@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.Windows;
 
 public class SliderDeformer : MonoBehaviour
 {
@@ -17,6 +18,10 @@ public class SliderDeformer : MonoBehaviour
     [SerializeField] private float _rDeformFactor;
     [SerializeField] private SquashAndStretchDeformer _squashAndStretchDeformer;
     //private List<Slider> _sliders = new List<Slider>();
+    public LabDisplayer LabDisplayer;
+    public EffectBaker _baker;
+
+    bool bakebool = false;
 
     private void Start()
     {
@@ -27,8 +32,8 @@ public class SliderDeformer : MonoBehaviour
         _distortionSlider.onValueChanged.AddListener(OnDistortionChanged);
         _reverbSlider.onValueChanged.AddListener(OnReverbChanged);
 
-        OnDistortionChanged(0);
-        OnReverbChanged(0);
+        //OnDistortionChanged(0);
+        //OnReverbChanged(0);
     }
 
     void OnDistortionChanged(float val)
@@ -39,5 +44,20 @@ public class SliderDeformer : MonoBehaviour
     void OnReverbChanged(float val)
     {
         _squashAndStretchDeformer.Factor = val * _rDeformFactor;
+        _baker.AddReverbToSelectedSampleObject(val, LabDisplayer.SelectedTemplate.SampleData.ID, LabDisplayer.SelectedTemplate.SampleData.Template.ToString());
+
+        //if (bakebool) return;
+        //StartCoroutine(Delay(val));
+    }
+
+    IEnumerator Delay(float input)
+    {
+        _baker.AddReverbToSelectedSampleObject(input, LabDisplayer.SelectedTemplate.SampleData.ID, LabDisplayer.SelectedTemplate.SampleData.Template.ToString());
+        
+        bakebool = true;
+
+        yield return new WaitForSeconds(.2f);
+
+        bakebool = false;
     }
 }

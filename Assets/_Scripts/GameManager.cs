@@ -24,6 +24,12 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         DataStorage.Instance.OpenLastProject();
+        //Events.BioMakeUniqueComplete += OpenBioLab;
+    }
+
+    private void OnDisable()
+    {
+        //Events.BioMakeUniqueComplete -= OpenBioLab;
     }
 
     public void UpdateState(GameState state)
@@ -40,7 +46,7 @@ public class GameManager : MonoBehaviour
             case GameState.Library:
 
                 break;
-            case GameState.Saving:
+            case GameState.Biolab:
 
                 break;
         }
@@ -69,6 +75,18 @@ public class GameManager : MonoBehaviour
             UpdateState(GameState.Gameplay);
         }
     }
+    public void OpenBioLab() // for button
+    {
+        if (State != GameState.Biolab)
+        {
+            UpdateState(GameState.Biolab);
+        }
+        else
+        {
+            UpdateState(GameState.Library);
+        }
+    }
+
     public void ExitApplication()
     {
         Application.Quit();
@@ -80,5 +98,5 @@ public enum GameState
     Menu,
     Gameplay,
     Library,
-    Saving
+    Biolab
 }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
-#if UNITY_EDITOR
+#if FALSE
 [CustomEditor(typeof(InfoTile))]
 public class EditorInfoTile : Editor
 {

@@ -25,6 +25,11 @@ public class EditorUIController : Editor
         {
             controller.OnStateChanged(GameState.Library);
         }
+
+        if (GUILayout.Button("Biolab"))
+        {
+            controller.OnStateChanged(GameState.Biolab);
+        }
     }
 }
 #endif

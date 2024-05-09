@@ -205,8 +205,9 @@ public class SaveLoader : MonoBehaviour
         var iconPath = Path.Combine(Utils.SampleSavepath, DataStorage.Instance.ProjectData.ID, guid, "ico.png");
 
         //Texture2D iconTexture = new Texture2D(150, 150, TextureFormat.ARGB32, false);
-        Debug.Log(iconPath);
-
+        Debug.Log("from save loader: " + iconPath);
+        await Task.Yield();
+        await Task.Delay(400);
         using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(iconPath))
         {
             await www.SendWebRequest();

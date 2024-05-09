@@ -62,4 +62,6 @@ public class InfoTile : MonoBehaviour
 //    {
 //=        SetNameText(slot.SampleObject.Name);
 //    }
+
+    public string GetGUID() => _guid;
 }

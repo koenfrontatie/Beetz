@@ -4,12 +4,13 @@ using System.Threading.Tasks;
 using UnityEngine.Android;
 using System.Collections.Generic;
 using System;
-using System.Linq;
-using Newtonsoft.Json.Serialization;
+using FileManagement;
+using JetBrains.Annotations;
+using UnityEditor;
 
-namespace FileManagement
-{
-    public class FileManager : MonoBehaviour
+//namespace FileManagement
+//{
+public class FileManager : MonoBehaviour
     {
         //project variables
         public string ProjectGuid = "1";
@@ -24,6 +25,8 @@ namespace FileManagement
         public static Action UniqueSamplesInitialized;
         public static Action<string> NewSampleSelected;
 
+         public TextureCollection _customIcons;
+
         void OnEnable()
         {
             Events.ProjectDataLoaded += (data) =>
@@ -36,6 +39,9 @@ namespace FileManagement
             //{
             //    SetPathFromGuid(so.SampleData.ID);
             //};
+
+            Events.BioMakeUnique += MakeBioUniqueFromGuid;
+
 
             Events.SetSelectedGuid += (guid) =>
             {
@@ -60,6 +66,8 @@ namespace FileManagement
             {
                 SetPathFromGuid(guid);
             };
+    
+            Events.BioMakeUnique -= MakeBioUniqueFromGuid;
         }
 
         #region SampleInitialization
@@ -125,6 +133,15 @@ namespace FileManagement
                     }
                 });
             }
+            //BaseSamplesPathCollection.Clear();
+
+            //var di = new DirectoryInfo(BaseSamplesDirectory);
+            //var files = di.GetFiles().OrderByDescending(x => x.Name).ToList();
+
+            //for(int i = 0; i < files.Count; i++)
+            //{
+            //    BaseSamplesPathCollection.Add(files[i].FullName);
+            //}
 
             BaseSamplesInitialized?.Invoke();
         }
@@ -167,30 +184,76 @@ namespace FileManagement
             
             var newName = SaveLoader.Instance.NewGuid();
             
-            var newSampleDirectory = Path.Combine(UniqueSamplesDirectory, newName);
+            var newSampleDirectory = Path.Combine(Utils.SampleSavepath, ProjectGuid, newName);
             
             var newFilePath = Path.Combine(newSampleDirectory, newName + ".wav");
+            
+            //string removewav = SelectedSamplePath.Substring(0, SelectedSamplePath.Length - 4);
 
+            SampleData sampleJson = await AssetBuilder.Instance.GetSampleData(AssetBuilder.Instance.SelectedGuid);
+
+            sampleJson.ID = newName;
+        //var template;
+            int template = sampleJson.Template;
+
+            var ico = _customIcons.Collection[template];
+
+            byte[] _bytes = ico.EncodeToPNG();
             await CheckOrMakeDirectory(newSampleDirectory);
 
-            await Task.Run(() =>
+            var jsonstring = Path.Combine(newSampleDirectory, newName + ".json");
+            var pngstring = Path.Combine(newSampleDirectory, "ico.png");
+            Debug.Log("from fmanager: " + pngstring);
+
+        await Task.Run(() =>
             {
                 if (!File.Exists(Path.Combine(newFilePath)))
                 {
                     //var data = BetterStreamingAssets.ReadAllBytes(path);
                     var data = File.ReadAllBytes(path);
+
+                    //var sampleJson = await AssetBuilder.Instance.GetSampleData(SelectedSamplePath);
+                    SaveLoader.Instance.SaveData(jsonstring, sampleJson); // write json
                     // create new unique sample folder
                     //var newPath = Path.Combine(UniqueSamplesDirectory, Path.GetFileName(path));
                     // copy sample file into new folder
+                    //File.WriteAllBytes(Path.Combine(newFilePath), data);
+                    File.WriteAllBytes(pngstring, _bytes);
+                    //Debug.Log(_bytes.Length / 1024 + "Kb was saved as: " + _fullPath);
                     File.WriteAllBytes(Path.Combine(newFilePath), data);
                 }
             });
+
+            SelectedSamplePath = newFilePath;
         }
 
-        public async void MakeSelectedIntoUnique()
+        public async void MakeSelectedIntoUnique(string guid)
         {
+            SetSelectedSamplePath(guid);
+
             await MakeSamplePathIntoUnique(SelectedSamplePath);
+
             RefreshUnique();
+
+            //Events.BioMakeUniqueComplete?.Invoke();
+        }
+
+        public async void MakeBioUniqueFromGuid(string guid)
+        {
+            if (guid.Length < 3)
+            {
+                //SelectedSamplePath = BaseSamplesPathCollection[int.Parse(guid)];
+                SelectedSamplePath = BaseSamplesDirectory + "/" + BaseSampleFromGuid(guid) + ".wav";
+            }
+            else
+            {
+                SelectedSamplePath = Path.Combine(UniqueSamplesDirectory, guid + ".wav");
+            }
+
+            await MakeSamplePathIntoUnique(SelectedSamplePath);
+
+            Events.BioMakeUniqueComplete?.Invoke();
+
         }
 
         void CheckAndroidPermissions()
@@ -222,16 +285,31 @@ namespace FileManagement
         {
             if(guid.Length < 3)
             {
-                SelectedSamplePath = BaseSamplesPathCollection[int.Parse(guid)];
+                //SelectedSamplePath = BaseSamplesPathCollection[int.Parse(guid)];
+                SelectedSamplePath = BaseSamplesDirectory + "/" + BaseSampleFromGuid(guid) + ".wav";
                 Events.BaseSampleSelected?.Invoke(true);
             }
             else
             {
-                SelectedSamplePath = Path.Combine(UniqueSamplesDirectory, ProjectGuid, guid + ".wav");
+                SelectedSamplePath = Path.Combine(UniqueSamplesDirectory, guid + ".wav");
                 Events.BaseSampleSelected?.Invoke(false);
             }
 
             NewSampleSelected?.Invoke(SelectedSamplePath);
+        }
+
+        public string PathFromGuid(string guid)
+        {
+            if (guid.Length < 3)
+            {
+                return BaseSamplesDirectory + "/" + BaseSampleFromGuid(guid) + ".wav";
+            }
+            else
+            {
+                return Path.Combine(UniqueSamplesDirectory, guid + ".wav");
+            }
+
+            return null;
         }
 
         public void DeleteUniqueSample()
@@ -239,19 +317,61 @@ namespace FileManagement
             //Directory.Delete(path, true);
             //InitializeUniqueSamples();
 
-            FileInfo fInfo = new FileInfo(SelectedSamplePath);
+            //FileInfo fInfo = new FileInfo(SelectedSamplePath);
 
-            var dirName = fInfo.Directory.Name;
+            var dirName = Path.GetDirectoryName(SelectedSamplePath);
 
-            if(dirName.Contains("BaseSamples"))
+            if (dirName.Contains("BaseSamples"))
             {
                 Debug.Log("Attempted to delete base sample");
                 return;
             }
+            Events.DeleteTile?.Invoke(AssetBuilder.Instance.SelectedGuid);
+            //Debug.Log(fInfo.Directory.FullName);
+            Directory.Delete(Path.Combine(dirName, AssetBuilder.Instance.SelectedGuid), true);
 
-            Directory.Delete(fInfo.Directory.FullName, true);
-
+            Events.SetSelectedGuid?.Invoke("0");
             RefreshUnique();
-        }   
+        }
+        private string BaseSampleFromGuid(string guid)
+        {
+
+            switch (int.Parse(guid))
+            {
+                case 0:
+                    return "1kick";
+
+                case 1:
+                    return "2hat";
+
+                case 2:
+                    return "3clap";
+
+                case 3:
+                    return "4cow";
+
+                case 4:
+                    return "5snare";
+
+                case 5:
+                    return "6kick808";
+
+                case 6:
+                    return "7tab05";
+
+                case 7:
+                    return "8khat3";
+
+                case 8:
+                    return "9walk";
+
+                case 9:
+                    return "10chant";
+
+            }
+
+            return "basesample404";
+
+        }
     }
-}
+//}

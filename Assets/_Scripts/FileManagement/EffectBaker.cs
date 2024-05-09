@@ -6,8 +6,8 @@ using Un4seen.Bass;
 using System;
 using Un4seen.Bass.AddOn.Enc;
 
-namespace FileManagement
-{
+//namespace FileManagement
+//{
     public class EffectBaker : MonoBehaviour
     {
         FileManager _fileviewer;
@@ -37,6 +37,76 @@ namespace FileManagement
             AddReverb(renameOriginal, _fileviewer.SelectedSamplePath);
             File.Delete(renameOriginal);
         }
+
+        public void AddReverbToSelectedSampleObject(float val, string guid, string template)
+        {
+            var inputTemplatePath = _fileviewer.PathFromGuid(template);
+            Debug.Log(inputTemplatePath);
+                    Debug.Log(_fileviewer.SelectedSamplePath);
+        //var betteroutputPath = _fileviewer.UniqueSamplesDirectory + guid + "/" + guid + ".wav";
+        var betteroutputPath = Path.Combine(_fileviewer.UniqueSamplesDirectory, guid, guid + ".wav");
+
+        Debug.Log(betteroutputPath);
+            //var renameOriginal = _fileviewer.SelectedSamplePath.Remove(_fileviewer.SelectedSamplePath.Length - 4, 4) + $"{System.DateTime.Now.GetHashCode()}.wav";
+            //File.Move(_fileviewer.SelectedSamplePath, renameOriginal);
+            
+            AddReverb(val, inputTemplatePath, betteroutputPath);
+            //File.Delete(renameOriginal);
+        }
+
+        public void AddReverb(float value, string inputSamplePath, string outputSamplePath)
+        {
+        float inputvalue = value;
+
+            var decoder = Bass.BASS_StreamCreateFile(inputSamplePath, 0, 0, BASSFlag.BASS_STREAM_DECODE);
+
+            BASS_CHANNELINFO info = Bass.BASS_ChannelGetInfo(decoder);
+
+            Debug.Log(info.origres);
+
+            BASSEncode fpflag = BASSEncode.BASS_ENCODE_DEFAULT;
+
+
+            if (info.origres != 0)
+            {
+                if (info.origres > 24) fpflag = BASSEncode.BASS_ENCODE_FP_32BIT;
+
+                else if (info.origres > 16) fpflag = BASSEncode.BASS_ENCODE_FP_24BIT;
+
+                else if (info.origres > 8) fpflag = BASSEncode.BASS_ENCODE_FP_16BIT;
+
+                else if (info.origres != 0) fpflag = BASSEncode.BASS_ENCODE_FP_8BIT;
+            }
+
+            var rev = BASSFXType.BASS_FX_DX8_REVERB;
+            int effectHandle = Bass.BASS_ChannelSetFX(decoder, rev, 1);
+
+        BASS_DX8_REVERB reverbParameters = new BASS_DX8_REVERB
+        {
+            fInGain = -10f,
+            fReverbMix = -40f,
+            fReverbTime = 1200f,
+            fHighFreqRTRatio = 0.1f,
+        };
+
+        if (!Bass.BASS_FXSetParameters(effectHandle, reverbParameters))
+            {
+                Debug.LogError("Failed to set reverb parameters.");
+                return;
+            }
+
+            var encoder = BassEnc.BASS_Encode_Start(decoder, outputSamplePath, BASSEncode.BASS_ENCODE_PCM | BASSEncode.BASS_ENCODE_AUTOFREE | fpflag, null, IntPtr.Zero);
+
+            int counter = 0;
+
+            while (Bass.BASS_ChannelIsActive(decoder) == BASSActive.BASS_ACTIVE_PLAYING && BassEnc.BASS_Encode_IsActive(encoder) == BASSActive.BASS_ACTIVE_PLAYING && counter < 80000)
+            {
+                Bass.BASS_ChannelGetData(decoder, _encbuffer, 6500);
+                Debug.Log("Encoding");
+                counter++;
+            }
+        }
+
         public void AddReverb(string inputSamplePath, string outputSamplePath)
         {
 
@@ -119,4 +189,4 @@ namespace FileManagement
             Bass.BASS_Free();
         }
     }
-}
+//}

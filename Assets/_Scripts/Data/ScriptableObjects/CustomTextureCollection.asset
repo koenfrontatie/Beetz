@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7af294355a6c81b49844bb965a439064, type: 3}
+  m_Name: CustomTextureCollection
+  m_EditorClassIdentifier: 
+  Collection:
+  - {fileID: 2800000, guid: 56434b6ecf7177c41b4269dbb7b115d2, type: 3}
+  - {fileID: 2800000, guid: a63f1a8c56e1ffb4a9e4b256b35fa290, type: 3}
+  - {fileID: 2800000, guid: 6fc6ff6ad5a43e6489883e7472b6e20d, type: 3}
+  - {fileID: 2800000, guid: e469ec407cc6434478d9402937f157bc, type: 3}
+  - {fileID: 2800000, guid: e9c156c135fabff4d93b6b73e51029c4, type: 3}
+  - {fileID: 2800000, guid: 8c392e278baeb644fb00423ea2406dae, type: 3}
+  - {fileID: 2800000, guid: 57b4a783402ef1348b2907f6d311e489, type: 3}
+  - {fileID: 2800000, guid: 2ab7bd2c94eb72342a40b1ab194a5406, type: 3}
+  - {fileID: 2800000, guid: d3824e9f7433e254cac255efeaecf592, type: 3}
+  - {fileID: 2800000, guid: ad44f51d02376f34ea6057e414762041, type: 3}
