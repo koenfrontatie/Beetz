@@ -20,6 +20,8 @@ public class GridInteraction : MonoBehaviour
     private Camera _cam;
     private LayerMask _layerMask;
 
+    [SerializeField]private CanvasGroup _toolTip;
+
     private void Start()
     {
         _gridController = GetComponent<GridController>();
@@ -118,7 +120,7 @@ public class GridInteraction : MonoBehaviour
                 break;
             
             case InteractionState.Context:
-                if (transform.gameObject.layer != LayerMask.NameToLayer("Grid")) return;
+                //if (transform.gameObject.layer != LayerMask.NameToLayer("Grid")) return;
                 SetState(InteractionState.Default);
 
                 break;
@@ -370,6 +372,7 @@ public class GridInteraction : MonoBehaviour
         _gridDisplay.gameObject.SetActive(state == InteractionState.Patching || state == InteractionState.Moving || state == InteractionState.Copying ? true : false);
         //_contextColliders.SetContextMenu((state == InteractionState.Context || state == InteractionState.Moving) ? true : false);
 
+        _toolTip.alpha = (state == InteractionState.Patching ? 1 : 0);
 
 
         State = state;
@@ -383,6 +386,7 @@ public class GridInteraction : MonoBehaviour
         {
             case InteractionState.Default:
                 _contextColliders.SetContextMenu(false);
+                //_toolTip.alpha = 0;
                 break;
             case InteractionState.Context:
                 _contextColliders.SetContextMenu(true);
@@ -407,6 +411,7 @@ public class GridInteraction : MonoBehaviour
     public void TogglePatching() {
 
         SetState( State == InteractionState.Patching ? InteractionState.Default : InteractionState.Patching);
+        //_toolTip.alpha = (State == InteractionState.Patching ? 1 : 0);
     }
 }
 

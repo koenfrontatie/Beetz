@@ -83,6 +83,11 @@ public class UIController : MonoBehaviour
         }
     }
 
+    public void ToggleTimeTable()
+    {
+        ToggleAllCanvases(false);
+    }
+
     void ToggleAllCanvases(bool b)
     {
         _settingsMenu.ToggleCanvasGroup(b);
