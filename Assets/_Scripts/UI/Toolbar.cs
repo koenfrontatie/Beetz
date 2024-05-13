@@ -3,6 +3,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR;
+using FileManagement;
 
 public class Toolbar : MonoBehaviour
 {
@@ -27,8 +28,8 @@ public class Toolbar : MonoBehaviour
 
     private void OnEnable()
     {
-        Events.ProjectDataLoaded += OnProjectDataLoaded;
-        Events.SetSelectedGuid += SetToolbarSelection;
+        DataStorage.ProjectDataSet += OnProjectDataLoaded;
+        FileManager.NewSampleSelected += SetToolbarSelection;
         Events.DragDropFoundNewContainer += OnDragDropFoundNewContainer;
         GameManager.StateChanged += OnNewGameMode;
     }
@@ -208,12 +209,9 @@ public class Toolbar : MonoBehaviour
     }
     private void OnDisable()
     {
-        Events.ProjectDataLoaded -= OnProjectDataLoaded;
-        //Events.ItemSwap -= OnItemSwap;
+        DataStorage.ProjectDataSet -= OnProjectDataLoaded;
+        FileManager.NewSampleSelected -= SetToolbarSelection;
         Events.DragDropFoundNewContainer -= OnDragDropFoundNewContainer;
         GameManager.StateChanged -= OnNewGameMode;
-        Events.SetSelectedGuid -= SetToolbarSelection;
-
-        //Events.SampleSelected -= OnSampleSelected;
     }
 }

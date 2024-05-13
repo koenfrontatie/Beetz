@@ -1,13 +1,10 @@
 using UnityEngine;
-using NWaves.Audio;
-using NWaves.Effects;
+using FileManagement;
 using System.IO;
 using Un4seen.Bass;
 using System;
 using Un4seen.Bass.AddOn.Enc;
 
-//namespace FileManagement
-//{
     public class EffectBaker : MonoBehaviour
     {
         FileManager _fileviewer;
@@ -16,16 +13,6 @@ using Un4seen.Bass.AddOn.Enc;
         {
             _fileviewer = GameObject.FindObjectOfType<FileManager>();
         }
-        private void Start()
-        {
-            bool isInitialized = Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero);
-            if (!isInitialized)
-            {
-                Debug.LogError("Failed to initialize BASS library.");
-                return;
-            }
-        }
-
 
 #region DSP
         
@@ -40,17 +27,17 @@ using Un4seen.Bass.AddOn.Enc;
 
         public void AddReverbToSelectedSampleObject(float val, string guid, string template)
         {
-            var inputTemplatePath = _fileviewer.PathFromGuid(template);
-            Debug.Log(inputTemplatePath);
-                    Debug.Log(_fileviewer.SelectedSamplePath);
-        //var betteroutputPath = _fileviewer.UniqueSamplesDirectory + guid + "/" + guid + ".wav";
-        var betteroutputPath = Path.Combine(_fileviewer.UniqueSamplesDirectory, guid, guid + ".wav");
+        //    var inputTemplatePath = _fileviewer.SamplePathFromGuid(template);
+        //    Debug.Log(inputTemplatePath);
+        //    Debug.Log(_fileviewer.SelectedSamplePath);
+        ////var betteroutputPath = _fileviewer.UniqueSamplesDirectory + guid + "/" + guid + ".wav";
+        //var betteroutputPath = Path.Combine(_fileviewer.UniqueSampleDirectory, guid, guid + ".wav");
 
-        Debug.Log(betteroutputPath);
-            //var renameOriginal = _fileviewer.SelectedSamplePath.Remove(_fileviewer.SelectedSamplePath.Length - 4, 4) + $"{System.DateTime.Now.GetHashCode()}.wav";
-            //File.Move(_fileviewer.SelectedSamplePath, renameOriginal);
+        //Debug.Log(betteroutputPath);
+        //    //var renameOriginal = _fileviewer.SelectedSamplePath.Remove(_fileviewer.SelectedSamplePath.Length - 4, 4) + $"{System.DateTime.Now.GetHashCode()}.wav";
+        //    //File.Move(_fileviewer.SelectedSamplePath, renameOriginal);
             
-            AddReverb(val, inputTemplatePath, betteroutputPath);
+        //    AddReverb(val, inputTemplatePath, betteroutputPath);
             //File.Delete(renameOriginal);
         }
 
@@ -158,30 +145,30 @@ using Un4seen.Bass.AddOn.Enc;
                 counter++;
             }
         }
-        public void AddDistortion()
-        {
-            var path = _fileviewer.SelectedSamplePath;
-            WaveFile waveFile;
+        //public void AddDistortion()
+        //{
+        //    var path = _fileviewer.SelectedSamplePath;
+        //    WaveFile waveFile;
             
-            FileStream readStream;
+        //    FileStream readStream;
 
-            using (readStream = new FileStream(path, FileMode.Open))
-            {
-                waveFile = new WaveFile(readStream);
-            }
+        //    using (readStream = new FileStream(path, FileMode.Open))
+        //    {
+        //        waveFile = new WaveFile(readStream);
+        //    }
 
-            readStream.Close();
+        //    readStream.Close();
 
-            var dist = new DistortionEffect(DistortionMode.SoftClipping, 40, -20);
-            var outputsignal = dist.ApplyTo(waveFile.Signals[0], NWaves.Filters.Base.FilteringMethod.DifferenceEquation);
-            waveFile.Signals[0] = outputsignal;
+        //    var dist = new DistortionEffect(DistortionMode.SoftClipping, 40, -20);
+        //    var outputsignal = dist.ApplyTo(waveFile.Signals[0], NWaves.Filters.Base.FilteringMethod.DifferenceEquation);
+        //    waveFile.Signals[0] = outputsignal;
 
-            FileStream writeStream;
+        //    FileStream writeStream;
 
-            //waveFile.SaveTo(writeStream = new FileStream($"{Path.Combine(Application.persistentDataPath, path)}", FileMode.Create));
-            waveFile.SaveTo(writeStream = new FileStream(path, FileMode.Create));
-            writeStream.Close();
-        }
+        //    //waveFile.SaveTo(writeStream = new FileStream($"{Path.Combine(Application.persistentDataPath, path)}", FileMode.Create));
+        //    waveFile.SaveTo(writeStream = new FileStream(path, FileMode.Create));
+        //    writeStream.Close();
+        //}
 
 #endregion
         void OnDestroy()
@@ -189,4 +176,3 @@ using Un4seen.Bass.AddOn.Enc;
             Bass.BASS_Free();
         }
     }
-//}

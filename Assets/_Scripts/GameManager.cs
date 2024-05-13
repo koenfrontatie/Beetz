@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+//using FileManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,16 +21,17 @@ public class GameManager : MonoBehaviour
             Instance = this;
         }
     }
-
-    private void Start()
+    private void OnEnable()
     {
-        DataStorage.Instance.OpenLastProject();
-        //Events.BioMakeUniqueComplete += OpenBioLab;
+        DataStorage.ProjectDataSet += (data) => UpdateState(GameState.Gameplay);
     }
-
     private void OnDisable()
     {
-        //Events.BioMakeUniqueComplete -= OpenBioLab;
+        DataStorage.ProjectDataSet -= (data) => UpdateState(GameState.Gameplay);
+    }
+    private void Start()
+    {
+        UpdateState(GameState.Init);
     }
 
     public void UpdateState(GameState state)
@@ -38,6 +40,8 @@ public class GameManager : MonoBehaviour
 
         switch (state)
         {
+            case GameState.Init:
+                break;
             case GameState.Menu:
                 break;
             case GameState.Gameplay:
@@ -87,14 +91,27 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void ToggleBetweenStates(GameState state1, GameState state2)
+    {
+        if (State != state1)
+        {
+            UpdateState(state1);
+        }
+        else
+        {
+            UpdateState(state2);
+        }
+    }
     public void ExitApplication()
     {
         Application.Quit();
     }
 }
 
+[Serializable]
 public enum GameState
 {
+    Init,
     Menu,
     Gameplay,
     Library,

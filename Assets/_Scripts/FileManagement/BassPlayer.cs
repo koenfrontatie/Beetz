@@ -1,16 +1,14 @@
 using UnityEngine;
-using NWaves.Audio;
-using NWaves.Effects;
 using System.IO;
 using Un4seen.Bass;
 using System;
-using Un4seen.Bass.AddOn.Enc;
 
 namespace FileManagement
 {
     public class BassPlayer : MonoBehaviour
     {
-        FileManager _fileviewer;
+        [SerializeField]
+        private KVDW.Logger _logger;
         private void OnEnable()
         {
             Events.LoadPlayGuid += PlayFromGuid;
@@ -21,10 +19,18 @@ namespace FileManagement
             Events.LoadPlayGuid += PlayFromGuid;
 
         }
-        //private void Awake()
-        //{
-        //    _fileviewer = GetComponent<FileManager>();
-        //}
+
+        private void Start()
+        {
+      
+                bool isInitialized = Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero);
+                if (!isInitialized)
+                {
+                    Debug.LogError("Failed to initialize BASS library.");
+                    return;
+                }
+         
+        }
 
         public void PlayFromPath(string path)
         {
@@ -35,60 +41,21 @@ namespace FileManagement
 
         public void PlayFromGuid(string guid)
         {
-            string fullpath; // ---------- turns guid into url
-
-            if (guid.Length < 3) // if template
-            {
-                fullpath = Path.Combine(Utils.PersistentBaseSamples, BaseSampleFromGuid(guid) + ".wav");
-            }
-            else
-            {
-                fullpath = Path.Combine(Utils.SampleSavepath, DataStorage.Instance.ProjectData.ID, guid, guid + ".wav");
-                //Debug.Log(fullpath);
-            }
+            string fullpath = FileManager.Instance.SamplePathFromGuid(guid); // ---------- turns guid into url
+            
+            Log($"Playing path: {fullpath}");
 
             PlayFromPath(fullpath);
         }
 
-        public string BaseSampleFromGuid(string guid)
+        void Log(object message)
         {
-
-            switch (int.Parse(guid))
-            {
-                case 0:
-                    return "1kick";
-                    
-                case 1:
-                    return "2hat";
-                    
-                case 2:
-                    return "3clap";
-                    
-                case 3:
-                    return "4cow";
-                    
-                case 4:
-                    return "5snare";
-                    
-                case 5:
-                    return "6kick808";
-                    
-                case 6:
-                    return "7tab05";
-                    
-                case 7:
-                    return "8khat3";
-                    
-                case 8:
-                    return "9walk";
-                    
-                case 9:
-                    return "10chant";
-                    
-            }
-
-            return "basesample404";
-      
+            if(_logger)
+                _logger.Log(message, this);
+        }
+        void OnDestroy()
+        {
+            Bass.BASS_Free();
         }
     }
 }

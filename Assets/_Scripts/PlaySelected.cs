@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using FileManagement;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -9,9 +8,9 @@ public class PlaySelected : MonoBehaviour, IPointerDownHandler
     {
         //Debug.Log(obj.SampleData.ID);
         //Events.SampleSelected?.Invoke(obj);
-        Events.LoadPlayGuid?.Invoke(AssetBuilder.Instance.SelectedGuid);
+        Events.LoadPlayGuid?.Invoke(FileManager.Instance.SelectedSampleGuid);
         //Events.SetSelectedSample?.Invoke(obj);
-        Events.SetSelectedGuid?.Invoke(AssetBuilder.Instance.SelectedGuid);
+        Events.SetSelectedGuid?.Invoke(FileManager.Instance.SelectedSampleGuid);
 
     }
 }

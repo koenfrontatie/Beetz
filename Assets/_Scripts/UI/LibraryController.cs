@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FileManagement;
 
 public class LibraryController : MonoBehaviour
 {
@@ -11,11 +12,12 @@ public class LibraryController : MonoBehaviour
     [SerializeField] List<InfoTile> _infoTiles = new List<InfoTile>();
     private Dictionary<string, InfoTile> _tileDictionary = new Dictionary<string, InfoTile>();
 
-    //private void OnEnable()
-    //{
-    //    Events.CustomDataLoaded += RefreshInfoTiles;
-    //    Events.DeleteTile += OnDeleteTile;
-    //}
+    private void OnEnable()
+    {
+        //Events.CustomDataLoaded += RefreshInfoTiles;
+        //Events.DeleteTile += OnDeleteTile;
+        GameManager.StateChanged += OnStateChanged;
+    }
 
     private void OnDeleteTile(string obj)
     {
@@ -29,7 +31,7 @@ public class LibraryController : MonoBehaviour
 
     public void RefreshInfoTiles()
     {
-        var customSampleCount = AssetBuilder.Instance.CustomSamples.IDC.Count;
+        var customSampleCount = FileManager.Instance.UniqueSamplePathCollection.Count;
 
         //// Clear existing tiles
         //foreach (var tile in _infoTiles)
@@ -42,20 +44,30 @@ public class LibraryController : MonoBehaviour
         // Create new tiles based on current samples
         for (int i = 0; i < customSampleCount; i++)
         {
-            var sampleId = AssetBuilder.Instance.CustomSamples.IDC[i];
+            var sampleId = FileManager.Instance.GuidFromPath(FileManager.Instance.UniqueSamplePathCollection[i]);
             if (!_tileDictionary.ContainsKey(sampleId))
             {
                 var tile = Instantiate(_infoTilePrefab, _contentParent);
-                tile.AssignSampleData(AssetBuilder.Instance.CustomSamples.IDC[i]);
+                tile.AssignSampleData(sampleId);
                 _infoTiles.Add(tile);
                 _tileDictionary.Add(sampleId, tile);
             }
         }
     }
 
-    //private void OnDisable()
-    //{
-    //    Events.CustomDataLoaded -= RefreshInfoTiles;
-    //    Events.DeleteTile -= OnDeleteTile;
-    //}
+    private void OnDisable()
+    {
+        GameManager.StateChanged -= OnStateChanged;
+
+        //Events.CustomDataLoaded -= RefreshInfoTiles;
+        //Events.DeleteTile -= OnDeleteTile;
+    }
+
+    private void OnStateChanged(GameState state)
+    {
+       if(state == GameState.Library)
+        {
+            RefreshInfoTiles();
+        }
+    }
 }

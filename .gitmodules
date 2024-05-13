@@ -1,6 +1,3 @@
 [submodule "Assets/External/LeanTween"]
 	path = Assets/External/LeanTween
 	url = git@github.com:dentedpixel/LeanTween.git
-[submodule "Assets/External/CsoundUnity"]
-	path = Assets/External/CsoundUnity
-	url = https://github.com/rorywalsh/CsoundUnity.git

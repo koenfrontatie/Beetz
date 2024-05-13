@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using FileManagement;
 public class GridInteraction : MonoBehaviour
 {
     public InteractionState State;
@@ -49,7 +49,7 @@ public class GridInteraction : MonoBehaviour
                     var data = tappedSequencer.SequencerData;
 
                     var index = transform.GetSiblingIndex();
-                    var selectedGuid = AssetBuilder.Instance.SelectedGuid;
+                    var selectedGuid = FileManager.Instance.SelectedSampleGuid;
                     //var selectedGuid = AssetBuilder.Instance.SelectedSampleObject;
                     
                     if (string.IsNullOrEmpty(selectedGuid)) return;

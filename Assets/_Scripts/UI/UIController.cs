@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class UIController : MonoBehaviour
 {
     [SerializeField] private CanvasGroup _settingsMenu, _mainScene, _biolabScene, _library, _toolbar, _fileManager;
-    [SerializeField] private GameObject _libraryPreviewObject, _mainEnvironment, _biolabEnvironment;
     [SerializeField] private Camera _main, _biolab;
     //[SerializeField] private 
 
@@ -74,7 +73,6 @@ public class UIController : MonoBehaviour
         ToggleAllCanvases(false);
         _main.enabled = true;
         _biolab.enabled = false;
-        _mainEnvironment.SetActive(true);
         switch (state)
         {
             case GameState.Menu:
@@ -89,19 +87,16 @@ public class UIController : MonoBehaviour
                 _toolbar.ToggleCanvasGroup(true);
                 break;
             case GameState.Library:
-                //if(Metronome.Instance.Playing)
-                //{
-                //    _playPause.onClick.Invoke();
-                //}
-                //_library.ToggleCanvasGroup(true);
-                ////_library.GetComponent<LibraryController>().RefreshInfoTiles();
-                //_libraryPreviewObject.SetActive(true);
-                //_toolbar.ToggleCanvasGroup(true);
-                //break;
+                if (Metronome.Instance.Playing)
+                {
+                    _playPause.onClick.Invoke();
+                }
+                _library.ToggleCanvasGroup(true);
+                FindObjectOfType<LibraryController>().RefreshInfoTiles();
+                _toolbar.ToggleCanvasGroup(true);
+                break;
 
             case GameState.Biolab:
-                _mainEnvironment.SetActive(false);
-                _biolabEnvironment.SetActive(true);
                 if (Metronome.Instance.Playing)
                 {
                     _playPause.onClick.Invoke();
@@ -126,8 +121,6 @@ public class UIController : MonoBehaviour
         _toolbar.ToggleCanvasGroup(b);
 
         _fileManager.ToggleCanvasGroup(b);
-
-        _libraryPreviewObject.SetActive(b);
     }
 
     void ToggleFileManager()

@@ -1,3 +1,4 @@
+using FileManagement;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,11 +15,7 @@ public class PointerSelect : MonoBehaviour, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        //Debug.Log(obj.SampleData.ID);
-        //Events.SampleSelected?.Invoke(obj);
+        FileManager.SelectNewSample?.Invoke(obj.SampleData.ID);
         Events.LoadPlayGuid?.Invoke(obj.SampleData.ID);
-        //Events.SetSelectedSample?.Invoke(obj);
-        Events.SetSelectedGuid?.Invoke(obj.SampleData.ID);
-
     }
 }

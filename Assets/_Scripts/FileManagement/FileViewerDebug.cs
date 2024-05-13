@@ -52,10 +52,10 @@ namespace FileManagement {
                 }
             }
 
-            for (int i = 0; i < _fileManager.UniqueSamplesPathCollection.Count; i++)
+            for (int i = 0; i < _fileManager.UniqueSamplePathCollection.Count; i++)
             {
                 FileButton fileButton = Instantiate(_fileButtonPrefab, _persistentUniqueSamples);
-                fileButton.AssignPathToButton(_fileManager.UniqueSamplesPathCollection[i]);
+                fileButton.AssignPathToButton(_fileManager.UniqueSamplePathCollection[i]);
                 var button = fileButton.GetComponent<Button>();
                 button.onClick.AddListener(() => _fileManager.SetSelectedSamplePath(fileButton.Path));
             }
@@ -71,10 +71,10 @@ namespace FileManagement {
                 }
             }
 
-            for (int i = 0; i < _fileManager.BaseSamplesPathCollection.Count; i++)
+            for (int i = 0; i < _fileManager.BaseSamplePathCollection.Count; i++)
             {
                 FileButton fileButton = Instantiate(_fileButtonPrefab, _persistentBaseSamples);
-                fileButton.AssignPathToButton(_fileManager.BaseSamplesPathCollection[i]);
+                fileButton.AssignPathToButton(_fileManager.BaseSamplePathCollection[i]);
                 var button = fileButton.GetComponent<Button>();
                 button.onClick.AddListener(() => _fileManager.SetSelectedSamplePath(fileButton.Path));
             }

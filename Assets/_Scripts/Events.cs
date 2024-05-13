@@ -48,8 +48,6 @@ public static class Events
 
     public static Action<ProjectData> ProjectDataLoaded;
 
-    public static Action<List<string>> LoadingToolbar;
-
     //--------------- new data stuff
 
     public static Action<Vector3, SequencerData> BuildingSequencer;
