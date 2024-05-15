@@ -1,13 +1,15 @@
 using UnityEngine;
 using FileManagement;
 using System.IO;
-using Un4seen.Bass;
+//using Un4seen.Bass;
 using System;
+using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Enc;
 using Un4seen.Bass.AddOn.Fx;
-using System.Text;
-
-
+//using System.Text;
+//using ManagedBass
+//using ManagedBass;
+//using ManagedBass.Fx;
 public class EffectBaker : MonoBehaviour
 {
     public BASS_DX8_REVERB _reverbSettings;
@@ -38,8 +40,7 @@ public class EffectBaker : MonoBehaviour
     {
         GameManager.StateChanged += OnStateChanged;
     }
-
-
+    
     private void OnDisable()
     {
         GameManager.StateChanged -= OnStateChanged;
@@ -51,6 +52,8 @@ public class EffectBaker : MonoBehaviour
         Bass.BASS_ChannelPause(_channel);
         Bass.BASS_ChannelSetPosition(_channel, 0);  
         Bass.BASS_ChannelPlay(_channel, false);
+
+        //ManagedBass.Bass.
     }
     private async void OnStateChanged(GameState state)
     {
