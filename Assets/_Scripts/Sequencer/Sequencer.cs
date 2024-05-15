@@ -55,6 +55,7 @@ public class Sequencer : MonoBehaviour
 
     public void UpdateStepPosition()
     {
+        if (GameManager.Instance.State != GameState.Gameplay) return;
         CurrentStep = PlaybackListener.GetStepPosition();
         CurrentBeat = PlaybackListener.GetBeatPosition();
         CurrentBar = PlaybackListener.GetBarPosition();

@@ -115,7 +115,7 @@ public class AssetBuilder : MonoBehaviour
         if (guid.Length < 3) // if template
         {
             var copy = Instantiate(_templateSampleObjects.Collection[int.Parse(guid)]);
-            Debug.Log("less than 3");
+            //Debug.Log("less than 3");
             return copy;
         }
         else
@@ -133,6 +133,8 @@ public class AssetBuilder : MonoBehaviour
 
     public async Task<SampleData> GetSampleData(string guid)
     {
+        if (string.IsNullOrEmpty(guid)) return null;
+        
         if (guid.Length < 3) // if template
         {
             return _templateSampleObjects.Collection[int.Parse(guid)].SampleData;

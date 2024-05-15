@@ -64,6 +64,8 @@ public class Step : MonoBehaviour
 
     void CheckForPlayBack()
     {
+        if (GameManager.Instance.State != GameState.Gameplay) return;
+
         if (_sampleObject == null || _sequencer == null) return;
         //Debug.Log($"step:{_sequencer.CurrentStep} sibling+1:{transform.GetSiblingIndex() + 1} rowamt:{_sequencer.RowAmount} s1%amt:{(_sequencer.CurrentStep) % _sequencer.StepAmount}");
         bool shouldPlay = _sequencer.CurrentStep - 1 == BeatIndex;

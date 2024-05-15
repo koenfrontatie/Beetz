@@ -5,14 +5,19 @@ using Un4seen.Bass;
 using System;
 using Un4seen.Bass.AddOn.Enc;
 using Un4seen.Bass.AddOn.Fx;
+using System.Text;
 
 
 public class EffectBaker : MonoBehaviour
 {
     public BASS_DX8_REVERB _reverbSettings;
     public BASS_DX8_DISTORTION _distSettings;
-    //public BASSFXType.BASS_FX_BFX_ECHO4 _echoSettings;
+    public BASS_DX8_ECHO _echoSettings;
     public BASS_BFX_PITCHSHIFT _pitchSettings;
+    [Range(0, 100f)]
+    public float EdgeFactor;
+    [Range(-60f, 0f)]
+    public float GainFactor;
 
     int _channel;
     int _reverbHandle;
@@ -41,8 +46,10 @@ public class EffectBaker : MonoBehaviour
     }
     private void OnNewBeat()
     {
-       
-        Debug.Log(Bass.BASS_ChannelGetLength(_channel));
+
+        //Debug.Log(Bass.BASS_ChannelPause(_channel));
+        Bass.BASS_ChannelPause(_channel);
+        Bass.BASS_ChannelSetPosition(_channel, 0);  
         Bass.BASS_ChannelPlay(_channel, false);
     }
     private async void OnStateChanged(GameState state)
@@ -51,10 +58,13 @@ public class EffectBaker : MonoBehaviour
         {
             Metronome.NewBeat += OnNewBeat;
             BassFx.LoadMe();
-            
-            Debug.Log(BassFx.BASS_FX_GetVersion());
+            //Debug.Log(Bass.BASS_GetInfo());
+            //var info = Bass.BASS_GetVersion();
+           
+            //Debug.Log(BassFx.BASS_FX_GetVersion());
 
-            var echo = BASSFXType.BASS_FX_BFX_ECHO4;
+            //var echo = BASSFXType.BASS_FX_BFX_ECHO;
+
             //_pitchSettings = new BASS_BFX_PITCHSHIFT();
             var guid = FileManager.Instance.SelectedSampleGuid;
 
@@ -64,22 +74,23 @@ public class EffectBaker : MonoBehaviour
 
             Log("Opening live stream.");
             
-            _channel = Bass.BASS_StreamCreateFile(FileManager.Instance.SamplePathFromGuid(SelectedTemplate), 0, 0, BASSFlag.BASS_DEFAULT);
+            _channel = Bass.BASS_StreamCreateFile(FileManager.Instance.SamplePathFromGuid(SelectedTemplate), 0, 0, BASSFlag.BASS_MUSIC_FX);
+            Bass.BASS_ChannelSetAttribute(_channel, BASSAttribute.BASS_ATTRIB_TAIL, 1.5f);
 
             _revPriority = 50;
             _distPriority = 40;
             _echoPriority = 30;
-            //_pitchPriority = 60;
+            _pitchPriority = 60;
 
             _reverbHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_DX8_REVERB, _revPriority);
             _distHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_DX8_DISTORTION, _distPriority);
-            //_pitchHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_BFX_PITCHSHIFT, _pitchPriority);
+            _pitchHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_BFX_PITCHSHIFT, _pitchPriority);
             //_echoHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_BFX_ECHO, _echoPriority);
             //_echoHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_BFX_ECHO4, _echoPriority);
 
             Bass.BASS_FXSetParameters(_reverbHandle, _reverbSettings);
             Bass.BASS_FXSetParameters(_distHandle, _distSettings);
-            //Bass.BASS_FXSetParameters(_pitchHandle, _pitchSettings);
+            //Bass.BASS_FXSetParameters(_pitchHandle, new BASS_BFX_PITCHSHIFT());
             //Bass.BASS_FXSetParameters(_echoHandle, _echoSettings);
 
             //Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_BUFFER, 5000);
@@ -111,8 +122,10 @@ public class EffectBaker : MonoBehaviour
     public void SetLiveDistortion(float value)
     {
         //_echoSettings.fWetDryMix = Mathf.Clamp(value * 100f, 0f, 100f);
-        _distSettings.fEdge = Mathf.Clamp(value * 25f, 0f, 100f);
+        //_distSettings.fp
+        _distSettings.fEdge = Mathf.Clamp(value * EdgeFactor, 0f, 100f);
         Bass.BASS_FXSetParameters(_distHandle, _distSettings);
+        _distSettings.fGain = Mathf.Clamp(value * GainFactor,-60f, 0f);
     }
 
     public void SetLiveEcho(float value)
@@ -122,27 +135,32 @@ public class EffectBaker : MonoBehaviour
         //_echoSettings.fEdge = Mathf.Clamp(value * 25f, 0f, 100f);
 
         //Bass.BASS_FXSetParameters(_echoHandle, );
+        _echoSettings.fWetDryMix = Mathf.Clamp(value * 100f, 0f, 100f);
     }
 
     public void SetLivePitch(float value)
     {
-        var single = Math.Round(Mathf.Clamp(value, -.5f, 2f), 1).ToString();
-        Single.TryParse(single, out var result);
-        Debug.Log(result);
-        _pitchSettings.fPitchShift = result;
-        Bass.BASS_FXSetParameters(_pitchHandle, _pitchSettings);
-        bool success = Bass.BASS_FXSetParameters(_pitchHandle, _pitchSettings);
-        if (!success)
-        {
-            var error = Bass.BASS_ErrorGetCode();
-            Log($"Failed to set pitch parameters. Error: {error}");
-        }
-        BASS_BFX_PITCHSHIFT getsettings = new BASS_BFX_PITCHSHIFT() ;
+        //var single = Math.Round(Mathf.Clamp(value, -.5f, 2f), 1).ToString();
+        //Single.TryParse(single, out var result);
+        //Debug.Log(result);
+        //_pitchSettings.fPitchShift = result;
+        //Bass.BASS_FXSetParameters(_pitchHandle, _pitchSettings);
+        //bool success = Bass.BASS_FXSetParameters(_pitchHandle, _pitchSettings);
+        //if (!success)
+        //{
+        //    var error = Bass.BASS_ErrorGetCode();
+        //    Log($"Failed to set pitch parameters. Error: {error}");
+        //}
 
-        Bass.BASS_FXGetParameters(_pitchHandle, getsettings);
 
-        Debug.Log(getsettings.fPitchShift);
-        Debug.Log(getsettings);
+
+
+        //BASS_BFX_PITCHSHIFT getsettings = new BASS_BFX_PITCHSHIFT() ;
+
+        //Bass.BASS_FXGetParameters(_pitchHandle, getsettings);
+
+        //Debug.Log(getsettings.fPitchShift);
+        //Debug.Log(getsettings);
 
     }
 
@@ -213,6 +231,7 @@ public class EffectBaker : MonoBehaviour
 
         var decoder = Bass.BASS_StreamCreateFile(inputSamplePath, 0, 0, BASSFlag.BASS_STREAM_DECODE);
 
+        Bass.BASS_ChannelSetAttribute(decoder, BASSAttribute.BASS_ATTRIB_TAIL, 1.5f);
         BASS_CHANNELINFO info = Bass.BASS_ChannelGetInfo(decoder);
 
         Debug.Log(info.origres);
@@ -237,7 +256,7 @@ public class EffectBaker : MonoBehaviour
 
         if (!Bass.BASS_FXSetParameters(effectHandle, _reverbSettings))
         {
-            Debug.LogError("Failed to set reverb parameters.");
+            //Debug.LogError("Failed to set reverb parameters.");
             var error = Bass.BASS_ErrorGetCode();
 
             if (error != 0)
@@ -253,7 +272,7 @@ public class EffectBaker : MonoBehaviour
 
         if (!Bass.BASS_FXSetParameters(dEffectHandle, _distSettings))
         {
-            Debug.LogError("Failed to set distortion parameters.");
+            //Debug.LogError("Failed to set distortion parameters.");
             var error = Bass.BASS_ErrorGetCode();
 
             if (error != 0)
@@ -264,9 +283,9 @@ public class EffectBaker : MonoBehaviour
             return;
         }
 
-        var echo = BASSFXType.BASS_FX_BFX_ECHO;
-        
-        int dEchoHandle = Bass.BASS_ChannelSetFX(decoder, echo, _echoPriority);
+        //var echo = BASSFXType.BASS_FX_BFX_ECHO;
+
+        //int dEchoHandle = Bass.BASS_ChannelSetFX(decoder, echo, _echoPriority);
 
         //if (!Bass.BASS_FXSetParameters(dEchoHandle, _echoSettings))
         //{
@@ -276,6 +295,23 @@ public class EffectBaker : MonoBehaviour
         //    if (error != 0)
         //    {
         //        Log($"Error during echo init: {error}");
+        //        return;
+        //    }
+        //    return;
+        //}
+
+
+        //var pitch = BASSFXType.BASS_FX_BFX_PITCHSHIFT;
+        //int pEffectHandle = Bass.BASS_ChannelSetFX(decoder, pitch, _pitchPriority);
+
+        //if (!Bass.BASS_FXSetParameters(pEffectHandle, pitch))
+        //{
+        //    //Debug.LogError("Failed to set pitch parameters.");
+        //    var error = Bass.BASS_ErrorGetCode();
+
+        //    if (error != 0)
+        //    {
+        //        Log($"Error during pitch init: {error}");
         //        return;
         //    }
         //    return;

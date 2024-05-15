@@ -1,7 +1,0 @@
-include ':dsptest'
-include ':fxtest'
-include ':livespec'
-include ':netradio'
-include ':plugins'
-include ':rectest'
-include ':spectrum'
