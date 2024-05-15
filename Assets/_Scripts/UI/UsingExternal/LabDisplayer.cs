@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FileManagement;
+using System.Threading.Tasks;
 
 public class LabDisplayer : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class LabDisplayer : MonoBehaviour
     [SerializeField] private TMPro.TextMeshProUGUI _nameText;
 
 
-    public SampleObject SelectedTemplate;
+    public SampleObject SelectedObject;
 
     public Deformer DeformerGroup;
 
@@ -27,7 +28,7 @@ public class LabDisplayer : MonoBehaviour
 
     private void OnStateChanged(GameState state)
     {
-        if(state == GameState.Biolab) OnSetSelectedGuid(FileManager.Instance.SelectedSampleGuid);
+        //if(state == GameState.Biolab) OnSetSelectedGuid(FileManager.Instance.SelectedSampleGuid);
     }
 
     private void OnDisable()
@@ -43,18 +44,22 @@ public class LabDisplayer : MonoBehaviour
         _scalerParent.DestroyChildren();
 
         if (string.IsNullOrEmpty(FileManager.Instance.SelectedSampleGuid)) return;
-        var so = await AssetBuilder.Instance.GetSampleObject(guid);
 
-        so.transform.SetParent(_scalerParent);
+        //Debug.Log("lab on selected");
+        
+        SelectedObject = await AssetBuilder.Instance.GetSampleObject(guid);
 
-        so.transform.localScale = Vector3.one;
-        //so.transform.localPosition = Vector3.zero;
-        so.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.Euler(18f, 0, 0));
-        so.transform.position = _scalerParent.position;
+        SelectedObject.transform.SetParent(_scalerParent);
 
+        SelectedObject.transform.localScale = Vector3.one;
+        //SelectedObject.transform.localPosition = Vector3.zero;
+        SelectedObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.Euler(18f, 0, 0));
+        
+        SelectedObject.transform.GetChild(0).transform.localPosition = Vector3.zero;
+        //SelectedObject.transform.GetChild(0).transform.localRotation = Quaternion.identity;
 
-        //so.transform.gameObject.layer = LayerMask.NameToLayer("UI");
-        //foreach (Transform child in so.transform)
+        //SelectedObject.transform.gameObject.layer = LayerMask.NameToLayer("UI");
+        //foreach (Transform child in SelectedObject.transform)
         //{
         //    child.gameObject.layer = LayerMask.NameToLayer("UI");
         //    foreach (Transform child2 in child)
@@ -63,25 +68,25 @@ public class LabDisplayer : MonoBehaviour
         //    }
         //}
 
-        //_nameText.text = so.SampleData.Name;
+        //_nameText.text = SelectedObject.SampleData.Name;
 
-        SelectedTemplate = so;
+        //SelectedTemplate = SelectedObject;
 
-        AddDeformables(so.transform);
+        AddDeformables(SelectedObject.transform);
 
-        Events.OnScaleBounce?.Invoke(so.gameObject);
-        //so.gameObject.transform.SetParent(_scalerParent);
+        //Events.OnScaleBounce?.Invoke(SelectedObject.gameObject);
+        //SelectedObject.gameObject.transform.SetParent(_scalerParent);
         //if (FileManager.Instance.SelectedSampleGuid == guid)
         //{
-        //    SampleObject so = AssetBuilder.Instance.SelectedSampleObject;
-        //    if (so != null)
+        //    SampleObject SelectedObject = AssetBuilder.Instance.SelectedSampleObject;
+        //    if (SelectedObject != null)
         //    {
-        //        if (so.Preview != null)
+        //        if (SelectedObject.Preview != null)
         //        {
-        //            so.Preview.transform.SetParent(_scalerParent);
-        //            so.Preview.transform.localPosition = Vector3.zero;
-        //            so.Preview.transform.localRotation = Quaternion.identity;
-        //            so.Preview.transform.localScale = Vector3.one;
+        //            SelectedObject.Preview.transform.SetParent(_scalerParent);
+        //            SelectedObject.Preview.transform.localPosition = Vector3.zero;
+        //            SelectedObject.Preview.transform.localRotation = Quaternion.identity;
+        //            SelectedObject.Preview.transform.localScale = Vector3.one;
         //        }
         //    }
         //}
@@ -90,9 +95,9 @@ public class LabDisplayer : MonoBehaviour
     private void OnNewBeat()
     {
         if(GameManager.Instance.State != GameState.Biolab) return;
-        Events.OnScaleBounce?.Invoke(SelectedTemplate.gameObject);
+        Events.OnScaleBounce?.Invoke(SelectedObject.gameObject);
         //string s = $"i {(int)(SelectedTemplate.SampleData.Template + 1)} 0 6";
-        Events.LoadPlayGuid?.Invoke(SelectedTemplate.SampleData.ID);
+        //Events.LoadPlayGuid?.Invoke(SelectedTemplate.SampleData.ID);
     }
 
     //private void Update()

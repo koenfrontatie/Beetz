@@ -115,13 +115,14 @@ public class AssetBuilder : MonoBehaviour
         if (guid.Length < 3) // if template
         {
             var copy = Instantiate(_templateSampleObjects.Collection[int.Parse(guid)]);
+            Debug.Log("less than 3");
             return copy;
         }
         else
         {
-            var sampleData = await GetSampleData(guid);
+            SampleData sampleData = await GetSampleData(guid);
             
-            var copy = Instantiate(_templateSampleObjects.Collection[sampleData.Template]);
+            SampleObject copy = Instantiate(_templateSampleObjects.Collection[sampleData.Template]);
 
             copy.SampleData = sampleData;
             // set unique data
@@ -138,9 +139,9 @@ public class AssetBuilder : MonoBehaviour
         }
         else
         {
-            var sampleData = await SaveLoader.Instance.DeserializeSampleData(Path.Combine(FileManager.Instance.UniqueSampleDirectory, guid, "SampleData.json"));
+            //var sampleData = await SaveLoader.Instance.DeserializeSampleData(Path.Combine(FileManager.Instance.UniqueSampleDirectory, guid, "SampleData.json"));
             
-            return sampleData;
+            return await SaveLoader.Instance.DeserializeSampleData(Path.Combine(FileManager.Instance.UniqueSampleDirectory, guid, "SampleData.json"));
             //throw new NotImplementedException();
         }
     }

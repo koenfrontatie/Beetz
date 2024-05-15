@@ -30,6 +30,8 @@ namespace FileManagement
         public static Action UniqueSamplesInitialized;
         public static Action<string> SelectNewSample;
         public static Action<string> NewSampleSelected;
+        public static Action<string> SampleDeleted;
+        public static Action<string> SampleCreated;
 
         public TextureCollection _customIcons;
 
@@ -227,6 +229,10 @@ namespace FileManagement
             SelectedSamplePath = newSamplePath;
 
             SelectedSampleGuid = newName;
+
+            RefreshUnique();
+
+            SampleCreated?.Invoke(newName);
         }
         public void DeleteUniqueSample()
         {
@@ -237,10 +243,10 @@ namespace FileManagement
                 Debug.Log("Attempted to delete base sample");
                 return;
             }
-            
-            Events.DeleteTile?.Invoke(SelectedSampleGuid);
-            
-            Directory.Delete(Path.Combine(dirName, SelectedSampleGuid), true);
+                        
+            Directory.Delete(Path.Combine(dirName), true);
+
+            SampleDeleted.Invoke(SelectedSampleGuid);
 
             Events.SetSelectedGuid?.Invoke("0");
             
@@ -251,8 +257,6 @@ namespace FileManagement
             SetSelectedSamplePath(guid);
 
             await MakeSamplePathIntoUnique(SelectedSamplePath);
-
-            RefreshUnique();
         }
         #endregion
 
@@ -308,10 +312,12 @@ namespace FileManagement
         {
             if (guid.Length < 3)
             {
+                Log("Less than 3 so giving base sample path");
                 return Path.Combine(BaseSamplesDirectory, BaseSampleNameFromGuid(guid) + ".wav");
             }
             else
             {
+                Log("More than 3 so giving unique sample path");
                 return Path.Combine(UniqueSampleDirectory, guid, guid + ".wav");
             }
         }

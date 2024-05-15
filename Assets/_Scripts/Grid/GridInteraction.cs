@@ -90,11 +90,12 @@ public class GridInteraction : MonoBehaviour
                         } else
                         {
                             //Debug.Log("Instantiating new object");
-                            var instance = await AssetBuilder.Instance.GetSampleObject(selectedGuid);
+                            SampleObject instance = await AssetBuilder.Instance.GetSampleObject(selectedGuid);
+                            //Debug.Log($"selectedGuid {selectedGuid}");
                             //var instance = Instantiate(await AssetBuilder.Instance.GetSampleObject(selectedGuid), matchingStep.transform);
                             instance.transform.SetParent(matchingStep.transform);
                             instance.transform.position = matchingStep.transform.position;
-
+                            instance.SampleData.ID = selectedGuid;
                             matchingStep.AssignSample(instance);
 
                             Events.SampleSpawned?.Invoke(instance.transform.position);

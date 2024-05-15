@@ -8,13 +8,10 @@ public class PreviewDisplayer : MonoBehaviour
     [SerializeField] private RectTransform _previewRect;
     [SerializeField] private TMPro.TextMeshProUGUI _nameText;
 
-    private Vector3 _scalerStartPosition;
-    private Vector2 _previewStartPosition;
-
     private void Start()
     {
-        _scalerStartPosition = _scalerParent.position;
-        _previewStartPosition = _previewRect.anchoredPosition;
+        //_scalerStartPosition = _scalerParent.position;
+        //_previewStartPosition = _previewRect.anchoredPosition;
 
         LTRect pRect = new LTRect(_previewRect.rect);
 
@@ -35,8 +32,8 @@ public class PreviewDisplayer : MonoBehaviour
         {
             _scalerParent.gameObject.SetActive(true);
             
-            _scalerParent.position = _scalerStartPosition;
-            _previewRect.anchoredPosition = _previewStartPosition;
+            //_scalerParent.position = _scalerStartPosition;
+            //_previewRect.anchoredPosition = _previewStartPosition;
 
 
         }
@@ -59,7 +56,7 @@ public class PreviewDisplayer : MonoBehaviour
         //{
         //    so = await AssetBuilder.Instance.GetSampleObject(guid);
         //});
-
+        //Debug.Log("library on selected");
 
         so.transform.SetParent(_scalerParent);
 
@@ -68,7 +65,10 @@ public class PreviewDisplayer : MonoBehaviour
         so.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 
         so.transform.gameObject.layer = LayerMask.NameToLayer("UI");
-       
+        
+        //so.transform.GetChild(0).transform.localPosition = Vector3.zero;
+        //so.transform.GetChild(0).transform.localRotation = Quaternion.identity;
+
         foreach (Transform child in so.transform)
         {
             child.gameObject.layer = LayerMask.NameToLayer("UI");

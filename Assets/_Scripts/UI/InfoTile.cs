@@ -30,6 +30,7 @@ public class InfoTile : MonoBehaviour
 
         var item = await AssetBuilder.Instance.GetToolbarItem(_guid);
 
+        if(_librarySlot!=null)
         _librarySlot.Bind(item.GetComponent<DragDropUI>());
 
         SetNameText(item.GetComponent<SampleObject>().SampleData.Name);

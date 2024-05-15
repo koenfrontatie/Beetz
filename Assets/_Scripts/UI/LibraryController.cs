@@ -15,19 +15,32 @@ public class LibraryController : MonoBehaviour
     private void OnEnable()
     {
         //Events.CustomDataLoaded += RefreshInfoTiles;
-        //Events.DeleteTile += OnDeleteTile;
+        FileManager.SampleDeleted += OnSampleDeleted;
+        FileManager.SampleCreated += OnSampleCreated;
+
         GameManager.StateChanged += OnStateChanged;
     }
 
-    private void OnDeleteTile(string obj)
+    private void OnSampleDeleted(string obj)
     {
         if (_tileDictionary.TryGetValue(obj, out var tile))
         {
-            Destroy(tile.gameObject);
             _infoTiles.Remove(tile);
             _tileDictionary.Remove(obj);
+            Destroy(tile.gameObject);
         }
     }
+
+    private void OnSampleCreated(string guid)
+    {
+        if (!_tileDictionary.ContainsKey(guid))
+        {
+            var tile = Instantiate(_infoTilePrefab, _contentParent);
+            tile.AssignSampleData(guid);
+            _infoTiles.Add(tile);
+            _tileDictionary.Add(guid, tile);
+        }
+    }   
 
     public void RefreshInfoTiles()
     {
@@ -57,10 +70,10 @@ public class LibraryController : MonoBehaviour
 
     private void OnDisable()
     {
-        GameManager.StateChanged -= OnStateChanged;
+        FileManager.SampleDeleted -= OnSampleDeleted;
+        FileManager.SampleCreated -= OnSampleCreated;
 
-        //Events.CustomDataLoaded -= RefreshInfoTiles;
-        //Events.DeleteTile -= OnDeleteTile;
+        GameManager.StateChanged -= OnStateChanged;
     }
 
     private void OnStateChanged(GameState state)
