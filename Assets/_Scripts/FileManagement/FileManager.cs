@@ -5,7 +5,6 @@ using UnityEngine.Android;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using static PlasticGui.GetProcessName;
 
 namespace FileManagement
 {
@@ -312,13 +311,26 @@ namespace FileManagement
         {
             if (guid.Length < 3)
             {
-                Log("Less than 3 so giving base sample path");
+                //Log("Less than 3 so giving base sample path");
                 return Path.Combine(BaseSamplesDirectory, BaseSampleNameFromGuid(guid) + ".wav");
             }
             else
             {
-                Log("More than 3 so giving unique sample path");
+                //Log("More than 3 so giving unique sample path");
                 return Path.Combine(UniqueSampleDirectory, guid, guid + ".wav");
+            }
+        }
+
+        public async Task<string> TemplateFromGuid(string guid)
+        {
+            if (guid.Length < 3)
+            {
+                return guid;
+            }
+            else
+            {
+                SampleData sampleData = await SaveLoader.Instance.DeserializeSampleData(Path.Combine(UniqueSampleDirectory, guid, "SampleData.json"));
+                return sampleData.Template.ToString();
             }
         }
         

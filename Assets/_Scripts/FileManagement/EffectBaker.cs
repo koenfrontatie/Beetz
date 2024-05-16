@@ -57,7 +57,7 @@ public class EffectBaker : MonoBehaviour
         if (state == GameState.Biolab)
         {
             Metronome.NewBeat += OnNewBeat;
-            BassFx.LoadMe();
+            //BassFx.LoadMe();
             //Debug.Log(Bass.BASS_GetInfo());
             //var info = Bass.BASS_GetVersion();
            
@@ -66,16 +66,13 @@ public class EffectBaker : MonoBehaviour
             //var echo = BASSFXType.BASS_FX_BFX_ECHO;
 
             //_pitchSettings = new BASS_BFX_PITCHSHIFT();
-            var guid = FileManager.Instance.SelectedSampleGuid;
 
-            var data = await AssetBuilder.Instance.GetSampleData(guid);
-
-            SelectedTemplate = data.Template.ToString();
+            SelectedTemplate = await FileManager.Instance.TemplateFromGuid(FileManager.Instance.SelectedSampleGuid);
 
             Log("Opening live stream.");
             
             _channel = Bass.BASS_StreamCreateFile(FileManager.Instance.SamplePathFromGuid(SelectedTemplate), 0, 0, BASSFlag.BASS_MUSIC_FX);
-            Bass.BASS_ChannelSetAttribute(_channel, BASSAttribute.BASS_ATTRIB_TAIL, 1.5f);
+            //Bass.BASS_ChannelSetAttribute(_channel, Bass.BASS_ATTRIB_TAIL, 1.5f); try mixing for android?
 
             _revPriority = 50;
             _distPriority = 40;
@@ -231,7 +228,7 @@ public class EffectBaker : MonoBehaviour
 
         var decoder = Bass.BASS_StreamCreateFile(inputSamplePath, 0, 0, BASSFlag.BASS_STREAM_DECODE);
 
-        Bass.BASS_ChannelSetAttribute(decoder, BASSAttribute.BASS_ATTRIB_TAIL, 1.5f);
+        //Bass.BASS_ChannelSetAttribute(decoder, BASSAttribute.BASS_ATTRIB_TAIL, 1.5f);
         BASS_CHANNELINFO info = Bass.BASS_ChannelGetInfo(decoder);
 
         Debug.Log(info.origres);

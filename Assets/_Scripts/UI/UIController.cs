@@ -123,7 +123,7 @@ public class UIController : MonoBehaviour
         _fileManager.ToggleCanvasGroup(b);
     }
 
-    void ToggleFileManager()
+    public void ToggleFileManager()
     {
         _fileManager.ToggleCanvasGroup();
     }

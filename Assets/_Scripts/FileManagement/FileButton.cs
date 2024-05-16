@@ -16,8 +16,10 @@ namespace FileManagement
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            //Debug.Log($"FileButton.OnClick: {Path}");
-            Events.LoadPlayPath?.Invoke(Path);
+            Debug.Log($"FileButton.OnClick: {Path}");
+            //Events.LoadPlayPath?.Invoke(Path);
+            FileManager.Instance.SetSelectedSamplePath(Path);
+            //Events.LoadPlayGuid(FileManager.Instance.SelectedSampleGuid);
         }
 
     }
