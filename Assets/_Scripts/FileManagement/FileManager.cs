@@ -411,7 +411,7 @@ namespace FileManagement
             var projectDirectories = new DirectoryInfo(projectsFolder).GetDirectories().OrderByDescending(d => d.LastWriteTime).ToList();
             
             Log("Opening last project...");
-
+            Debug.Log($"dir is {projectsFolder}. info is {projectDirectories} count is {projectDirectories.Count}");
             if (projectDirectories.Count > 0) // if there are projects available, open the most recent
             {
                 ProjectDirectory = projectDirectories[0].FullName;
@@ -422,7 +422,16 @@ namespace FileManagement
                 //OnProjectDataLoaded(projectData);
                 Log("Project data loaded.");
 
-                _dataStorage.SetProjectData(projectData);
+                if(projectData != null)
+                {
+
+                    _dataStorage.SetProjectData(projectData);
+                } else
+                {
+                    OpenNewProject();
+                    Debug.Log("data was null so opening new project");
+                    return;
+                }
 
             }
             else // if there are no projects available, open a new project
