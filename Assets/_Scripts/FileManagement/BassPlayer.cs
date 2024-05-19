@@ -12,11 +12,13 @@ namespace FileManagement
         private void OnEnable()
         {
             Events.LoadPlayGuid += PlayFromGuid;
+            Events.LoadPlayPath += PlayFromPath;
         }
 
         private void OnDisable()
         {
             Events.LoadPlayGuid += PlayFromGuid;
+            Events.LoadPlayPath -= PlayFromPath;
 
         }
 
@@ -34,15 +36,21 @@ namespace FileManagement
 
         public void PlayFromPath(string path)
         {
+//#if !UNITY_EDITOR
+//        path = "File:///" + path;
+//#endif
             //Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero);
             var stream = Bass.BASS_StreamCreateFile(path, 0, 0, BASSFlag.BASS_DEFAULT | BASSFlag.BASS_MUSIC_AUTOFREE);
+            Debug.Log(path);
             Bass.BASS_ChannelPlay(stream, false);
         }
 
         public void PlayFromGuid(string guid)
         {
             string fullpath = FileManager.Instance.SamplePathFromGuid(guid); // ---------- turns guid into url
-            
+//#if !UNITY_EDITOR
+//        fullpath =  "File:///" + fullpath;
+//#endif
             Log($"Playing path: {fullpath}");
 
             PlayFromPath(fullpath);

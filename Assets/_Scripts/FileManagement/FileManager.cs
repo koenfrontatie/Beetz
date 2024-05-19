@@ -88,6 +88,7 @@ namespace FileManagement
             if (state == GameState.Init)
             {
                 OpenLastProject();
+                //OpenNewProject();
                 //_dataStorage.SetProjectData(_dataStorage.ProjectData);
             }
         }
@@ -392,12 +393,21 @@ namespace FileManagement
             ProjectGuid = newGuid;
             ProjectDirectory = Path.Combine(Application.persistentDataPath, "Projects", newGuid);
             UniqueSampleDirectory = Path.Combine(ProjectDirectory, "UniqueSamples");
-            Utils.CheckForCreateDirectory(ProjectDirectory);
-            Utils.CheckForCreateDirectory(UniqueSampleDirectory);
-            
+            //Utils.CheckForCreateDirectory(ProjectDirectory);
+            //Utils.CheckForCreateDirectory(UniqueSampleDirectory);
+            await CheckOrMakeDirectory(ProjectDirectory);
+            await CheckOrMakeDirectory(UniqueSampleDirectory);
             //create data from template
-            var projectData = await SaveLoader.Instance.DeserializeProjectData(Path.Combine(Application.streamingAssetsPath, "ProjectData.json"));
+
+            //string text = "";
+            
+            //await Task.Run(() => { text = BetterStreamingAssets.ReadAllText("ProjectData.json"); });
+
+
+            //Debug.Log($"template projectdata path: {Path.Combine(Application.streamingAssetsPath, "ProjectData.json")}");
+            var projectData = await SaveLoader.Instance.DeserializeTemplateProjectData(Path.Combine(Application.streamingAssetsPath, "ProjectData.json"));
             projectData.ID = newGuid;
+            Debug.Log($"savind new projectdata path: {Path.Combine(ProjectDirectory, "ProjectData.json")}");
             SaveLoader.Instance.SaveData(Path.Combine(ProjectDirectory, "ProjectData.json"), projectData);
 
             _dataStorage.SetProjectData(projectData);
@@ -411,35 +421,46 @@ namespace FileManagement
             var projectDirectories = new DirectoryInfo(projectsFolder).GetDirectories().OrderByDescending(d => d.LastWriteTime).ToList();
             
             Log("Opening last project...");
+            
             Debug.Log($"dir is {projectsFolder}. info is {projectDirectories} count is {projectDirectories.Count}");
-            if (projectDirectories.Count > 0) // if there are projects available, open the most recent
+            
+            if (projectDirectories.Count > 0) // if there are projects folders, check the most recent
             {
                 ProjectDirectory = projectDirectories[0].FullName;
+                
                 ProjectGuid = Path.GetFileName(ProjectDirectory);
+   
                 var projectDataPath = Path.Combine(ProjectDirectory, "ProjectData.json");
+                
                 Log($"Attempting to load projectdata from: {projectDataPath}");
+                
+                if(!File.Exists(projectDataPath))
+                {
+                    Log($"Can't find project data file, opening new project.");
+                    OpenNewProject();
+                    return;
+                } else { 
+                
                 var projectData = await SaveLoader.Instance.DeserializeProjectData(projectDataPath);
+                
                 //OnProjectDataLoaded(projectData);
                 Log("Project data loaded.");
 
-                if(projectData != null)
-                {
+                    if(projectData != null)
+                    {
 
-                    _dataStorage.SetProjectData(projectData);
-                } else
-                {
-                    OpenNewProject();
-                    Debug.Log("data was null so opening new project");
-                    return;
+                        _dataStorage.SetProjectData(projectData);
+                    }
                 }
-
-            }
-            else // if there are no projects available, open a new project
+            } else
             {
-                await OpenNewProject();
-
-                Log("No projects found, opening new.");
+                
+                Log($"Can't find project directories, opening new project.");
+                OpenNewProject();
+                return;
+            
             }
+            
 
             //Events.ProjectDataLoaded?.Invoke(ProjectData);
         }

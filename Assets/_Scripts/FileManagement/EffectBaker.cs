@@ -6,14 +6,28 @@ using System;
 using Un4seen.Bass.AddOn.Enc;
 using Un4seen.Bass.AddOn.Fx;
 using System.Text;
+using System.Runtime.InteropServices;
 
 
 public class EffectBaker : MonoBehaviour
 {
+    //private const string LIBBASS = "bass";
+
+    //[DllImport(LIBBASS, CallingConvention = CallingConvention.Cdecl)]
+    //public static extern bool BASS_Init(int device, uint freq, uint flags, IntPtr win, IntPtr dsguid);
+    
+    //[DllImport(LIBBASS, CallingConvention = CallingConvention.Cdecl)]
+    //public static extern bool BASS_Free();
+    
+    //private const string LIBASS_FX = "bass_fx";  // Ensure this matches the .so filename without 'lib' and '.so'
+
+    //[DllImport(LIBASS_FX, CallingConvention = CallingConvention.Cdecl)]
+    //public static extern void AssFxFunction();
+
     public BASS_DX8_REVERB _reverbSettings;
     public BASS_DX8_DISTORTION _distSettings;
-    public BASS_DX8_ECHO _echoSettings;
-    public BASS_BFX_PITCHSHIFT _pitchSettings;
+    //public BASS_DX8_ECHO _echoSettings;
+    //public BASS_BFX_PITCHSHIFT _pitchSettings;
     [Range(0, 100f)]
     public float EdgeFactor;
     [Range(-60f, 0f)]
@@ -60,7 +74,7 @@ public class EffectBaker : MonoBehaviour
             //BassFx.LoadMe();
             //Debug.Log(Bass.BASS_GetInfo());
             //var info = Bass.BASS_GetVersion();
-           
+
             //Debug.Log(BassFx.BASS_FX_GetVersion());
 
             //var echo = BASSFXType.BASS_FX_BFX_ECHO;
@@ -81,9 +95,16 @@ public class EffectBaker : MonoBehaviour
 
             _reverbHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_DX8_REVERB, _revPriority);
             _distHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_DX8_DISTORTION, _distPriority);
-            _pitchHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_BFX_PITCHSHIFT, _pitchPriority);
+            //_pitchHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_BFX_PITCHSHIFT, _pitchPriority);
             //_echoHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_BFX_ECHO, _echoPriority);
             //_echoHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_BFX_ECHO4, _echoPriority);
+            _reverbSettings = new BASS_DX8_REVERB
+            {
+                fInGain = -3f,
+                fReverbMix = -5f,
+                fReverbTime = 900f,
+                fHighFreqRTRatio = 0.5f,
+            };
 
             Bass.BASS_FXSetParameters(_reverbHandle, _reverbSettings);
             Bass.BASS_FXSetParameters(_distHandle, _distSettings);
@@ -125,15 +146,15 @@ public class EffectBaker : MonoBehaviour
         _distSettings.fGain = Mathf.Clamp(value * GainFactor,-60f, 0f);
     }
 
-    public void SetLiveEcho(float value)
-    {
-        //_echoSettings.fWetDryMix = Mathf.Clamp(value * 100f, 0f, 100f);
-        //_echoSettings.fFeedback = Mathf.Clamp(value * 100f, 0f, 100f);
-        //_echoSettings.fEdge = Mathf.Clamp(value * 25f, 0f, 100f);
+    //public void SetLiveEcho(float value)
+    //{
+    //    //_echoSettings.fWetDryMix = Mathf.Clamp(value * 100f, 0f, 100f);
+    //    //_echoSettings.fFeedback = Mathf.Clamp(value * 100f, 0f, 100f);
+    //    //_echoSettings.fEdge = Mathf.Clamp(value * 25f, 0f, 100f);
 
-        //Bass.BASS_FXSetParameters(_echoHandle, );
-        _echoSettings.fWetDryMix = Mathf.Clamp(value * 100f, 0f, 100f);
-    }
+    //    //Bass.BASS_FXSetParameters(_echoHandle, );
+    //    _echoSettings.fWetDryMix = Mathf.Clamp(value * 100f, 0f, 100f);
+    //}
 
     public void SetLivePitch(float value)
     {

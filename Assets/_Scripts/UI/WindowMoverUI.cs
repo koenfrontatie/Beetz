@@ -41,14 +41,16 @@ public class WindowMoverUI : MonoBehaviour
         {
             //Events.AnimateRectToTarget?.Invoke(_rectTransform, _distance);
             //await Utils.LerpToTarget(_rectTransform.gameObject, _rectTransform.gameObject.transform.position + new Vector3(0, _distance * _canvas.scaleFactor, 0), .2f);
-                            // i did times * .1f because plane dist is 10f...
-            await Utils.LerpRectToTarget(_rectTransform, _rectTransform.gameObject.transform.position + new Vector3(0, _distance * _canvas.scaleFactor * .01f, 0), .2f);
+            // i did times * .1f because plane dist is 10f...
+            await Utils.LerpRectToTarget(_rectTransform, _rectTransform.gameObject.transform.position + new Vector3(0, _distance * _canvas.scaleFactor * .1f, 0), .2f);
+            //Events.AnimateRectToTarget?.Invoke(_rectTransform, _distance * _canvas.scaleFactor * .1f *  .1f);
             up = true;
 
         } else
         {
-            await Utils.LerpRectToTarget(_rectTransform, _rectTransform.gameObject.transform.position + new Vector3(0, -_distance * _canvas.scaleFactor * .01f, 0), .2f);
-            //await Utils.LerpToTarget(_rectTransform.gameObject, _rectTransform.gameObject.transform.position + new Vector3(0, -_distance * _canvas.scaleFactor, 0), .2f);
+            //await Utils.LerpRectToTarget(_rectTransform, _rectTransform.gameObject.transform.position + new Vector3(0, -_distance * _canvas.scaleFactor, 0), .2f);
+            //Events.AnimateRectToTarget?.Invoke(_rectTransform, -_distance * _canvas.scaleFactor * .1f);
+            await Utils.LerpToTarget(_rectTransform.gameObject, _rectTransform.gameObject.transform.position + new Vector3(0, -_distance * _canvas.scaleFactor * .1f, 0), .2f);
             up = false;
         }
     }

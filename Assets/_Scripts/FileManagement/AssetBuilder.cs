@@ -92,6 +92,8 @@ public class AssetBuilder : MonoBehaviour
 
         for (int i = 0; i < FileManager.Instance.UniqueSamplePathCollection.Count; i++)
         {
+            var pathToCheck = FileManager.Instance.GuidFromPath(FileManager.Instance.UniqueSamplePathCollection[i]);
+
             var icon = await SaveLoader.Instance.GetIconFromGuid(FileManager.Instance.GuidFromPath(FileManager.Instance.UniqueSamplePathCollection[i]));
 
             if (icon == null)
@@ -141,9 +143,9 @@ public class AssetBuilder : MonoBehaviour
         }
         else
         {
-            //var sampleData = await SaveLoader.Instance.DeserializeSampleData(Path.Combine(FileManager.Instance.UniqueSampleDirectory, guid, "SampleData.json"));
-            
-            return await SaveLoader.Instance.DeserializeSampleData(Path.Combine(FileManager.Instance.UniqueSampleDirectory, guid, "SampleData.json"));
+            var sampleData = await SaveLoader.Instance.DeserializeSampleData(Path.Combine(FileManager.Instance.UniqueSampleDirectory, guid, "SampleData.json"));
+            return sampleData;
+            //return await SaveLoader.Instance.DeserializeSampleData(Path.Combine(FileManager.Instance.UniqueSampleDirectory, guid, "SampleData.json"));
             //throw new NotImplementedException();
         }
     }

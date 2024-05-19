@@ -28,7 +28,7 @@ public class LabDisplayer : MonoBehaviour
 
     private void OnStateChanged(GameState state)
     {
-        //if(state == GameState.Biolab) OnSetSelectedGuid(FileManager.Instance.SelectedSampleGuid);
+        if(state == GameState.Biolab) OnSetSelectedGuid(FileManager.Instance.SelectedSampleGuid);
     }
 
     private void OnDisable()

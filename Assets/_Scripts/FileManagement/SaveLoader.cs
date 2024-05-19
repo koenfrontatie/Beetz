@@ -72,7 +72,18 @@ public class SaveLoader : MonoBehaviour
 
     public async Task<ProjectData> DeserializeProjectData(string jsonPath)
     {
+#if !UNITY_EDITOR
+        jsonPath = "File:///" + jsonPath;
+#endif
+        string jsonData = await FetchJsonDataAsync(jsonPath);
 
+        ProjectData projectData = await Task.Run(() => JsonConvert.DeserializeObject<ProjectData>(jsonData));
+
+        return projectData;
+    }
+
+    public async Task<ProjectData> DeserializeTemplateProjectData(string jsonPath)
+    {
         string jsonData = await FetchJsonDataAsync(jsonPath);
 
         ProjectData projectData = await Task.Run(() => JsonConvert.DeserializeObject<ProjectData>(jsonData));
@@ -82,11 +93,14 @@ public class SaveLoader : MonoBehaviour
 
     public async Task<SampleData> DeserializeSampleData(string jsonPath)
     {
+#if !UNITY_EDITOR
+        jsonPath = "File:///" + jsonPath;
+#endif
         string jsonData = await FetchJsonDataAsync(jsonPath);
 
-        SampleData sampleData = await Task.Run(() => JsonConvert.DeserializeObject<SampleData>(jsonData));
+        //SampleData sampleData = await Task.Run(() => JsonConvert.DeserializeObject<SampleData>(jsonData));
 
-        return sampleData;
+        return await Task.Run(() => JsonConvert.DeserializeObject<SampleData>(jsonData));
     }
 
     private async Task<string> FetchJsonDataAsync(string url)
@@ -113,30 +127,30 @@ public class SaveLoader : MonoBehaviour
         return Guid.NewGuid().ToString();
     }
 
-    public async Task<IDCollection> GetCustomSampleCollection()
-    {
-        var strings = new List<string>();
-        //Debug.Log($"samplespath= {samplesPath}");
-        Utils.CheckForCreateDirectory(FileManager.Instance.UniqueSampleDirectory);
+    //public async Task<IDCollection> GetCustomSampleCollection()
+    //{
+    //    var strings = new List<string>();
+    //    //Debug.Log($"samplespath= {samplesPath}");
+    //    Utils.CheckForCreateDirectory(FileManager.Instance.UniqueSampleDirectory);
 
-        await Task.Run(() =>
-        {
-            var sortedFiles = new DirectoryInfo(FileManager.Instance.UniqueSampleDirectory).GetDirectories().OrderBy(f => f.LastWriteTime).ToList();
+    //    await Task.Run(() =>
+    //    {
+    //        var sortedFiles = new DirectoryInfo(FileManager.Instance.UniqueSampleDirectory).GetDirectories().OrderBy(f => f.LastWriteTime).ToList();
 
-            for(int i = 0; i < sortedFiles.Count; i++)
-            {
+    //        for(int i = 0; i < sortedFiles.Count; i++)
+    //        {
 
-                //if (sortedFiles[i].Name == "BaseSamples") continue;
+    //            //if (sortedFiles[i].Name == "BaseSamples") continue;
 
-                strings.Add(sortedFiles[i].Name);
-            }
+    //            strings.Add(sortedFiles[i].Name);
+    //        }
 
 
 
-        });
+    //    });
 
-        return new IDCollection(strings);
-    }
+    //    return new IDCollection(strings);
+    //}
 
     public async Task<SampleData> GetCustomSampleData(string guid)
     {
@@ -152,7 +166,9 @@ public class SaveLoader : MonoBehaviour
     public async Task<Texture2D> GetIconFromGuid(string guid)
     {
         var iconPath = Path.Combine(FileManager.Instance.UniqueSampleDirectory, guid, "ico.png");
-
+#if !UNITY_EDITOR
+        iconPath = "File:///" + iconPath;
+#endif
         //Texture2D iconTexture = new Texture2D(150, 150, TextureFormat.ARGB32, false);
         //Debug.Log("from save loader: " + iconPath);
         await Task.Yield();
