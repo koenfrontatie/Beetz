@@ -12,6 +12,8 @@ public class GridInteraction : MonoBehaviour
     [SerializeField] private GameObject _gridDisplay;
     [SerializeField] private ContextColliders _contextColliders;
 
+    [SerializeField] private CanvasGroup _contextHelp, _patchHelp;
+
     private Sequencer _lastSequencer;
     private Vector2  _startCell, _currentCell, _lastCellPosition, _drawerDimensions;
     private GridController _gridController;
@@ -354,13 +356,19 @@ public class GridInteraction : MonoBehaviour
 
     private void SetState(InteractionState state)
     {
+        _contextHelp.alpha = _patchHelp.alpha = 0;
+
         switch (state)
         {
             case InteractionState.Default:
                 _contextColliders.SetContextMenu(false);
                 break;
+            case InteractionState.Patching:
+                _patchHelp.alpha = 1;
+                break;
             case InteractionState.Context:
                 _contextColliders.SetContextMenu(true);
+                _contextHelp.alpha = 1;
                 _contextColliders.PositionHitboxes(_lastSequencer);
                 break;
             case InteractionState.Moving:
