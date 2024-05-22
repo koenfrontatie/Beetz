@@ -12,29 +12,22 @@ public class AudioPlayer : MonoBehaviour
 
     public string LoadedPath;
 
-    FileManager _fileviewer;
-    private void Awake()
+    private void OnEnable()
     {
-        _fileviewer = GameObject.FindObjectOfType<FileManager>();
+        Events.LoadPlayPath += LoadAndPlay;
     }
 
-    //private void OnEnable()
-    //{
-    //    Events.LoadPlayPath += LoadAndPlay;
-    //}
-
-    //private void OnDisable()
-    //{
-    //    Events.LoadPlayPath += LoadAndPlay;
-
-    //}
+    private void OnDisable()
+    {
+        Events.LoadPlayPath += LoadAndPlay;
+    }
 
     private async Task LoadAudio(string path)
     {
-        //Debug.Log("RELOADING AUDIO");
-        //bool isSamePath = path == LoadedPath;
-        //if (isSamePath) return;
-        //Debug.Log("loading new audio");
+        Debug.Log("RELOADING AUDIO");
+        bool isSamePath = path == LoadedPath;
+        if (isSamePath) return;
+        Debug.Log("loading new audio");
 
         var searchPath = path;
 
@@ -68,12 +61,12 @@ public class AudioPlayer : MonoBehaviour
 
     public async void LoadAudio()
     {
-        await LoadAudio(_fileviewer.SelectedSamplePath);
+        await LoadAudio(FileManager.Instance.SelectedSamplePath);
     }
 
     public async void LoadAndPlay()
     {
-        await LoadAudio(_fileviewer.SelectedSamplePath);
+        await LoadAudio(FileManager.Instance.SelectedSamplePath);
         Source.Play();
     }
 

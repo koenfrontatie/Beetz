@@ -94,11 +94,11 @@ public class EffectBaker : MonoBehaviour
                 return;
             }
        
-            Bass.BASS_FXSetParameters(_reverbHandle, _reverbSettings);
+            //Bass.BASS_FXSetParameters(_reverbHandle, _reverbSettings);
             Bass.BASS_FXSetParameters(_distHandle, _distSettings);
             // for some reason echo and pitch need to be set with getparam method first ------
             Bass.BASS_FXGetParameters(_pitchHandle, _pitchSettings);
-            Bass.BASS_FXGetParameters(_echoHandle, _echoSettings);
+            //Bass.BASS_FXGetParameters(_echoHandle, _echoSettings);
             // ---------------------------
             Bass.BASS_FXSetParameters(_pitchHandle, _pitchSettings);
             Bass.BASS_FXSetParameters(_echoHandle, _echoSettings);
@@ -129,9 +129,11 @@ public class EffectBaker : MonoBehaviour
 
     public void SetLiveDistortion(float value)
     {
+        //_distSettings.wet
         _distSettings.fEdge = Mathf.Clamp(value * EdgeFactor, 0f, 100f);
         Bass.BASS_FXSetParameters(_distHandle, _distSettings);
         _distSettings.fGain = Mathf.Clamp(value * GainFactor,-60f, 0f);
+        _distSettings.fPreLowpassCutoff = Mathf.Clamp(value * 7000f, 100f, 8000f);
     }
 
     public void SetLiveEcho(float value)

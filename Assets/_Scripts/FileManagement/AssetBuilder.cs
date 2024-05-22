@@ -172,10 +172,22 @@ public class AssetBuilder : MonoBehaviour
             else
             {
                 
-                _meshDictionary.Add(guid, await SaveLoader.Instance.DeserializeMeshData(path));
+                AddToDictionary(guid, await SaveLoader.Instance.DeserializeMeshData(path));
                 
                 return _meshDictionary.GetValueOrDefault(guid, null);
             }  
+        }
+    }
+
+    public void AddToDictionary(string guid, Vector3[] verts)
+    {
+        if (_meshDictionary.ContainsKey(guid))
+        {
+            _meshDictionary[guid] = verts;
+        }
+        else
+        {
+            _meshDictionary.Add(guid, verts);
         }
     }
 

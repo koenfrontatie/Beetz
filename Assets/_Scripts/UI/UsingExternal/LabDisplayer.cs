@@ -182,6 +182,8 @@ public class LabDisplayer : MonoBehaviour
     public async void SaveDeformableMesh()
     {
         Vector3[] vertices = _currentDeformable.GetCurrentMesh().vertices;
+
+        AssetBuilder.Instance.AddToDictionary(FileManager.Instance.SelectedSampleGuid, vertices);
         //Mesh mesh = _currentDeformable.GetCurrentMesh();
         await Task.Run(() =>
         {
