@@ -103,6 +103,18 @@ public class SaveLoader : MonoBehaviour
         return await Task.Run(() => JsonConvert.DeserializeObject<SampleData>(jsonData));
     }
 
+    public async Task<Vector3[]> DeserializeMeshData(string jsonPath)
+    {
+#if !UNITY_EDITOR
+        jsonPath = "File:///" + jsonPath;
+#endif
+        string jsonData = await FetchJsonDataAsync(jsonPath);
+
+        //SampleData sampleData = await Task.Run(() => JsonConvert.DeserializeObject<SampleData>(jsonData));
+
+        return await Task.Run(() => JsonConvert.DeserializeObject<Vector3[]>(jsonData));
+    }
+
     private async Task<string> FetchJsonDataAsync(string url)
     {
         using (UnityWebRequest www = UnityWebRequest.Get(url))

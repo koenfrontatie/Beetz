@@ -100,25 +100,25 @@ public class SampleData
     public string Name;
     public int Template;
 
-    public List<EffectType> Effects;
-    public List<float> EffectValues;
+    public List<EffectValuePair> Effects;
 
-    public SampleData(string id, string name, int template, List<EffectType> effects, List<float> effectValues)
+    public SampleData(string id, string name, int template, List<EffectValuePair> effects)
     {
         ID = id;
         Name = name;
         Template = template;
         Effects = effects;
-        EffectValues = effectValues;
     }
 }
 
+[System.Serializable]
 public enum EffectType
 {
     Reverb,
     Distortion,
     Delay,
-    Chorus
+    Chorus,
+    Pitch
 }
 
 [System.Serializable]
@@ -133,6 +133,18 @@ public class SequencerData
         ID = id;
         Dimensions = dimensions;
         PositionIDData = positionIDData;
+    }
+}
+[System.Serializable]
+public class EffectValuePair
+{
+    public EffectType Effect;
+    public float Value;
+
+    public EffectValuePair(EffectType effect, float value)
+    {
+        Effect = effect;
+        Value = value;
     }
 }
 

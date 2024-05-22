@@ -12,6 +12,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Button _editSample, _deleteSample, _newSample, _playPause;
     private Image _editFG, _editBG, _deleteFG, _deleteBG, _newFG, _newBG;
     //[SerializeField] GridLayoutGroup _toolbarLayout;
+    [SerializeField] private GameObject _libraryDisplayObject, _dnaObject;
 
     private void Awake()
     {
@@ -73,6 +74,9 @@ public class UIController : MonoBehaviour
         ToggleAllCanvases(false);
         _main.enabled = true;
         _biolab.enabled = false;
+        _libraryDisplayObject.SetActive(false);
+        _dnaObject.SetActive(false);
+
         switch (state)
         {
             case GameState.Menu:
@@ -91,18 +95,26 @@ public class UIController : MonoBehaviour
                 {
                     _playPause.onClick.Invoke();
                 }
+                _libraryDisplayObject.SetActive(true);
                 _library.ToggleCanvasGroup(true);
+
                 FindObjectOfType<LibraryController>().RefreshInfoTiles();
                 _toolbar.ToggleCanvasGroup(true);
                 break;
 
             case GameState.Biolab:
-                if (Metronome.Instance.Playing)
+
+                if (Metronome.Instance)
                 {
-                    _playPause.onClick.Invoke();
+                    if (Metronome.Instance.Playing)
+                    {
+                        _playPause.onClick.Invoke();
+                    }
                 }
                 _main.enabled = false;
                 _biolab.enabled = true;
+                _dnaObject.SetActive(true);
+
                 _biolabScene.ToggleCanvasGroup(true);
                 //_toolbar.ToggleCanvasGroup(true);
                 break;

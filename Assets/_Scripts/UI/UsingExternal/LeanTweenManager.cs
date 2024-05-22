@@ -5,6 +5,8 @@ public class LeanTweenManager : MonoBehaviour
     //public List<LTDescr> Tweens = new List<LTDescr>();
     //public List<int> TweenId = new List<int>();
 
+    [SerializeField] Transform _dnaTransform;
+
     private void OnEnable()
     {
         Events.OnScaleBounce += ScaleBounce;
@@ -27,6 +29,8 @@ public class LeanTweenManager : MonoBehaviour
     void Start()
     {
         LeanTween.reset();
+        var rotateY = LeanTween.rotateAroundLocal(_dnaTransform.gameObject, Vector3.up, 360f, 24f).setRepeat(-1);
+
     }
 
     void ScaleBounce(GameObject obj)

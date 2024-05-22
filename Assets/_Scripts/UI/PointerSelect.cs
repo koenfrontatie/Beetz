@@ -8,6 +8,8 @@ public class PointerSelect : MonoBehaviour, IPointerDownHandler
 {
     SampleObject obj;
 
+    
+
     void Start()
     {
         obj = GetComponent<SampleObject>();  

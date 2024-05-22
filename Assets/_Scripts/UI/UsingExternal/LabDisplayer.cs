@@ -5,19 +5,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using FileManagement;
 using System.Threading.Tasks;
+using System.IO;
 
 public class LabDisplayer : MonoBehaviour
 {
-    [SerializeField] SampleObjectCollection _templateObjects;
+    [SerializeField] 
+    SampleObjectCollection _templateObjects;
+    [SerializeField] 
+    Transform _objectParent;
+    [SerializeField] 
+    private TMPro.TextMeshProUGUI _nameText;
+    [SerializeField] 
+    private SampleObject _selectedObject;
 
-    [SerializeField] Transform _scalerParent;
 
-    [SerializeField] private TMPro.TextMeshProUGUI _nameText;
+    [SerializeField]
+    private EffectBaker _effectBaker;
 
+    [SerializeField] 
+    private Deformer _deformerGroup;
+    [SerializeField]
+    private Deformable _currentDeformable;
+    [SerializeField]
+    private SquashAndStretchDeformer _squashAndStretchDeformer;
+    [SerializeField]
+    private SimplexNoiseDeformer _simplexNoiseDeformer;
 
-    public SampleObject SelectedObject;
+    public float PitchValue;
+    public float ReverbValue;
+    public float DistortionValue;
+    public float DelayValue;
 
-    public Deformer DeformerGroup;
+    public List<EffectValuePair> ActiveEffects;
 
     private void OnEnable()
     {
@@ -39,118 +58,50 @@ public class LabDisplayer : MonoBehaviour
 
     }
 
-    private async void OnSetSelectedGuid(string guid)
+    private async void OnSetSelectedGuid(string guid) 
     {
-        _scalerParent.DestroyChildren();
+        _objectParent.DestroyChildren();
 
         if (string.IsNullOrEmpty(FileManager.Instance.SelectedSampleGuid)) return;
-
-        //Debug.Log("lab on selected");
         
-        SelectedObject = await AssetBuilder.Instance.GetSampleObject(guid);
+        var data = await AssetBuilder.Instance.GetSampleData(guid);
 
-        SelectedObject.transform.SetParent(_scalerParent);
+        _selectedObject = await AssetBuilder.Instance.GetSampleObject(data.Template.ToString());
 
-        SelectedObject.transform.localScale = Vector3.one;
-        //SelectedObject.transform.localPosition = Vector3.zero;
-        SelectedObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.Euler(18f, 0, 0));
+        _selectedObject.transform.SetParent(_objectParent);
+
+        _selectedObject.transform.localScale = Vector3.one;
         
-        SelectedObject.transform.GetChild(0).transform.localPosition = Vector3.zero;
-        //SelectedObject.transform.GetChild(0).transform.localRotation = Quaternion.identity;
+        _selectedObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 
-        //SelectedObject.transform.gameObject.layer = LayerMask.NameToLayer("UI");
-        //foreach (Transform child in SelectedObject.transform)
-        //{
-        //    child.gameObject.layer = LayerMask.NameToLayer("UI");
-        //    foreach (Transform child2 in child)
-        //    {
-        //        child2.gameObject.layer = LayerMask.NameToLayer("UI");
-        //    }
-        //}
+        _selectedObject.SampleData = data;
 
-        //_nameText.text = SelectedObject.SampleData.Name;
+        AddDeformables(_selectedObject.transform);
 
-        //SelectedTemplate = SelectedObject;
-
-        AddDeformables(SelectedObject.transform);
-
-        //Events.OnScaleBounce?.Invoke(SelectedObject.gameObject);
-        //SelectedObject.gameObject.transform.SetParent(_scalerParent);
-        //if (FileManager.Instance.SelectedSampleGuid == guid)
-        //{
-        //    SampleObject SelectedObject = AssetBuilder.Instance.SelectedSampleObject;
-        //    if (SelectedObject != null)
-        //    {
-        //        if (SelectedObject.Preview != null)
-        //        {
-        //            SelectedObject.Preview.transform.SetParent(_scalerParent);
-        //            SelectedObject.Preview.transform.localPosition = Vector3.zero;
-        //            SelectedObject.Preview.transform.localRotation = Quaternion.identity;
-        //            SelectedObject.Preview.transform.localScale = Vector3.one;
-        //        }
-        //    }
-        //}
+        ActiveEffects = _selectedObject.SampleData.Effects;
+        
+        if(ActiveEffects != null && ActiveEffects.Count > 0)
+        {
+            foreach (var effect in ActiveEffects)
+            {
+                switch (effect.Effect)
+                {
+                    case EffectType.Pitch:
+                        UpdatePitchValue(effect.Value);
+                        break;
+                    case EffectType.Distortion:
+                        UpdateDistortionValue(effect.Value);
+                        break;
+                }
+            }
+        }  
     }
 
     private void OnNewBeat()
     {
         if(GameManager.Instance.State != GameState.Biolab) return;
-        Events.OnScaleBounce?.Invoke(SelectedObject.gameObject);
-        //string s = $"i {(int)(SelectedTemplate.SampleData.Template + 1)} 0 6";
-        //Events.LoadPlayGuid?.Invoke(SelectedTemplate.SampleData.ID);
+        Events.OnScaleBounce?.Invoke(_selectedObject.gameObject);
     }
-
-    //private void Update()
-    //{
-    //    if(Input.GetKeyDown(KeyCode.LeftArrow))
-    //    {
-    //        var current = SelectedTemplate.SampleData.Template;
-    //        var choice = 0;
-
-    //        if(current == 0 )
-    //        {
-    //            choice = _templateObjects.Collection[_templateObjects.Collection.Count - 1].SampleData.Template;
-    //        } else
-    //        {
-    //            choice = current - 1;
-    //        }
-
-    //        SelectNewTemplate(choice);
-    //    }
-
-    //    if(Input.GetKeyDown(KeyCode.RightArrow))
-    //    {
-    //        var current = SelectedTemplate.SampleData.Template;
-    //        var choice = 0;
-
-    //        if (current == _templateObjects.Collection[_templateObjects.Collection.Count - 1].SampleData.Template)
-    //        {
-    //            choice = 0;
-    //        }
-    //        else
-    //        {
-    //            choice = current + 1;
-    //        }
-
-    //        SelectNewTemplate(choice);
-    //    }
-    //}
-
-    //private void Start()
-    //{
-    //    SelectNewTemplate(0);
-    //}
-
-    //void SelectNewTemplate(int template)
-    //{
-    //    if (SelectedTemplate != null) Destroy(SelectedTemplate.gameObject);
-
-    //    var obj = Instantiate(_templateObjects.Collection[template], transform);
-
-    //    SelectedTemplate = obj;
-
-    //    AddDeformables(obj.transform);
-    //}
 
     void AddDeformables(Transform sampleObject)
     {
@@ -159,9 +110,95 @@ public class LabDisplayer : MonoBehaviour
             //if(child.)
             if(child.TryGetComponent<MeshRenderer>(out var rend)) {
 
-                Deformable deform = child.gameObject.AddComponent<Deformable>();
-                deform.AddDeformer(DeformerGroup);
+                _currentDeformable = child.gameObject.AddComponent<Deformable>();
+                _currentDeformable.AddDeformer(_deformerGroup);
             }
         }
+    }
+    public void UpdatePitchValue(float value)
+    {
+        PitchValue = Mathf.Clamp(value, -1, 1);
+
+        _effectBaker.SetLivePitch(PitchValue.Remap(-1, 1, .5f, 2f));
+
+        _squashAndStretchDeformer.Factor = PitchValue.Remap(-1, 1, -.8f, .8f);
+        _squashAndStretchDeformer.Curvature = PitchValue.Remap(-1, 1, 0f, -20f);
+
+        bool closeToZero = Mathf.Round(PitchValue * 10.0f) * 0.1f == 0;
+
+        var pitchEffect = ActiveEffects.Find(e => e.Effect == EffectType.Pitch);
+
+        if (pitchEffect == null && !closeToZero)
+        {
+            ActiveEffects.Add(new EffectValuePair(EffectType.Pitch, PitchValue));
+        }
+        else if (pitchEffect != null && closeToZero)
+        {
+            ActiveEffects.Remove(pitchEffect);
+        }
+        else if (pitchEffect != null)
+        {
+            pitchEffect.Value = PitchValue;
+        }
+
+        UpdateSampleData();
+    }
+
+    public void UpdateDistortionValue(float value)
+    {
+        DistortionValue = Mathf.Abs(Mathf.Clamp(value, -1, 1));
+
+        _effectBaker.SetLiveDistortion(DistortionValue);
+        _simplexNoiseDeformer.FrequencyScalar = DistortionValue.Remap(0, 1, 0f, 7.5f);
+
+        bool closeToZero = Mathf.Round(DistortionValue * 10.0f) * 0.1f == 0;
+
+        var distortionEffect = ActiveEffects.Find(e => e.Effect == EffectType.Distortion);
+
+        if (distortionEffect == null && !closeToZero)
+        {
+            ActiveEffects.Add(new EffectValuePair(EffectType.Distortion, DistortionValue));
+        }
+        else if (distortionEffect != null && closeToZero)
+        {
+            ActiveEffects.Remove(distortionEffect);
+        }
+        else if (distortionEffect != null)
+        {
+            distortionEffect.Value = DistortionValue;
+        }
+
+        UpdateSampleData();
+    }
+
+    void UpdateSampleData()
+    {
+        if (_selectedObject.SampleData.Effects != ActiveEffects)
+        {
+            _selectedObject.SampleData.Effects = ActiveEffects;
+        }
+    }
+
+    public async void SaveDeformableMesh()
+    {
+        Vector3[] vertices = _currentDeformable.GetCurrentMesh().vertices;
+        //Mesh mesh = _currentDeformable.GetCurrentMesh();
+        await Task.Run(() =>
+        {
+            var meshPath = Path.Combine(FileManager.Instance.UniqueSampleDirectory, FileManager.Instance.SelectedSampleGuid, "verts.json");
+            SaveLoader.Instance.SaveData<Vector3[]>(meshPath, vertices);
+            AssetBuilder.Instance.OnDeleteSample(FileManager.Instance.SelectedSampleGuid);
+            //SaveLoader.Instance.SaveData<Mesh>(meshPath, mesh);
+
+        });
+    }
+
+    public async void SaveSampleData()
+    {
+        await Task.Run(() =>
+        {
+            var samplePath = Path.Combine(FileManager.Instance.UniqueSampleDirectory, FileManager.Instance.SelectedSampleGuid, "SampleData.json");
+            SaveLoader.Instance.SaveData<SampleData>(samplePath, _selectedObject.SampleData);
+        });
     }
 }

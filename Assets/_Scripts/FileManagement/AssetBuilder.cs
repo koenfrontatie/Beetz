@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using static Un4seen.Bass.Misc.BaseEncoder;
 
 
 public class AssetBuilder : MonoBehaviour
@@ -31,6 +32,9 @@ public class AssetBuilder : MonoBehaviour
     [SerializeField]
     private GameObject _toolbarItemTemplate;
 
+    private Dictionary<string, Vector3[]> _meshDictionary = new Dictionary<string, Vector3[]>();
+
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -43,39 +47,27 @@ public class AssetBuilder : MonoBehaviour
         }
     }
 
-    //private void OnEnable()
-    //{
+    private void OnEnable()
+    {
 
-    //    Events.DeleteTile += OnDeleteTile;
+        FileManager.SampleDeleted += OnDeleteSample;
 
-    //}
+    }
 
-    //void OnDisable()
-    //{
+    void OnDisable()
+    {
 
-    //    Events.DeleteTile -= OnDeleteTile;
+        FileManager.SampleDeleted -= OnDeleteSample;
 
-    //}
+    }
 
-    //void OnDeleteTile(string id)
-    //{
-    //    for(int i = 0; i < CustomSamples.IDC.Count; i++)
-    //    {
-    //        if (CustomSamples.IDC[i] == id)
-    //        {
-    //            CustomSamples.IDC.RemoveAt(i);
-    //            //CustomSampleIcons.RemoveAt(i);
-    //            break;
-    //        }
-    //    }
-    //}
-
-    //void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.S)) {
-    //        SaveLoader.Instance.SaveData(Path.Combine(Utils.SampleSavepath, _templateSampleObjects.Collection[int.Parse(SelectedGuid)].SampleData.ID, ".json"), _templateSampleObjects.Collection[int.Parse(SelectedGuid)].SampleData);
-    //    }
-    //}
+    public void OnDeleteSample(string id)
+    {
+        if(_meshDictionary.ContainsKey(id))
+        {
+            _meshDictionary.Remove(id);
+        }
+    }
 
     public async void SearchForCustomSamples()
     {
@@ -123,11 +115,20 @@ public class AssetBuilder : MonoBehaviour
         else
         {
             SampleData sampleData = await GetSampleData(guid);
+            Vector3[] vertices = await GetMeshData(guid);
             
-            SampleObject copy = Instantiate(_templateSampleObjects.Collection[sampleData.Template]);
 
-            copy.SampleData = sampleData;
+
+
+            //set unique mesh
+            SampleObject copy = Instantiate(_templateSampleObjects.Collection[sampleData.Template]);
+            
+            if(vertices != null)
+            {
+                copy.transform.GetChild(0).GetChild(0).GetComponent<MeshFilter>().mesh.SetVertices(vertices);
+            }
             // set unique data
+            copy.SampleData = sampleData;
             return copy;
             //throw new NotImplementedException();
         }
@@ -147,6 +148,34 @@ public class AssetBuilder : MonoBehaviour
             return sampleData;
             //return await SaveLoader.Instance.DeserializeSampleData(Path.Combine(FileManager.Instance.UniqueSampleDirectory, guid, "SampleData.json"));
             //throw new NotImplementedException();
+        }
+    }
+
+    public async Task<Vector3[]> GetMeshData(string guid)
+    {
+        if (string.IsNullOrEmpty(guid)) return null;
+
+        if (guid.Length < 3) // if template
+        {
+            return null;
+        }
+        else
+        {
+            var path = Path.Combine(FileManager.Instance.UniqueSampleDirectory, guid, "verts.json");
+
+            if (!File.Exists(path)) return null;
+            
+            if(_meshDictionary.TryGetValue(guid, out var verts))
+            {
+                return verts;
+            }
+            else
+            {
+                
+                _meshDictionary.Add(guid, await SaveLoader.Instance.DeserializeMeshData(path));
+                
+                return _meshDictionary.GetValueOrDefault(guid, null);
+            }  
         }
     }
 

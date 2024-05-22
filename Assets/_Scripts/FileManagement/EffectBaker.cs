@@ -1,33 +1,22 @@
 using UnityEngine;
 using FileManagement;
-using System.IO;
 using Un4seen.Bass;
 using System;
 using Un4seen.Bass.AddOn.Enc;
 using Un4seen.Bass.AddOn.Fx;
+using PlasticPipe.PlasticProtocol.Messages;
 using System.Text;
 using System.Runtime.InteropServices;
 
-
 public class EffectBaker : MonoBehaviour
 {
-    //private const string LIBBASS = "bass";
-
-    //[DllImport(LIBBASS, CallingConvention = CallingConvention.Cdecl)]
-    //public static extern bool BASS_Init(int device, uint freq, uint flags, IntPtr win, IntPtr dsguid);
-    
-    //[DllImport(LIBBASS, CallingConvention = CallingConvention.Cdecl)]
-    //public static extern bool BASS_Free();
-    
-    //private const string LIBASS_FX = "bass_fx";  // Ensure this matches the .so filename without 'lib' and '.so'
-
-    //[DllImport(LIBASS_FX, CallingConvention = CallingConvention.Cdecl)]
-    //public static extern void AssFxFunction();
-
     public BASS_DX8_REVERB _reverbSettings;
     public BASS_DX8_DISTORTION _distSettings;
-    //public BASS_DX8_ECHO _echoSettings;
-    //public BASS_BFX_PITCHSHIFT _pitchSettings;
+    public BASS_BFX_ECHO4 _echoSettings;
+    public BASS_BFX_PITCHSHIFT _pitchSettings;
+    STREAMPROC _myStreamProc;
+    byte[] _procData;
+
     [Range(0, 100f)]
     public float EdgeFactor;
     [Range(-60f, 0f)]
@@ -39,7 +28,7 @@ public class EffectBaker : MonoBehaviour
     int _echoHandle;
     int _pitchHandle;
 
-    //fxchain order
+    static int bufferSize = 144000;
 
     int _revPriority, _distPriority, _echoPriority, _pitchPriority;
 
@@ -62,7 +51,7 @@ public class EffectBaker : MonoBehaviour
     {
 
         //Debug.Log(Bass.BASS_ChannelPause(_channel));
-        Bass.BASS_ChannelPause(_channel);
+        //Bass.BASS_ChannelPause(_channel);
         Bass.BASS_ChannelSetPosition(_channel, 0);  
         Bass.BASS_ChannelPlay(_channel, false);
     }
@@ -71,47 +60,48 @@ public class EffectBaker : MonoBehaviour
         if (state == GameState.Biolab)
         {
             Metronome.NewBeat += OnNewBeat;
-            //BassFx.LoadMe();
-            //Debug.Log(Bass.BASS_GetInfo());
-            //var info = Bass.BASS_GetVersion();
 
-            //Debug.Log(BassFx.BASS_FX_GetVersion());
-
-            //var echo = BASSFXType.BASS_FX_BFX_ECHO;
-
-            //_pitchSettings = new BASS_BFX_PITCHSHIFT();
+            Log($"BASS VERSION: {Bass.BASS_GetVersion()}");
+            Log($"BASSFX VERSION: {BassFx.BASS_FX_GetVersion()}");
 
             SelectedTemplate = await FileManager.Instance.TemplateFromGuid(FileManager.Instance.SelectedSampleGuid);
 
             Log("Opening live stream.");
-            
-            _channel = Bass.BASS_StreamCreateFile(FileManager.Instance.SamplePathFromGuid(SelectedTemplate), 0, 0, BASSFlag.BASS_MUSIC_FX);
-            //Bass.BASS_ChannelSetAttribute(_channel, Bass.BASS_ATTRIB_TAIL, 1.5f); try mixing for android?
+            //_channel = Bass.BASS_StreamCreateFile(FileManager.Instance.SamplePathFromGuid(SelectedTemplate), 0, 0, 0);
+            _channel = Bass.BASS_StreamCreateFile(FileManager.Instance.SamplePathFromGuid(SelectedTemplate), 0, 0, BASSFlag.BASS_MUSIC_PRESCAN);
 
+            //Log("Input channel length: " + Bass.BASS_ChannelGetLength(_channel, BASSMode.BASS_POS_BYTES) / bufferSize);
+
+            //Bass.BASS_ChannelSetAttribute(_channel, BASSAttribute.BASS_ATTRIB_TAIL, 5f);
+            //int[] buffer = null;
+            //Bass.BASS_StreamPutData(_channel, buffer, bufferSize);
+            
             _revPriority = 50;
             _distPriority = 40;
-            _echoPriority = 30;
+            _echoPriority = 80;
             _pitchPriority = 60;
 
-            _reverbHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_DX8_REVERB, _revPriority);
+            //_reverbHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_DX8_REVERB, _revPriority);
             _distHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_DX8_DISTORTION, _distPriority);
-            //_pitchHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_BFX_PITCHSHIFT, _pitchPriority);
-            //_echoHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_BFX_ECHO, _echoPriority);
+            _pitchHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_BFX_PITCHSHIFT, _pitchPriority);
             //_echoHandle = Bass.BASS_ChannelSetFX(_channel, BASSFXType.BASS_FX_BFX_ECHO4, _echoPriority);
-            _reverbSettings = new BASS_DX8_REVERB
-            {
-                fInGain = -3f,
-                fReverbMix = -5f,
-                fReverbTime = 900f,
-                fHighFreqRTRatio = 0.5f,
-            };
+            
+            var error1 = Bass.BASS_ErrorGetCode();
 
+            if (error1 != 0)
+            {
+                Log($"Error during handle init: {error1}");
+                return;
+            }
+       
             Bass.BASS_FXSetParameters(_reverbHandle, _reverbSettings);
             Bass.BASS_FXSetParameters(_distHandle, _distSettings);
-            //Bass.BASS_FXSetParameters(_pitchHandle, new BASS_BFX_PITCHSHIFT());
-            //Bass.BASS_FXSetParameters(_echoHandle, _echoSettings);
-
-            //Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_BUFFER, 5000);
+            // for some reason echo and pitch need to be set with getparam method first ------
+            Bass.BASS_FXGetParameters(_pitchHandle, _pitchSettings);
+            Bass.BASS_FXGetParameters(_echoHandle, _echoSettings);
+            // ---------------------------
+            Bass.BASS_FXSetParameters(_pitchHandle, _pitchSettings);
+            Bass.BASS_FXSetParameters(_echoHandle, _echoSettings);
 
             var error = Bass.BASS_ErrorGetCode();
             
@@ -125,7 +115,7 @@ public class EffectBaker : MonoBehaviour
         {
             Metronome.NewBeat -= OnNewBeat;
 
-            Log("Closing live stream.");
+            //Log("Closing live stream.");
             Bass.BASS_StreamFree(_channel);
         }
     }
@@ -139,52 +129,32 @@ public class EffectBaker : MonoBehaviour
 
     public void SetLiveDistortion(float value)
     {
-        //_echoSettings.fWetDryMix = Mathf.Clamp(value * 100f, 0f, 100f);
-        //_distSettings.fp
         _distSettings.fEdge = Mathf.Clamp(value * EdgeFactor, 0f, 100f);
         Bass.BASS_FXSetParameters(_distHandle, _distSettings);
         _distSettings.fGain = Mathf.Clamp(value * GainFactor,-60f, 0f);
     }
 
-    //public void SetLiveEcho(float value)
-    //{
-    //    //_echoSettings.fWetDryMix = Mathf.Clamp(value * 100f, 0f, 100f);
-    //    //_echoSettings.fFeedback = Mathf.Clamp(value * 100f, 0f, 100f);
-    //    //_echoSettings.fEdge = Mathf.Clamp(value * 25f, 0f, 100f);
+    public void SetLiveEcho(float value)
+    {
 
-    //    //Bass.BASS_FXSetParameters(_echoHandle, );
-    //    _echoSettings.fWetDryMix = Mathf.Clamp(value * 100f, 0f, 100f);
-    //}
+        _echoSettings.fWetMix = Mathf.Clamp(value * 2, 0f, 2f);
+        _echoSettings.fDelay = .1f;
+        _echoSettings.fFeedback = .8f;
+        
+        Bass.BASS_FXSetParameters(_echoHandle, _echoSettings);
+    }
 
     public void SetLivePitch(float value)
     {
-        //var single = Math.Round(Mathf.Clamp(value, -.5f, 2f), 1).ToString();
-        //Single.TryParse(single, out var result);
-        //Debug.Log(result);
-        //_pitchSettings.fPitchShift = result;
-        //Bass.BASS_FXSetParameters(_pitchHandle, _pitchSettings);
-        //bool success = Bass.BASS_FXSetParameters(_pitchHandle, _pitchSettings);
-        //if (!success)
-        //{
-        //    var error = Bass.BASS_ErrorGetCode();
-        //    Log($"Failed to set pitch parameters. Error: {error}");
-        //}
-
-
-
-
-        //BASS_BFX_PITCHSHIFT getsettings = new BASS_BFX_PITCHSHIFT() ;
-
-        //Bass.BASS_FXGetParameters(_pitchHandle, getsettings);
-
-        //Debug.Log(getsettings.fPitchShift);
-        //Debug.Log(getsettings);
-
+        float clampedValue = Mathf.Clamp(value, 0.5f, 2f);
+        float roundedValue = Mathf.Round(clampedValue * 10f) * .1f;
+        _pitchSettings.fPitchShift = roundedValue;
+        Bass.BASS_FXSetParameters(_pitchHandle, _pitchSettings);      
     }
 
     #region DSP
 
-    private byte[] _encbuffer = new byte[12048];
+    private byte[] _encbuffer = new byte[1248];
     
     public async void BakeLiveEffects()
     {
@@ -192,70 +162,17 @@ public class EffectBaker : MonoBehaviour
         BakeEffects(FileManager.Instance.SamplePathFromGuid(SelectedTemplate), FileManager.Instance.SelectedSamplePath);
         //await Task.Run(() => File.Delete(temporaryPath));
     }
-    //public void AddReverb(string inputSamplePath, string outputSamplePath)
-    //{
-
-    //    var decoder = Bass.BASS_StreamCreateFile(inputSamplePath, 0, 0, BASSFlag.BASS_STREAM_DECODE);
-            
-    //    BASS_CHANNELINFO info = Bass.BASS_ChannelGetInfo(decoder);
-            
-    //    Debug.Log(info.origres);
-
-    //    BASSEncode fpflag = BASSEncode.BASS_ENCODE_DEFAULT;
-            
-            
-    //    if (info.origres != 0)
-    //    {
-    //        if (info.origres > 24) fpflag = BASSEncode.BASS_ENCODE_FP_32BIT;
-
-    //        else if (info.origres > 16) fpflag = BASSEncode.BASS_ENCODE_FP_24BIT;
-
-    //        else if (info.origres > 8) fpflag = BASSEncode.BASS_ENCODE_FP_16BIT;
-
-    //        else if (info.origres != 0) fpflag = BASSEncode.BASS_ENCODE_FP_8BIT;
-    //    }
-
-    //    var rev = BASSFXType.BASS_FX_DX8_REVERB;
-    //    int effectHandle = Bass.BASS_ChannelSetFX(decoder, rev, 1);
-
-    //    BASS_DX8_REVERB reverbParameters = new BASS_DX8_REVERB
-    //    {
-    //        fInGain = -3f,
-    //        fReverbMix = -5f,
-    //        fReverbTime = 900f,
-    //        fHighFreqRTRatio = 0.5f,
-    //    };
-
-    //    if (!Bass.BASS_FXSetParameters(effectHandle, reverbParameters))
-    //    {
-    //        Debug.LogError("Failed to set reverb parameters.");
-    //        return;
-    //    }
-
-    //    var encoder = BassEnc.BASS_Encode_Start(decoder, outputSamplePath, BASSEncode.BASS_ENCODE_PCM | BASSEncode.BASS_ENCODE_AUTOFREE | fpflag, null, IntPtr.Zero);
-
-    //    int counter = 0;
-            
-    //    while (Bass.BASS_ChannelIsActive(decoder) == BASSActive.BASS_ACTIVE_PLAYING && BassEnc.BASS_Encode_IsActive(encoder) == BASSActive.BASS_ACTIVE_PLAYING && counter < 80000)
-    //    {
-    //        Bass.BASS_ChannelGetData(decoder, _encbuffer, 6500);
-    //        Debug.Log("Encoding");
-    //        counter++;
-    //    }
-    //}
 
     public void BakeEffects(string inputSamplePath, string outputSamplePath)
     {
 
-        var decoder = Bass.BASS_StreamCreateFile(inputSamplePath, 0, 0, BASSFlag.BASS_STREAM_DECODE);
+        var decoder = Bass.BASS_StreamCreateFile(inputSamplePath, 0, 0, BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_SAMCHAN_STREAM);
 
-        //Bass.BASS_ChannelSetAttribute(decoder, BASSAttribute.BASS_ATTRIB_TAIL, 1.5f);
         BASS_CHANNELINFO info = Bass.BASS_ChannelGetInfo(decoder);
 
         Debug.Log(info.origres);
 
         BASSEncode fpflag = BASSEncode.BASS_ENCODE_DEFAULT;
-
 
         if (info.origres != 0)
         {
@@ -268,84 +185,107 @@ public class EffectBaker : MonoBehaviour
             else if (info.origres != 0) fpflag = BASSEncode.BASS_ENCODE_FP_8BIT;
         }
 
-        var rev = BASSFXType.BASS_FX_DX8_REVERB;
-        int effectHandle = Bass.BASS_ChannelSetFX(decoder, rev, _revPriority);
+        Debug.Log("length of decoder " + Bass.BASS_ChannelGetLength(decoder).ToString());
+
+        //Bass.BASS_ChannelSetLength(decoder, 0); 
+
+        //var rev = BASSFXType.BASS_FX_DX8_REVERB;
+
+        //int effectHandle = Bass.BASS_ChannelSetFX(decoder, rev, _revPriority);
 
 
-        if (!Bass.BASS_FXSetParameters(effectHandle, _reverbSettings))
-        {
-            //Debug.LogError("Failed to set reverb parameters.");
-            var error = Bass.BASS_ErrorGetCode();
+        //if (!Bass.BASS_FXSetParameters(effectHandle, _reverbSettings))
+        //{
+        //    var error = Bass.BASS_ErrorGetCode();
 
-            if (error != 0)
-            {
-                Log($"Error during rev init: {error}");
-                return;
-            }
-            return;
-        }
+        //    if (error != 0)
+        //    {
+        //        Log($"Error during rev apply: {error}");
+        //        return;
+        //    }
+        //    return;
+        //}
 
         var dist = BASSFXType.BASS_FX_DX8_DISTORTION;
         int dEffectHandle = Bass.BASS_ChannelSetFX(decoder, dist, _distPriority);
 
         if (!Bass.BASS_FXSetParameters(dEffectHandle, _distSettings))
         {
-            //Debug.LogError("Failed to set distortion parameters.");
             var error = Bass.BASS_ErrorGetCode();
 
             if (error != 0)
             {
-                Log($"Error during dist init: {error}");
+                Log($"Error during dist apply: {error}");
                 return;
             }
             return;
         }
 
-        //var echo = BASSFXType.BASS_FX_BFX_ECHO;
+        //var echo = BASSFXType.BASS_FX_BFX_ECHO4;
 
         //int dEchoHandle = Bass.BASS_ChannelSetFX(decoder, echo, _echoPriority);
 
         //if (!Bass.BASS_FXSetParameters(dEchoHandle, _echoSettings))
         //{
-        //    Debug.LogError("Failed to set echo parameters.");
         //    var error = Bass.BASS_ErrorGetCode();
 
         //    if (error != 0)
         //    {
-        //        Log($"Error during echo init: {error}");
+        //        Log($"Error during echo apply: {error}");
         //        return;
         //    }
         //    return;
         //}
 
 
-        //var pitch = BASSFXType.BASS_FX_BFX_PITCHSHIFT;
-        //int pEffectHandle = Bass.BASS_ChannelSetFX(decoder, pitch, _pitchPriority);
+        var pitch = BASSFXType.BASS_FX_BFX_PITCHSHIFT;
+        int pEffectHandle = Bass.BASS_ChannelSetFX(decoder, pitch, _pitchPriority);
 
-        //if (!Bass.BASS_FXSetParameters(pEffectHandle, pitch))
-        //{
-        //    //Debug.LogError("Failed to set pitch parameters.");
-        //    var error = Bass.BASS_ErrorGetCode();
-
-        //    if (error != 0)
-        //    {
-        //        Log($"Error during pitch init: {error}");
-        //        return;
-        //    }
-        //    return;
-        //}
-
-        var encoder = BassEnc.BASS_Encode_Start(decoder, outputSamplePath, BASSEncode.BASS_ENCODE_PCM | BASSEncode.BASS_ENCODE_AUTOFREE | fpflag, null, IntPtr.Zero);
-
-        int counter = 0;
-
-        while (Bass.BASS_ChannelIsActive(decoder) == BASSActive.BASS_ACTIVE_PLAYING && BassEnc.BASS_Encode_IsActive(encoder) == BASSActive.BASS_ACTIVE_PLAYING && counter < 80000)
+        if (!Bass.BASS_FXSetParameters(pEffectHandle, _pitchSettings))
         {
-            Bass.BASS_ChannelGetData(decoder, _encbuffer, 6500);
-            Debug.Log("Encoding");
-            counter++;
+            var error = Bass.BASS_ErrorGetCode();
+
+            if (error != 0)
+            {
+                Log($"Error during pitch apply: {error}");
+                return;
+            }
+            return;
         }
+        //Bass.BASS_ChannelSetAttribute(decoder, BASSAttribute.BASS_ATTRIB_TAIL, 5f);
+        //BassEnc.BASS_Encode_StartCA(decoder, outputSamplePath)
+        var encoder = BassEnc.BASS_Encode_Start(decoder, outputSamplePath, BASSEncode.BASS_ENCODE_PCM | fpflag, null, IntPtr.Zero);
+        //Bass.BASS_ChannelSetAttribute(encoder, BASSAttribute.BASS_ATTRIB_TAIL, 5f);
+
+        //int counter = 0;
+
+        while (Bass.BASS_ChannelIsActive(decoder) == BASSActive.BASS_ACTIVE_PLAYING && BassEnc.BASS_Encode_IsActive(encoder) == BASSActive.BASS_ACTIVE_PLAYING /*&& counter < 80000*/)
+        {
+            Bass.BASS_ChannelGetData(decoder, _encbuffer, _encbuffer.Length);
+            //BASSActive check = BassEnc.BASS_Encode_IsActive(decoder);
+            //Debug.Log("encode on decoder: " + check.ToString());
+
+            Debug.Log("Encoding");
+            //counter++;
+        }
+
+        //BassEnc.BASS_Encode_Write(encoder, _encbuffer, _encbuffer.Length);
+
+        Debug.Log("length of encoder " + Bass.BASS_ChannelGetLength(encoder).ToString());
+
+
+        //while (Bass.BASS_ChannelIsActive(decoder) == BASSActive.BASS_ACTIVE_PLAYING || Bass.BASS_ChannelIsActive(decoder) == BASSActive.BASS_ACTIVE_STALLED)
+        //{
+        //    int data = Bass.BASS_ChannelGetData(decoder, _encbuffer, _encbuffer.Length);
+        //    if (data == -1) break;  // Break the loop if no data is returned
+        //    Debug.Log("Encoding");
+        //}
     }
+
+
+
+
+
 
     void Log(object message)
     {

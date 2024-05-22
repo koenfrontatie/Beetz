@@ -8,6 +8,8 @@ public class PreviewDisplayer : MonoBehaviour
     [SerializeField] private RectTransform _previewRect;
     [SerializeField] private TMPro.TextMeshProUGUI _nameText;
 
+    [SerializeField] SampleObject _currentObject;
+
     private void Start()
     {
         //_scalerStartPosition = _scalerParent.position;
@@ -30,7 +32,7 @@ public class PreviewDisplayer : MonoBehaviour
     {
         if(state == GameState.Library)
         {
-            _scalerParent.gameObject.SetActive(true);
+            //_scalerParent.gameObject.SetActive(true);
             
             //_scalerParent.position = _scalerStartPosition;
             //_previewRect.anchoredPosition = _previewStartPosition;
@@ -40,7 +42,7 @@ public class PreviewDisplayer : MonoBehaviour
         else
         {
             
-            _scalerParent.gameObject.SetActive(false);
+            //_scalerParent.gameObject.SetActive(false);
         }
     }
 
@@ -49,27 +51,36 @@ public class PreviewDisplayer : MonoBehaviour
         _scalerParent.DestroyChildren();
 
         if (string.IsNullOrEmpty(FileManager.Instance.SelectedSampleGuid)) return;
+        
+        //if (_currentObject != null && string.Equals(_currentObject.SampleData.ID, guid)) return;
 
-        SampleObject so;
-        so = await AssetBuilder.Instance.GetSampleObject(guid);
+        //if (_currentObject != null)
+        //{
+        //    Destroy(_currentObject);
+        //    _scalerParent.DestroyChildren();
+        //}
+
+        SampleObject so = await AssetBuilder.Instance.GetSampleObject(guid);
+
+        _currentObject = so;
         //Task.Run( () =>
         //{
         //    so = await AssetBuilder.Instance.GetSampleObject(guid);
         //});
         //Debug.Log("library on selected");
 
-        so.transform.SetParent(_scalerParent);
+        _currentObject.transform.SetParent(_scalerParent);
 
-        so.transform.localScale = Vector3.one;
+        _currentObject.transform.localScale = Vector3.one;
         
-        so.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+        _currentObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 
-        so.transform.gameObject.layer = LayerMask.NameToLayer("UI");
+        _currentObject.transform.gameObject.layer = LayerMask.NameToLayer("UI");
         
-        //so.transform.GetChild(0).transform.localPosition = Vector3.zero;
-        //so.transform.GetChild(0).transform.localRotation = Quaternion.identity;
+        //_currentObject.transform.GetChild(0).transform.localPosition = Vector3.zero;
+        //_currentObject.transform.GetChild(0).transform.localRotation = Quaternion.identity;
 
-        foreach (Transform child in so.transform)
+        foreach (Transform child in _currentObject.transform)
         {
             child.gameObject.layer = LayerMask.NameToLayer("UI");
             
@@ -79,9 +90,9 @@ public class PreviewDisplayer : MonoBehaviour
             }
         }
 
-        _nameText.text = so.SampleData.Name;
+        _nameText.text = _currentObject.SampleData.Name;
 
-        Events.OnScaleBounce?.Invoke(so.gameObject);
+        Events.OnScaleBounce?.Invoke(_currentObject.gameObject);
     }   
 
     private void OnDisable()

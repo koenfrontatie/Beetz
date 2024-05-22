@@ -36,7 +36,8 @@ namespace FileManagement
 
         [SerializeField] private DataStorage _dataStorage;
         [SerializeField] private AssetBuilder _assetBuilder;
-        
+        [SerializeField] private DSPController _dspController;
+
         [SerializeField] private KVDW.Logger _logger;
 
         public static FileManager Instance { get; private set; }
@@ -212,17 +213,19 @@ namespace FileManagement
             var jsonstring = Path.Combine(newSampleDirectory, "SampleData.json");
             var pngstring = Path.Combine(newSampleDirectory, "ico.png");
 
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
-                if (!File.Exists(Path.Combine(newSamplePath)))
+                if (!File.Exists(newSamplePath))
                 {
-                    var data = File.ReadAllBytes(path);
+                    //var data = File.ReadAllBytes(path);
 
                     SaveLoader.Instance.SaveData(jsonstring, sampleJson); // write json
                     
                     File.WriteAllBytes(pngstring, _bytes);
                     
-                    File.WriteAllBytes(Path.Combine(newSamplePath), data);
+                    _dspController.CopySampleWithPadding(path, newSamplePath);
+                    
+                    //File.WriteAllBytes(Path.Combine(newSamplePath), data);
                 }
             });
 
@@ -258,6 +261,11 @@ namespace FileManagement
 
             await MakeSamplePathIntoUnique(SelectedSamplePath);
         }
+
+        //public async void SaveBiolabState()
+        //{
+
+        //}
         #endregion
 
         #region Utilities
