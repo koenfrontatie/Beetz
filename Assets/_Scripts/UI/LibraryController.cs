@@ -68,6 +68,15 @@ public class LibraryController : MonoBehaviour
         }
     }
 
+    public void ClearFromDictionary(string guid)
+    {
+        if (_tileDictionary.ContainsKey(guid))
+        {
+            Destroy(_tileDictionary[guid].gameObject);
+            _tileDictionary.Remove(guid);
+        }
+    }
+
     private void OnDisable()
     {
         FileManager.SampleDeleted -= OnSampleDeleted;

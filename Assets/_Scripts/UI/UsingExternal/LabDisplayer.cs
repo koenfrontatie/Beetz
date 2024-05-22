@@ -6,15 +6,18 @@ using UnityEngine;
 using FileManagement;
 using System.Threading.Tasks;
 using System.IO;
+using UnityEngine.UI;
 
 public class LabDisplayer : MonoBehaviour
 {
+    [SerializeField]
+    private LibraryController _libraryController;
     [SerializeField] 
     SampleObjectCollection _templateObjects;
     [SerializeField] 
     Transform _objectParent;
     [SerializeField] 
-    private TMPro.TextMeshProUGUI _nameText;
+    private TMPro.TMP_InputField _nameInput;
     [SerializeField] 
     private SampleObject _selectedObject;
 
@@ -78,9 +81,16 @@ public class LabDisplayer : MonoBehaviour
 
         AddDeformables(_selectedObject.transform);
 
+
+        // get existent data
+
         ActiveEffects = _selectedObject.SampleData.Effects;
         
-        if(ActiveEffects != null && ActiveEffects.Count > 0)
+        _nameInput.SetTextWithoutNotify(_selectedObject.SampleData.Name);
+
+        //Debug.Log(_selectedObject.SampleData.Name);
+        //_nameText.text = _selectedObject.SampleData.Name.ToString();
+        if (ActiveEffects != null && ActiveEffects.Count > 0)
         {
             foreach (var effect in ActiveEffects)
             {
@@ -194,6 +204,21 @@ public class LabDisplayer : MonoBehaviour
 
         });
     }
+
+    public async void CheckName()
+    {
+        if (!string.Equals(_selectedObject.SampleData.Name, _nameInput.text))
+        {
+            //Debug.Log("changing name");
+
+            _selectedObject.SampleData.Name = _nameInput.text;
+            //_selectedObject
+            _libraryController.ClearFromDictionary(FileManager.Instance.SelectedSampleGuid);
+            //_libraryC
+            _libraryController.RefreshInfoTiles();
+
+        }
+    }   
 
     public async void SaveSampleData()
     {
