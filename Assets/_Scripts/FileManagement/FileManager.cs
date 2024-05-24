@@ -36,7 +36,7 @@ namespace FileManagement
 
         [SerializeField] private DataStorage _dataStorage;
         [SerializeField] private AssetBuilder _assetBuilder;
-        [SerializeField] private DSPController _dspController;
+        //[SerializeField] private DSPController _dspController;
 
         [SerializeField] private KVDW.Logger _logger;
 
@@ -223,7 +223,7 @@ namespace FileManagement
                     
                     File.WriteAllBytes(pngstring, _bytes);
                     
-                    _dspController.CopySampleWithPadding(path, newSamplePath);
+                    //_dspController.CopySampleWithPadding(path, newSamplePath);
                     
                     //File.WriteAllBytes(Path.Combine(newSamplePath), data);
                 }
@@ -246,8 +246,18 @@ namespace FileManagement
                 Debug.Log("Attempted to delete base sample");
                 return;
             }
-                        
-            Directory.Delete(Path.Combine(dirName), true);
+
+            try
+            {
+
+                Directory.Delete(Path.Combine(dirName), true);
+            }
+
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+                
+            }
 
             SampleDeleted.Invoke(SelectedSampleGuid);
 

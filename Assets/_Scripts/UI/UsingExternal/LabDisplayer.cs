@@ -189,34 +189,56 @@ public class LabDisplayer : MonoBehaviour
         }
     }
 
+    public async void SaveVariableData()
+    {
+        Debug.Log("Saving variable data...");
+        _libraryController.ClearFromDictionary(FileManager.Instance.SelectedSampleGuid);
+
+        if (!string.Equals(_selectedObject.SampleData.Name, _nameInput.text))
+        {
+            _selectedObject.SampleData.Name = _nameInput.text;
+        }
+
+
+
+        Vector3[] vertices = _currentDeformable.GetCurrentMesh().vertices;
+        var meshPath = Path.Combine(FileManager.Instance.UniqueSampleDirectory, FileManager.Instance.SelectedSampleGuid, "verts.json");
+        var samplePath = Path.Combine(FileManager.Instance.UniqueSampleDirectory, FileManager.Instance.SelectedSampleGuid, "SampleData.json");
+        AssetBuilder.Instance.AddToDictionary(FileManager.Instance.SelectedSampleGuid, vertices);
+
+
+        await Task.Run(() =>
+        {
+            SaveLoader.Instance.SaveData<Vector3[]>(meshPath, vertices);
+            SaveLoader.Instance.SaveData<SampleData>(samplePath, _selectedObject.SampleData);
+        });
+
+        _libraryController.RefreshInfoTiles();
+        Debug.Log("Variable data saved and library controller refreshed.");
+    }
+
     public async void SaveDeformableMesh()
     {
         Vector3[] vertices = _currentDeformable.GetCurrentMesh().vertices;
 
         AssetBuilder.Instance.AddToDictionary(FileManager.Instance.SelectedSampleGuid, vertices);
-        //Mesh mesh = _currentDeformable.GetCurrentMesh();
+        
         await Task.Run(() =>
         {
             var meshPath = Path.Combine(FileManager.Instance.UniqueSampleDirectory, FileManager.Instance.SelectedSampleGuid, "verts.json");
             SaveLoader.Instance.SaveData<Vector3[]>(meshPath, vertices);
-            AssetBuilder.Instance.OnDeleteSample(FileManager.Instance.SelectedSampleGuid);
+            //AssetBuilder.Instance.dire
             //SaveLoader.Instance.SaveData<Mesh>(meshPath, mesh);
 
         });
     }
 
-    public async void CheckName()
+    public void CheckName()
     {
         if (!string.Equals(_selectedObject.SampleData.Name, _nameInput.text))
         {
-            //Debug.Log("changing name");
 
             _selectedObject.SampleData.Name = _nameInput.text;
-            //_selectedObject
-            _libraryController.ClearFromDictionary(FileManager.Instance.SelectedSampleGuid);
-            //_libraryC
-            _libraryController.RefreshInfoTiles();
-
         }
     }   
 
@@ -227,5 +249,8 @@ public class LabDisplayer : MonoBehaviour
             var samplePath = Path.Combine(FileManager.Instance.UniqueSampleDirectory, FileManager.Instance.SelectedSampleGuid, "SampleData.json");
             SaveLoader.Instance.SaveData<SampleData>(samplePath, _selectedObject.SampleData);
         });
+
+        //_libraryController.RefreshInfoTiles();
+
     }
 }
