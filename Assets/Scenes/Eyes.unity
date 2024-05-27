@@ -505,8 +505,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1121785136}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.015537892, y: 0.605566, z: -0.0118272295, w: 0.7955555}
-  m_LocalPosition: {x: 0.33119845, y: -0.013426989, z: -0.09249778}
+  m_LocalRotation: {x: 0.0878285, y: 0.60198057, z: -0.06685385, w: 0.7908453}
+  m_LocalPosition: {x: 0.36800656, y: -0.022014763, z: -0.08232861}
   m_LocalScale: {x: 0.10728, y: 0.10728, z: 0.10728}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -675,12 +675,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1286543973}
   m_PrefabAsset: {fileID: 0}
---- !u!23 &1286543978 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 6126987141840417119, guid: 506b15d3bc4f6e241adc9dc3ee0aeb8c,
-    type: 3}
-  m_PrefabInstance: {fileID: 1286543973}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1286543980 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5376662043356562929, guid: 506b15d3bc4f6e241adc9dc3ee0aeb8c,
@@ -696,74 +690,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1286543976}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0970a923eff145744a66a980e20b235c, type: 3}
+  m_Script: {fileID: 11500000, guid: c0ac3bb5154baf14a85cba550ff65898, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlighterSettings:
-    depthMask: 2
-    infoRenderScale: 0.767
-    useOuterGlow: 1
-    useSingleOuterGlow: 1
-    outerGlowColorFront: {r: 1, g: 1, b: 1, a: 1}
-    outerGlowColorBack: {r: 0, g: 0, b: 0, a: 1}
-    outlineVisibleBeforeObject: 0
-    blurType: 1
-    blendType: 0
-    boxBlurSize: 0.1125
-    blurIterations: 24.6
-    blurRenderScale: 0.248
-    blurIntensity: 1.71
-    blurIntensityMultiplier: 1
-    blurAdaptiveThickness: 0.204
-    cameraDistanceMultiplier: 6.75
-    useMeshOutline: 0
-    useSingleMeshOutline: 1
-    meshOutlineFront:
-      color: {r: 0, g: 0, b: 0, a: 1}
-    meshOutlineBack:
-      color: {r: 1, g: 1, b: 1, a: 1}
-    meshOutlineThickness: 0.0419
-    meshOutlineAdaptiveThickness: 0.076
-    useInnerGlow: 0
-    useSingleInnerGlow: 1
-    innerGlowFront:
-      color: {r: 0, g: 1, b: 1, a: 1}
-      power: 4
-    innerGlowBack:
-      color: {r: 0, g: 1, b: 1, a: 1}
-      power: 4
-    useOverlay: 0
-    useSingleOverlay: 1
-    overlayFront:
-      color: {r: 0.042452812, g: 1, b: 1, a: 0.49019608}
-      useTexture: 0
-      texture: {fileID: 0}
-      background: 0
-      tilling: 60
-      rotation: 0
-    overlayBack:
-      color: {r: 0, g: 1, b: 1, a: 1}
-      useTexture: 0
-      texture: {fileID: 0}
-      background: 0
-      tilling: 60
-      rotation: 0
-    RenderingBoundsSizeIncrease: 0.2
-    RenderingBoundsDistanceFix: 0
-    RenderingBoundsMaxDistanceFix: 1
-    RenderingBoundsMinDistanceFix: 0
-  findRenderers: 0
-  renderers:
-  - renderer: {fileID: 1286543978}
-    useCutout: 0
-    clippingThreshold: 0
-    clippingSource: 1
-    clipTexture: {fileID: 0}
-    submeshIndexes: 0000000001000000
-    cullMode: 2
-  id: 1
-  showRenderBounds: 0
-  showScreenAdjustedRenderBounds: 0
+  _object: {fileID: 1286543974}
+  _eye1: {fileID: 1525262008}
+  _eye2: {fileID: 1121785137}
 --- !u!64 &1286543983
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -827,7 +759,7 @@ Transform:
   m_GameObject: {fileID: 1445039647}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.4701647, z: -0, w: 0.88257873}
-  m_LocalPosition: {x: -0.80772793, y: 0.058695674, z: 1.2015722}
+  m_LocalPosition: {x: -0.80772793, y: 0.199, z: 1.2015722}
   m_LocalScale: {x: 2.1739132, y: 2.173913, z: 2.1739132}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -967,8 +899,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1525262007}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.011191008, y: 0.81227446, z: -0.015593143, w: 0.58295953}
-  m_LocalPosition: {x: 0.37116736, y: -0.0150473565, z: 0.09960568}
+  m_LocalRotation: {x: 0.07009491, y: 0.80653226, z: -0.09766776, w: 0.578838}
+  m_LocalPosition: {x: 0.4072472, y: -0.024408098, z: 0.08741657}
   m_LocalScale: {x: 0.10728, y: 0.10728, z: 0.10728}
   m_ConstrainProportionsScale: 0
   m_Children: []

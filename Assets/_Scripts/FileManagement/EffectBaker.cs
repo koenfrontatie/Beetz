@@ -120,13 +120,18 @@ public class EffectBaker : MonoBehaviour
         return true;
     }
 
-    private void CleanupBass()
+    public void CleanupBass()
     {
         if (_channel != 0)
         {
             Bass.BASS_StreamFree(_channel);
             _channel = 0;
         }
+
+        BassEnc.BASS_Encode_Stop(_channel);
+
+        BassEnc.FreeMe();
+        Bass.BASS_Free();
     }
 
     public void SetLiveReverb(float value)
@@ -193,11 +198,14 @@ public class EffectBaker : MonoBehaviour
             Bass.BASS_ChannelGetData(decoder, encBuffer, encBuffer.Length);
         }
 
-        Bass.BASS_ChannelStop(decoder);
+        FileManager.SampleUpdated?.Invoke(FileManager.Instance.SelectedSampleGuid);
+
         Bass.BASS_ChannelStop(encoder);
+        Bass.BASS_ChannelStop(decoder);
         Bass.BASS_StreamFree(encoder);
         Bass.BASS_StreamFree(decoder);
-
+        BassEnc.BASS_Encode_Stop(decoder);
+        BassEnc.BASS_Encode_Stop(encoder);
         Log("Baking effects completed.");
     }
 

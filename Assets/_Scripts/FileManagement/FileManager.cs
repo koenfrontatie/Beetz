@@ -31,6 +31,8 @@ namespace FileManagement
         public static Action<string> NewSampleSelected;
         public static Action<string> SampleDeleted;
         public static Action<string> SampleCreated;
+        public static Action<string> SampleUpdated;
+
 
         public TextureCollection _customIcons;
 
@@ -217,7 +219,7 @@ namespace FileManagement
             {
                 if (!File.Exists(newSamplePath))
                 {
-                    //var data = File.ReadAllBytes(path);
+                    var data = File.ReadAllBytes(path);
 
                     SaveLoader.Instance.SaveData(jsonstring, sampleJson); // write json
                     
@@ -225,7 +227,7 @@ namespace FileManagement
                     
                     //_dspController.CopySampleWithPadding(path, newSamplePath);
                     
-                    //File.WriteAllBytes(Path.Combine(newSamplePath), data);
+                    File.WriteAllBytes(Path.Combine(newSamplePath), data);
                 }
             });
 

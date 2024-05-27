@@ -7,6 +7,7 @@ using FileManagement;
 using System.Threading.Tasks;
 using System.IO;
 using UnityEngine.UI;
+using Un4seen.Bass;
 
 public class LabDisplayer : MonoBehaviour
 {
@@ -50,19 +51,32 @@ public class LabDisplayer : MonoBehaviour
 
     private void OnStateChanged(GameState state)
     {
-        if(state == GameState.Biolab) OnSetSelectedGuid(FileManager.Instance.SelectedSampleGuid);
-    }
+        if (state == GameState.Biolab)
+        {
+            Metronome.NewBeat += OnNewBeat;
+            FileManager.NewSampleSelected += OnSetSelectedGuid;
+            bool isInitialized = Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero);
+            if (!isInitialized)
+            {
+                Debug.LogError("Failed to initialize BASS library.");
+                Debug.Log(Bass.BASS_ErrorGetCode().ToString());
+                return;
+            }
+            OnSetSelectedGuid(FileManager.Instance.SelectedSampleGuid);
+        } else
+        {
+            //Bass.BASS_Free();
+            _effectBaker.CleanupBass();
+            Metronome.NewBeat -= OnNewBeat;
+            FileManager.NewSampleSelected -= OnSetSelectedGuid;
 
-    private void OnDisable()
-    {
-        Metronome.NewBeat -= OnNewBeat;
-        FileManager.NewSampleSelected -= OnSetSelectedGuid;
-        GameManager.StateChanged -= OnStateChanged;
-
+        }
     }
 
     private async void OnSetSelectedGuid(string guid) 
     {
+        if(GameManager.Instance.State != GameState.Biolab) return;
+        
         _objectParent.DestroyChildren();
 
         if (string.IsNullOrEmpty(FileManager.Instance.SelectedSampleGuid)) return;
@@ -211,7 +225,9 @@ public class LabDisplayer : MonoBehaviour
         {
             SaveLoader.Instance.SaveData<Vector3[]>(meshPath, vertices);
             SaveLoader.Instance.SaveData<SampleData>(samplePath, _selectedObject.SampleData);
+            _effectBaker.BakeLiveEffects(); 
         });
+
 
         _libraryController.RefreshInfoTiles();
         Debug.Log("Variable data saved and library controller refreshed.");

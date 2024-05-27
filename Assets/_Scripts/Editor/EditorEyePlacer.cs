@@ -1,23 +1,23 @@
-//using UnityEngine;
-//using UnityEditor;
+using UnityEngine;
+using UnityEditor;
 
-//[CustomEditor(typeof(EyePlacer))]
-//public class EditorEyePlacer : Editor
-//{
+[CustomEditor(typeof(EyePlacer))]
+public class EditorEyePlacer : Editor
+{
 
-//    public override void OnInspectorGUI()
-//    {
+    public override void OnInspectorGUI()
+    {
 
-//        EyePlacer placer = (EyePlacer)target;
+        EyePlacer placer = (EyePlacer)target;
 
-//        if (GUILayout.Button("Place"))
-//        {
-//            placer.PositionEyes();
-//        }
+        if (GUILayout.Button("Place"))
+        {
+            placer.PositionEyes();
+        }
 
 
-//        // Draw the default inspector after your custom GUI
-//        DrawDefaultInspector();
-//    }
+        // Draw the default inspector after your custom GUI
+        DrawDefaultInspector();
+    }
 
-//}
+}

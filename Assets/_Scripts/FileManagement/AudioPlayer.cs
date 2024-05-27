@@ -1,38 +1,58 @@
-using System;
-using System.Collections;
-using System.Threading.Tasks;
-using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 using FileManagement;
+using System.Runtime.InteropServices;
 
+[RequireComponent(typeof(AudioSource))]
 public class AudioPlayer : MonoBehaviour
 {
-    public AudioSource Source;
-    public AudioClip Clip;
-
-    public string LoadedPath;
-
-    private void OnEnable()
+    private AudioSource _source;
+    public Dictionary<string, AudioClip> _clipDictionary = new Dictionary<string, AudioClip>(); 
+    void OnEnable()
     {
-        Events.LoadPlayPath += LoadAndPlay;
+        Events.LoadPlayGuid += PlayFromGuid;
+        FileManager.SampleUpdated += OnSampleUpdated;
+    }
+    void Start()
+    {
+        _source = GetComponent<AudioSource>();
     }
 
-    private void OnDisable()
+    private async void PlayFromGuid(string guid)
     {
-        Events.LoadPlayPath += LoadAndPlay;
+        var clip = await GetClip(guid);
+
+        if (clip != null)
+        {
+            _source.PlayOneShot(clip);
+        }
+        else
+        {
+            string template = await FileManager.Instance.TemplateFromGuid(guid);
+            clip = await GetClip(template);
+            _source.PlayOneShot(clip);
+        }
     }
 
-    private async Task LoadAudio(string path)
+    private async Task<AudioClip> GetClip(string guid)
     {
-        Debug.Log("RELOADING AUDIO");
-        bool isSamePath = path == LoadedPath;
-        if (isSamePath) return;
-        Debug.Log("loading new audio");
-
+        if (_clipDictionary.ContainsKey(guid)) {
+            return _clipDictionary[guid];
+        } else
+        {
+            var clip = await LoadClipFromPath(FileManager.Instance.SamplePathFromGuid(guid));
+            _clipDictionary.Add(guid, clip);
+            return clip;
+        }
+    }
+    private async Task<AudioClip> LoadClipFromPath(string path)
+    {
         var searchPath = path;
-
+        AudioClip Clip = null;
 #if !UNITY_EDITOR
-        searchPath = "File:///" + path;
+    searchPath = "File:///" + path;
 #endif
         using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(searchPath, AudioType.WAV))
         {
@@ -40,40 +60,34 @@ public class AudioPlayer : MonoBehaviour
 
             if (www.result == UnityWebRequest.Result.ConnectionError)
             {
-                UnityEngine.Debug.Log(www.error);
+                Debug.Log(www.error);
             }
             else
             {
                 Clip = DownloadHandlerAudioClip.GetContent(www);
-                Source.clip = Clip;
-                LoadedPath = path;
+                
             }
 
             www.Dispose();
+
+            return Clip;
         }
-
     }
 
-    public void PlayAudio()
+    private void OnSampleUpdated(string guid)
     {
-        Source.Play();
+        if(_clipDictionary.ContainsKey(guid))
+        {
+            _clipDictionary.Remove(guid);
+        }
     }
 
-    public async void LoadAudio()
+    void OnDisable()
     {
-        await LoadAudio(FileManager.Instance.SelectedSamplePath);
-    }
+        Events.LoadPlayGuid -= PlayFromGuid;
+        FileManager.SampleUpdated -= OnSampleUpdated;
 
-    public async void LoadAndPlay()
-    {
-        await LoadAudio(FileManager.Instance.SelectedSamplePath);
-        Source.Play();
     }
-
-    public async void LoadAndPlay(string path)
-    {
-        await LoadAudio(path);
-        Source.Play();
-    }
-
 }
+
+
