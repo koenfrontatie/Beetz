@@ -38,7 +38,7 @@ namespace FileManagement
 
         [SerializeField] private DataStorage _dataStorage;
         [SerializeField] private AssetBuilder _assetBuilder;
-        //[SerializeField] private DSPController _dspController;
+        [SerializeField] private DSPController _dspController;
 
         [SerializeField] private KVDW.Logger _logger;
 
@@ -159,15 +159,18 @@ namespace FileManagement
         {
             await InitializeUniqueSamples();
         }
+
         async Task InitializeUniqueSamples()
         {
             UniqueSamplePathCollection.Clear();
 
+            await CheckOrMakeDirectory(UniqueSampleDirectory);
+
             // --------------------------------------------------- get all unique sample folders
 
+            var info = new DirectoryInfo(UniqueSampleDirectory);
             await Task.Run(() =>
             {
-                var info = new DirectoryInfo(UniqueSampleDirectory);
 
                 var samplefolders = info.GetDirectories();
 
@@ -177,16 +180,17 @@ namespace FileManagement
 
                     for (int j = 0; j < files.Length; j++)
                     {
-                        if(files[j].Name.EndsWith(".wav"))
+                        if (files[j].Name.EndsWith(".wav"))
                             UniqueSamplePathCollection.Add(files[j].FullName);
                     }
                 }
+
             });
 
             UniqueSamplesInitialized?.Invoke();
         }
         #endregion
-        
+
         #region Sample creation
         public async void MakeSelectedIntoUnique()
         {
@@ -219,15 +223,14 @@ namespace FileManagement
             {
                 if (!File.Exists(newSamplePath))
                 {
-                    var data = File.ReadAllBytes(path);
 
                     SaveLoader.Instance.SaveData(jsonstring, sampleJson); // write json
+
+                    //var data = File.ReadAllBytes(path);
+                    //File.WriteAllBytes(Path.Combine(newSamplePath), data);
+                    File.WriteAllBytes(pngstring, _bytes);                    
+                    _dspController.CopySampleWithPadding(path, newSamplePath, 3);
                     
-                    File.WriteAllBytes(pngstring, _bytes);
-                    
-                    //_dspController.CopySampleWithPadding(path, newSamplePath);
-                    
-                    File.WriteAllBytes(Path.Combine(newSamplePath), data);
                 }
             });
 
@@ -449,7 +452,12 @@ namespace FileManagement
                 ProjectDirectory = projectDirectories[0].FullName;
                 
                 ProjectGuid = Path.GetFileName(ProjectDirectory);
-   
+
+                //foreach(var dir in projectDirectories)
+                //{
+                //   dir.Delete(true);
+                //}
+
                 var projectDataPath = Path.Combine(ProjectDirectory, "ProjectData.json");
                 
                 Log($"Attempting to load projectdata from: {projectDataPath}");

@@ -91,6 +91,7 @@ public class UIController : MonoBehaviour
                 _toolbar.ToggleCanvasGroup(true);
                 break;
             case GameState.Library:
+
                 if (Metronome.Instance.Playing)
                 {
                     _playPause.onClick.Invoke();

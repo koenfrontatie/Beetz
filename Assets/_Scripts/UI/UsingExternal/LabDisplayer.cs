@@ -24,7 +24,7 @@ public class LabDisplayer : MonoBehaviour
 
 
     [SerializeField]
-    private EffectBaker _effectBaker;
+    private DSPController _dspController;
 
     [SerializeField] 
     private Deformer _deformerGroup;
@@ -55,21 +55,13 @@ public class LabDisplayer : MonoBehaviour
         {
             Metronome.NewBeat += OnNewBeat;
             FileManager.NewSampleSelected += OnSetSelectedGuid;
-            bool isInitialized = Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero);
-            if (!isInitialized)
-            {
-                Debug.LogError("Failed to initialize BASS library.");
-                Debug.Log(Bass.BASS_ErrorGetCode().ToString());
-                return;
-            }
+           
             OnSetSelectedGuid(FileManager.Instance.SelectedSampleGuid);
         } else
         {
-            //Bass.BASS_Free();
-            _effectBaker.CleanupBass();
+           
             Metronome.NewBeat -= OnNewBeat;
             FileManager.NewSampleSelected -= OnSetSelectedGuid;
-
         }
     }
 
@@ -79,9 +71,11 @@ public class LabDisplayer : MonoBehaviour
         
         _objectParent.DestroyChildren();
 
+        if(_selectedObject != null) Destroy(_selectedObject.gameObject);
+
         if (string.IsNullOrEmpty(FileManager.Instance.SelectedSampleGuid)) return;
         
-        var data = await AssetBuilder.Instance.GetSampleData(guid);
+        SampleData data = await AssetBuilder.Instance.GetSampleData(guid);
 
         _selectedObject = await AssetBuilder.Instance.GetSampleObject(data.Template.ToString());
 
@@ -143,7 +137,7 @@ public class LabDisplayer : MonoBehaviour
     {
         PitchValue = Mathf.Clamp(value, -1, 1);
 
-        _effectBaker.SetLivePitch(PitchValue.Remap(-1, 1, .5f, 2f));
+        _dspController.SetLivePitch(PitchValue.Remap(-1, 1, .5f, 2f));
 
         _squashAndStretchDeformer.Factor = PitchValue.Remap(-1, 1, -.8f, .8f);
         _squashAndStretchDeformer.Curvature = PitchValue.Remap(-1, 1, 0f, -20f);
@@ -172,7 +166,7 @@ public class LabDisplayer : MonoBehaviour
     {
         DistortionValue = Mathf.Abs(Mathf.Clamp(value, -1, 1));
 
-        _effectBaker.SetLiveDistortion(DistortionValue);
+        _dspController.SetLiveDistortion(DistortionValue);
         _simplexNoiseDeformer.FrequencyScalar = DistortionValue.Remap(0, 1, 0f, 7.5f);
 
         bool closeToZero = Mathf.Round(DistortionValue * 10.0f) * 0.1f == 0;
@@ -225,7 +219,7 @@ public class LabDisplayer : MonoBehaviour
         {
             SaveLoader.Instance.SaveData<Vector3[]>(meshPath, vertices);
             SaveLoader.Instance.SaveData<SampleData>(samplePath, _selectedObject.SampleData);
-            _effectBaker.BakeLiveEffects(); 
+            _dspController.BakeLiveBassEffects(FileManager.Instance.SelectedSamplePath, FileManager.Instance.SelectedSamplePath); 
         });
 
 
