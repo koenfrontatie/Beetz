@@ -62,6 +62,7 @@ public class LabDisplayer : MonoBehaviour
            
             Metronome.NewBeat -= OnNewBeat;
             FileManager.NewSampleSelected -= OnSetSelectedGuid;
+            if(_selectedObject != null) Destroy(_selectedObject.gameObject);    
         }
     }
 
@@ -77,7 +78,8 @@ public class LabDisplayer : MonoBehaviour
         
         SampleData data = await AssetBuilder.Instance.GetSampleData(guid);
 
-        _selectedObject = await AssetBuilder.Instance.GetSampleObject(data.Template.ToString());
+        SampleObject loadedObject = await AssetBuilder.Instance.GetSampleObject(data.Template.ToString());
+        _selectedObject = loadedObject;
 
         _selectedObject.transform.SetParent(_objectParent);
 
@@ -87,7 +89,7 @@ public class LabDisplayer : MonoBehaviour
 
         _selectedObject.SampleData = data;
 
-        AddDeformables(_selectedObject.transform);
+        AddDeformables(_selectedObject.gameObject);
 
 
         // get existent data
@@ -121,9 +123,9 @@ public class LabDisplayer : MonoBehaviour
         Events.OnScaleBounce?.Invoke(_selectedObject.gameObject);
     }
 
-    void AddDeformables(Transform sampleObject)
+    void AddDeformables(GameObject sampleObject)
     {
-        foreach(Transform child in sampleObject.GetChild(0))
+        foreach(Transform child in sampleObject.transform.GetChild(0))
         {
             //if(child.)
             if(child.TryGetComponent<MeshRenderer>(out var rend)) {
