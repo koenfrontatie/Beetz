@@ -139,7 +139,8 @@ public class LabDisplayer : MonoBehaviour
     {
         PitchValue = Mathf.Clamp(value, -1, 1);
 
-        _dspController.SetLivePitch(PitchValue.Remap(-1, 1, .5f, 2f));
+        //_dspController.SetLivePitch(PitchValue.Remap(-1, 1, .5f, 2f));
+        _dspController.SetPitch(PitchValue.Remap(-1, 1, .5f, 2f));
 
         _squashAndStretchDeformer.Factor = PitchValue.Remap(-1, 1, -.8f, .8f);
         _squashAndStretchDeformer.Curvature = PitchValue.Remap(-1, 1, 0f, -20f);
@@ -168,7 +169,8 @@ public class LabDisplayer : MonoBehaviour
     {
         DistortionValue = Mathf.Abs(Mathf.Clamp(value, -1, 1));
 
-        _dspController.SetLiveDistortion(DistortionValue);
+        //_dspController.SetLiveDistortion(DistortionValue);
+        _dspController.SetReverb(DistortionValue.Remap(0, 1, 0f, 1f));
         _simplexNoiseDeformer.FrequencyScalar = DistortionValue.Remap(0, 1, 0f, 7.5f);
 
         bool closeToZero = Mathf.Round(DistortionValue * 10.0f) * 0.1f == 0;
@@ -221,7 +223,7 @@ public class LabDisplayer : MonoBehaviour
         {
             SaveLoader.Instance.SaveData<Vector3[]>(meshPath, vertices);
             SaveLoader.Instance.SaveData<SampleData>(samplePath, _selectedObject.SampleData);
-            _dspController.BakeLiveBassEffects(FileManager.Instance.SelectedSamplePath); 
+            //_dspController.BakeLiveBassEffects(FileManager.Instance.SelectedSamplePath); 
         });
 
 

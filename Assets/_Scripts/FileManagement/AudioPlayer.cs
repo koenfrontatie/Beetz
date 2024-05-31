@@ -3,7 +3,6 @@ using UnityEngine;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using FileManagement;
-using System.Runtime.InteropServices;
 
 [RequireComponent(typeof(AudioSource))]
 public class AudioPlayer : MonoBehaviour
@@ -36,17 +35,46 @@ public class AudioPlayer : MonoBehaviour
         }
     }
 
+    //private async Task<AudioClip> GetClip(string guid)
+    //{
+    //    if (_clipDictionary.ContainsKey(guid)) {
+    //        return _clipDictionary[guid];
+    //    } else
+    //    {
+    //        var clip = await LoadClipFromPath(FileManager.Instance.SamplePathFromGuid(guid));
+    //        _clipDictionary.Add(guid, clip);
+    //        return clip;
+    //    }
+    //}
+
+    private readonly object _clipDictionaryLock = new object();
+
     private async Task<AudioClip> GetClip(string guid)
     {
-        if (_clipDictionary.ContainsKey(guid)) {
-            return _clipDictionary[guid];
-        } else
+        // Check if the clip is already in the dictionary
+        lock (_clipDictionaryLock)
         {
-            var clip = await LoadClipFromPath(FileManager.Instance.SamplePathFromGuid(guid));
-            _clipDictionary.Add(guid, clip);
-            return clip;
+            if (_clipDictionary.ContainsKey(guid))
+            {
+                return _clipDictionary[guid];
+            }
         }
+
+        // Load the clip outside of the lock to avoid long blocking
+        var clip = await LoadClipFromPath(FileManager.Instance.SamplePathFromGuid(guid));
+
+        // Add the loaded clip to the dictionary
+        lock (_clipDictionaryLock)
+        {
+            if (!_clipDictionary.ContainsKey(guid)) // Double-check inside the lock
+            {
+                _clipDictionary.Add(guid, clip);
+            }
+        }
+
+        return clip;
     }
+
     private async Task<AudioClip> LoadClipFromPath(string path)
     {
         var searchPath = path;
@@ -74,12 +102,14 @@ public class AudioPlayer : MonoBehaviour
         }
     }
 
-    private void OnSampleUpdated(string guid)
+    private async void OnSampleUpdated(string guid)
     {
         if(_clipDictionary.ContainsKey(guid))
         {
             _clipDictionary.Remove(guid);
         }
+
+        await GetClip(guid);
     }
 
     void OnDisable()

@@ -5,7 +5,6 @@ using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
-using static Un4seen.Bass.Misc.BaseEncoder;
 
 
 public class AssetBuilder : MonoBehaviour

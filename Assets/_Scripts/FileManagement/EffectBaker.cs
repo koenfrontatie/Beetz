@@ -5,9 +5,7 @@ using Un4seen.Bass;
 using System;
 using Un4seen.Bass.AddOn.Enc;
 using Un4seen.Bass.AddOn.Fx;
-using PlasticPipe.PlasticProtocol.Messages;
-using System.Text;
-using System.Runtime.InteropServices;
+
 
 public class EffectBaker : MonoBehaviour
 {
