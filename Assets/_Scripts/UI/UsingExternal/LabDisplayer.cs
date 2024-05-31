@@ -221,7 +221,7 @@ public class LabDisplayer : MonoBehaviour
         {
             SaveLoader.Instance.SaveData<Vector3[]>(meshPath, vertices);
             SaveLoader.Instance.SaveData<SampleData>(samplePath, _selectedObject.SampleData);
-            _dspController.BakeLiveBassEffects(FileManager.Instance.SelectedSamplePath, FileManager.Instance.SelectedSamplePath); 
+            _dspController.BakeLiveBassEffects(FileManager.Instance.SelectedSamplePath); 
         });
 
 
