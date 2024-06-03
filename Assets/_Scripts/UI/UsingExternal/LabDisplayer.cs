@@ -54,14 +54,14 @@ public class LabDisplayer : MonoBehaviour
         if (state == GameState.Biolab)
         {
             Metronome.NewBeat += OnNewBeat;
-            FileManager.NewSampleSelected += OnSetSelectedGuid;
+            //FileManager.NewSampleSelected += OnSetSelectedGuid;
            
             OnSetSelectedGuid(FileManager.Instance.SelectedSampleGuid);
         } else
         {
            
             Metronome.NewBeat -= OnNewBeat;
-            FileManager.NewSampleSelected -= OnSetSelectedGuid;
+            //FileManager.NewSampleSelected -= OnSetSelectedGuid;
             if(_selectedObject != null) Destroy(_selectedObject.gameObject);    
         }
     }
@@ -79,6 +79,7 @@ public class LabDisplayer : MonoBehaviour
         SampleData data = await AssetBuilder.Instance.GetSampleData(guid);
 
         SampleObject loadedObject = await AssetBuilder.Instance.GetSampleObject(data.Template.ToString());
+        
         _selectedObject = loadedObject;
 
         _selectedObject.transform.SetParent(_objectParent);
@@ -170,8 +171,8 @@ public class LabDisplayer : MonoBehaviour
         DistortionValue = Mathf.Abs(Mathf.Clamp(value, -1, 1));
 
         //_dspController.SetLiveDistortion(DistortionValue);
-        _dspController.SetReverb(DistortionValue.Remap(0, 1, 0f, 1f));
-        _simplexNoiseDeformer.FrequencyScalar = DistortionValue.Remap(0, 1, 0f, 7.5f);
+        _dspController.SetReverb(DistortionValue.Remap(0, 1f, 0f, 1f));
+        _simplexNoiseDeformer.FrequencyScalar = DistortionValue.Remap(0, 1f, 0f, 7.5f);
 
         bool closeToZero = Mathf.Round(DistortionValue * 10.0f) * 0.1f == 0;
 
