@@ -103,100 +103,102 @@
 
 
 
-//using NWaves.Effects.Base;
-//using NWaves.Filters.Base;
-//using NWaves.Filters.Fda;
-//using NWaves.Filters;
-//using NWaves.Signals;
-//using TMPro;
+using NWaves.Effects.Base;
+using NWaves.Filters.Base;
+using NWaves.Filters.Fda;
+using NWaves.Filters;
+using NWaves.Signals;
+using NWaves.Filters.BiQuad;
 
-//public class Reverb : AudioEffect
-//{
-//    private readonly CombFeedbackFilter[] _combFilters;
-//    private readonly float[] _combGains;
-//    private readonly FirFilter[] _allpassFilters;
-//    FilterChain AllpassFilterChain;
-//    FilterChain CombFilterChain;
+public class Reverb : AudioEffect
+{
+    
+    private readonly CombFeedbackFilter[] _combFilters;
+    private readonly float[] _combGains;
+    private readonly FirFilter[] _allpassFilters;
+    FilterChain AllpassFilterChain;
+    FilterChain CombFilterChain;
 
-//    public Reverb(float feedback, float feedforward)
-//    {
-//        // Initialize comb filters (adjust delay lengths and feedback/ff as needed)
-//        _combFilters = new CombFeedbackFilter[]
-//        {
-//            new CombFeedbackFilter(441, feedback, feedforward),
-//            new CombFeedbackFilter(651, feedback, feedforward),
-//            // Add more comb filters as needed
-//        };
+    public Reverb(float feedback, float feedforward)
+    {
+        var r = new AllPassFilter(0.7f);
+        // Initialize comb filters (adjust delay lengths and feedback/ff as needed)
+        _combFilters = new CombFeedbackFilter[]
+        {
+            new CombFeedbackFilter(441, feedback, feedforward),
+            new CombFeedbackFilter(651, feedback, feedforward),
+            // Add more comb filters as needed
+        };
 
-//        CombFilterChain = new FilterChain(_allpassFilters);
+        CombFilterChain = new FilterChain(_allpassFilters);
 
 
-//        //// Initialize gains for each comb filter
-//        //_combGains = new float[_combFilters.Length];
-//        //for (int i = 0; i < _combGains.Length; i++)
-//        //{
-//        //    _combGains[i] = 1.0f / _combFilters.Length;  // Equal gain for each comb filter
-//        //}
+        //// Initialize gains for each comb filter
+        //_combGains = new float[_combFilters.Length];
+        //for (int i = 0; i < _combGains.Length; i++)
+        //{
+        //    _combGains[i] = 1.0f / _combFilters.Length;  // Equal gain for each comb filter
+        //}
 
-//        // Initialize all-pass filters with appropriate delay lengths
-//        _allpassFilters = new FirFilter[]
-//        {
-//            new FirFilter(DesignFilter.FirWinFdAp(1, 210)),
-//            new FirFilter(DesignFilter.FirWinFdAp(2, 158)),
-//            new FirFilter(DesignFilter.FirWinFdAp(3, 561)),
-//            new FirFilter(DesignFilter.FirWinFdAp(4, 410))
-//        };
+        // Initialize all-pass filters with appropriate delay lengths
+        _allpassFilters = new FirFilter[]
+        {
+            new FirFilter(DesignFilter.FirWinFdAp(1, 210)),
+            new FirFilter(DesignFilter.FirWinFdAp(2, 158)),
+            new FirFilter(DesignFilter.FirWinFdAp(3, 561)),
+            new FirFilter(DesignFilter.FirWinFdAp(4, 410))
+        };
 
-//        AllpassFilterChain = new FilterChain(_allpassFilters);
-//    }
+        AllpassFilterChain = new FilterChain(_allpassFilters);
+    }
 
-//    // Override the ApplyTo method for offline processing
-//    public override DiscreteSignal ApplyTo(DiscreteSignal signal, FilteringMethod method = FilteringMethod.Auto)
-//    {
-//        // Apply comb filters
-//        //DiscreteSignal combOutput = signal;
-//        //foreach (var combFilter in _combFilters)
-//        //{
-//        //    combOutput = combFilter.ApplyTo(combOutput);
-//        //}
+    // Override the ApplyTo method for offline processing
+    public override DiscreteSignal ApplyTo(DiscreteSignal signal, FilteringMethod method = FilteringMethod.Auto)
+    {
+        // Apply comb filters
+        //DiscreteSignal combOutput = signal;
+        //foreach (var combFilter in _combFilters)
+        //{
+        //    combOutput = combFilter.ApplyTo(combOutput);
+        //}
 
-//        var combgain = CombFilterChain.EstimateGain();
-//        var combOutput = CombFilterChain.ApplyTo(signal, combgain);
+        var combgain = CombFilterChain.EstimateGain();
+        var combOutput = CombFilterChain.ApplyTo(signal, combgain);
 
-//        // Apply all-pass filters
-//        //DiscreteSignal output = combOutput;
-//        //foreach (var allpassFilter in _allpassFilters)
-//        //{
-//        //    output = allpassFilter.ApplyTo(output);
-//        //}
-//        var apgain = AllpassFilterChain.EstimateGain();
+        // Apply all-pass filters
+        //DiscreteSignal output = combOutput;
+        //foreach (var allpassFilter in _allpassFilters)
+        //{
+        //    output = allpassFilter.ApplyTo(output);
+        //}
+        var apgain = AllpassFilterChain.EstimateGain();
 
-//        var output = AllpassFilterChain.ApplyTo(combOutput, apgain);
+        var output = AllpassFilterChain.ApplyTo(combOutput, apgain);
 
-//        return output;
-//    }
+        return output;
+    }
 
-//    // Override the Process method for online processing (not used for offline processing)
-//    public override float Process(float sample)
-//    {
-//        // This method is not used for offline processing
-//        // You can leave it as it is or remove it
-//        return sample;
-//    }
+    // Override the Process method for online processing (not used for offline processing)
+    public override float Process(float sample)
+    {
+        // This method is not used for offline processing
+        // You can leave it as it is or remove it
+        return sample;
+    }
 
-//    // Override the Reset method to reset the state of the filters
-//    public override void Reset()
-//    {
-//        // Reset state of comb filters
-//        foreach (var combFilter in _combFilters)
-//        {
-//            combFilter.Reset();
-//        }
+    // Override the Reset method to reset the state of the filters
+    public override void Reset()
+    {
+        // Reset state of comb filters
+        foreach (var combFilter in _combFilters)
+        {
+            combFilter.Reset();
+        }
 
-//        // Reset state of all-pass filters
-//        foreach (var allpassFilter in _allpassFilters)
-//        {
-//            allpassFilter.Reset();
-//        }
-//    }
-//}
+        // Reset state of all-pass filters
+        foreach (var allpassFilter in _allpassFilters)
+        {
+            allpassFilter.Reset();
+        }
+    }
+}
