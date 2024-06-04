@@ -68,7 +68,7 @@ public class AssetBuilder : MonoBehaviour
         }
     }
 
-    public async void SearchForCustomSamples()
+    public void SearchForCustomSamples()
     {
         //CustomSamples.IDC.Clear();
         //CustomSamples.IDC.Count = 0;
@@ -77,37 +77,68 @@ public class AssetBuilder : MonoBehaviour
         FindCustomTextures();
     }
 
+    //public async void FindCustomTextures()
+    //{
+    //    CustomSampleIcons.Clear();
+
+    //    for (int i = 0; i < FileManager.Instance.UniqueSamplePathCollection.Count; i++)
+    //    {
+    //        var pathToCheck = FileManager.Instance.GuidFromPath(FileManager.Instance.UniqueSamplePathCollection[i]);
+
+    //        Texture2D icon = await SaveLoader.Instance.GetIconFromGuid(FileManager.Instance.GuidFromPath(FileManager.Instance.UniqueSamplePathCollection[i]));
+
+    //        if (icon == null)
+    //        {
+    //            Debug.LogError("Icon is null");
+    //            //CustomSampleIcons.Insert(i, await SaveLoader.Instance.GetIconFromGuid("2"));
+    //            continue;
+    //        }
+    //        else
+    //        {
+    //            CustomSampleIcons.Insert(i, icon);
+    //        }
+
+    //    }
+
+    //    Events.CustomDataLoaded?.Invoke();
+    //}
+
     public async void FindCustomTextures()
     {
         CustomSampleIcons.Clear();
+
+        List<Texture2D> iconsToInsert = new List<Texture2D>();
 
         for (int i = 0; i < FileManager.Instance.UniqueSamplePathCollection.Count; i++)
         {
             var pathToCheck = FileManager.Instance.GuidFromPath(FileManager.Instance.UniqueSamplePathCollection[i]);
 
-            var icon = await SaveLoader.Instance.GetIconFromGuid(FileManager.Instance.GuidFromPath(FileManager.Instance.UniqueSamplePathCollection[i]));
+            Texture2D icon = await SaveLoader.Instance.GetIconFromGuid(pathToCheck);
 
             if (icon == null)
             {
                 Debug.LogError("Icon is null");
-                //CustomSampleIcons.Insert(i, await SaveLoader.Instance.GetIconFromGuid("2"));
+                // Consider handling the null icon case differently, perhaps by logging or skipping
                 continue;
             }
             else
             {
-                CustomSampleIcons.Insert(i, icon);
+                iconsToInsert.Add(icon);
             }
-
         }
+
+        // Merge the collected icons with CustomSampleIcons
+        CustomSampleIcons.AddRange(iconsToInsert);
 
         Events.CustomDataLoaded?.Invoke();
     }
+
 
     public async Task<SampleObject> GetSampleObject(string guid)
     {
         if (guid.Length < 3) // if template
         {
-            var copy = Instantiate(_templateSampleObjects.Collection[int.Parse(guid)]);
+            SampleObject copy = Instantiate(_templateSampleObjects.Collection[int.Parse(guid)]);
             //Debug.Log("less than 3");
             return copy;
         }
@@ -116,16 +147,15 @@ public class AssetBuilder : MonoBehaviour
             SampleData sampleData = await GetSampleData(guid);
             Vector3[] vertices = await GetMeshData(guid);
             
-
-
-
-            //set unique mesh
             SampleObject copy = Instantiate(_templateSampleObjects.Collection[sampleData.Template]);
             
+            //set unique mesh
             if(vertices != null)
             {
-                copy.transform.GetChild(0).GetChild(0).GetComponent<MeshFilter>().mesh.SetVertices(vertices);
+                //await Task.Run(() => copy.transform.GetChild(0).GetChild(0).GetComponent<MeshFilter>().mesh.SetVertices(vertices));
+                copy.gameObject.transform.GetChild(0).GetChild(0).GetComponent<MeshFilter>().mesh.SetVertices(vertices);
             }
+
             // set unique data
             copy.SampleData = sampleData;
             return copy;
@@ -143,7 +173,7 @@ public class AssetBuilder : MonoBehaviour
         }
         else
         {
-            var sampleData = await SaveLoader.Instance.DeserializeSampleData(Path.Combine(FileManager.Instance.UniqueSampleDirectory, guid, "SampleData.json"));
+            SampleData sampleData = await SaveLoader.Instance.DeserializeSampleData(Path.Combine(FileManager.Instance.UniqueSampleDirectory, guid, "SampleData.json"));
             return sampleData;
             //return await SaveLoader.Instance.DeserializeSampleData(Path.Combine(FileManager.Instance.UniqueSampleDirectory, guid, "SampleData.json"));
             //throw new NotImplementedException();

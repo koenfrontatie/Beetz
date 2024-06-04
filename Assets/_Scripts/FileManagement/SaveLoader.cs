@@ -112,6 +112,7 @@ public class SaveLoader : MonoBehaviour
 
         //SampleData sampleData = await Task.Run(() => JsonConvert.DeserializeObject<SampleData>(jsonData));
 
+        //return sampleData;
         return await Task.Run(() => JsonConvert.DeserializeObject<Vector3[]>(jsonData));
     }
 

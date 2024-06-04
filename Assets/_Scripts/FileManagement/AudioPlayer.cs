@@ -61,7 +61,7 @@ public class AudioPlayer : MonoBehaviour
         }
 
         // Load the clip outside of the lock to avoid long blocking
-        var clip = await LoadClipFromPath(FileManager.Instance.SamplePathFromGuid(guid));
+        AudioClip clip = await LoadClipFromPath(FileManager.Instance.SamplePathFromGuid(guid));
 
         // Add the loaded clip to the dictionary
         lock (_clipDictionaryLock)

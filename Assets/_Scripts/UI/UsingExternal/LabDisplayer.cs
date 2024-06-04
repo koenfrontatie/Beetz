@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.IO;
 using UnityEngine.UI;
 using Un4seen.Bass;
+using Codice.Client.BaseCommands.Merge;
 
 public class LabDisplayer : MonoBehaviour
 {
@@ -44,31 +45,36 @@ public class LabDisplayer : MonoBehaviour
 
     private void OnEnable()
     {
-        Metronome.NewBeat += OnNewBeat;
-        FileManager.NewSampleSelected += OnSetSelectedGuid;
+        //Metronome.NewBeat += OnNewBeat;
+        //FileManager.NewSampleSelected += OnSetSelectedGuid;
         GameManager.StateChanged += OnStateChanged;
     }
-
+    private void OnDisable()
+    {
+        GameManager.StateChanged -= OnStateChanged;
+    }
     private void OnStateChanged(GameState state)
     {
         if (state == GameState.Biolab)
         {
-            Metronome.NewBeat += OnNewBeat;
             //FileManager.NewSampleSelected += OnSetSelectedGuid;
-           
             OnSetSelectedGuid(FileManager.Instance.SelectedSampleGuid);
+           
+            Metronome.NewBeat += OnNewBeat;
         } else
         {
            
             Metronome.NewBeat -= OnNewBeat;
             //FileManager.NewSampleSelected -= OnSetSelectedGuid;
-            if(_selectedObject != null) Destroy(_selectedObject.gameObject);    
+            //if(_selectedObject != null) Destroy(_selectedObject.gameObject);    
         }
     }
 
     private async void OnSetSelectedGuid(string guid) 
     {
         if(GameManager.Instance.State != GameState.Biolab) return;
+
+        Debug.Log("spawning lab object");
         
         _objectParent.DestroyChildren();
 
@@ -113,6 +119,9 @@ public class LabDisplayer : MonoBehaviour
                     case EffectType.Distortion:
                         UpdateDistortionValue(effect.Value);
                         break;
+                    case EffectType.Delay:
+                        UpdateDelayValue(effect.Value);
+                        break;
                 }
             }
         }  
@@ -121,6 +130,7 @@ public class LabDisplayer : MonoBehaviour
     private void OnNewBeat()
     {
         if(GameManager.Instance.State != GameState.Biolab) return;
+        if(_selectedObject == null) return;
         Events.OnScaleBounce?.Invoke(_selectedObject.gameObject);
     }
 
@@ -156,6 +166,7 @@ public class LabDisplayer : MonoBehaviour
         }
         else if (pitchEffect != null && closeToZero)
         {
+            
             ActiveEffects.Remove(pitchEffect);
         }
         else if (pitchEffect != null)
@@ -170,8 +181,8 @@ public class LabDisplayer : MonoBehaviour
     {
         DistortionValue = Mathf.Abs(Mathf.Clamp(value, -1, 1));
 
-        //_dspController.SetLiveDistortion(DistortionValue);
-        _dspController.SetReverb(DistortionValue.Remap(0, 1f, 0f, 1f));
+        _dspController.SetDistortion(DistortionValue);
+        //_dspController.SetDelay(DistortionValue.Remap(0, 1f, 0f, 1f));
         _simplexNoiseDeformer.FrequencyScalar = DistortionValue.Remap(0, 1f, 0f, 7.5f);
 
         bool closeToZero = Mathf.Round(DistortionValue * 10.0f) * 0.1f == 0;
@@ -189,6 +200,35 @@ public class LabDisplayer : MonoBehaviour
         else if (distortionEffect != null)
         {
             distortionEffect.Value = DistortionValue;
+        }
+
+        UpdateSampleData();
+    }
+
+    public void UpdateDelayValue(float value)
+    {
+        DelayValue = Mathf.Abs(Mathf.Clamp(value, -1, 1));
+
+        //_dspController.SetLiveDistortion(DistortionValue);
+        _dspController.SetDelay(DelayValue);
+        
+        _simplexNoiseDeformer.FrequencyScalar = DelayValue.Remap(0, 1f, 0f, 7.5f); // should be delayeffect visual
+
+        bool closeToZero = Mathf.Round(DelayValue * 10.0f) * 0.1f == 0;
+
+        var delayEffect = ActiveEffects.Find(e => e.Effect == EffectType.Delay);
+
+        if (delayEffect == null && !closeToZero)
+        {
+            ActiveEffects.Add(new EffectValuePair(EffectType.Delay, DelayValue));
+        }
+        else if (delayEffect != null && closeToZero)
+        {
+            ActiveEffects.Remove(delayEffect);
+        }
+        else if (delayEffect != null)
+        {
+            delayEffect.Value = DelayValue;
         }
 
         UpdateSampleData();
