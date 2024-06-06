@@ -14,52 +14,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Collection:
   - ID: 0
-    Name: Peggy Pumpkin
+    Name: Petra
     Template: 0
-    Effects: 
-    EffectValues: []
+    Effects: []
   - ID: 1
-    Name: Florence Orange
+    Name: Sarah
     Template: 1
-    Effects: 
-    EffectValues: []
+    Effects: []
   - ID: 2
-    Name: Bo Beat
+    Name: Bobby
     Template: 2
-    Effects: 
-    EffectValues: []
+    Effects: []
   - ID: 3
-    Name: MC Potato
+    Name: Arie
     Template: 3
-    Effects: 
-    EffectValues: []
+    Effects: []
   - ID: 4
-    Name: Jim Carrot
+    Name: Wim
     Template: 4
-    Effects: 
-    EffectValues: []
+    Effects: []
   - ID: 5
-    Name: Cari Cauliflower
+    Name: Bertha
     Template: 5
-    Effects: 
-    EffectValues: []
+    Effects: []
   - ID: 6
-    Name: Big Tom
+    Name: Thom
     Template: 6
-    Effects: 
-    EffectValues: []
+    Effects: []
   - ID: 7
-    Name: Luna Leek
+    Name: Priscilla
     Template: 7
-    Effects: 
-    EffectValues: []
+    Effects: []
   - ID: 8
-    Name: Pete Pear
+    Name: Pieter
     Template: 8
-    Effects: 
-    EffectValues: []
+    Effects: []
   - ID: 9
-    Name: Polly Pineapple
+    Name: Ahmed
     Template: 9
-    Effects: 
-    EffectValues: []
+    Effects: []

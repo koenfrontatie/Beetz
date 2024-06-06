@@ -6,9 +6,7 @@ using UnityEngine;
 using FileManagement;
 using System.Threading.Tasks;
 using System.IO;
-using UnityEngine.UI;
-using Un4seen.Bass;
-using Codice.Client.BaseCommands.Merge;
+
 
 public class LabDisplayer : MonoBehaviour
 {
@@ -23,9 +21,10 @@ public class LabDisplayer : MonoBehaviour
     [SerializeField] 
     private SampleObject _selectedObject;
 
-
     [SerializeField]
     private DSPController _dspController;
+    [SerializeField]
+    private EffectSelector _effectSelector;
 
     [SerializeField] 
     private Deformer _deformerGroup;
@@ -35,13 +34,14 @@ public class LabDisplayer : MonoBehaviour
     private SquashAndStretchDeformer _squashAndStretchDeformer;
     [SerializeField]
     private SimplexNoiseDeformer _simplexNoiseDeformer;
-
-    public float PitchValue;
-    public float ReverbValue;
-    public float DistortionValue;
-    public float DelayValue;
+    [SerializeField]
+    private TwistDeformer _twistDeformer;
 
     public List<EffectValuePair> ActiveEffects;
+    
+    private bool _dataUpdated, saveOnSliderChange;
+
+    
 
     private void OnEnable()
     {
@@ -74,6 +74,15 @@ public class LabDisplayer : MonoBehaviour
     {
         if(GameManager.Instance.State != GameState.Biolab) return;
 
+        _dataUpdated = false;
+
+        saveOnSliderChange = false;
+        
+        _effectSelector.ResetSliders();
+        _dspController.ResetDefaultValues();
+
+        saveOnSliderChange = true; // lol
+        
         Debug.Log("spawning lab object");
         
         _objectParent.DestroyChildren();
@@ -98,33 +107,28 @@ public class LabDisplayer : MonoBehaviour
 
         AddDeformables(_selectedObject.gameObject);
 
-
         // get existent data
 
-        ActiveEffects = _selectedObject.SampleData.Effects;
+        //_dspController.ActiveEffects = _selectedObject.SampleData.Effects;
         
         _nameInput.SetTextWithoutNotify(_selectedObject.SampleData.Name);
 
         //Debug.Log(_selectedObject.SampleData.Name);
         //_nameText.text = _selectedObject.SampleData.Name.ToString();
-        if (ActiveEffects != null && ActiveEffects.Count > 0)
+        
+        if (_selectedObject.SampleData.Effects != null && _selectedObject.SampleData.Effects.Count > 0)
         {
-            foreach (var effect in ActiveEffects)
+            List<EffectValuePair> effectsCopy = new List<EffectValuePair>(_selectedObject.SampleData.Effects);
+
+            foreach (var effect in effectsCopy)
             {
-                switch (effect.Effect)
-                {
-                    case EffectType.Pitch:
-                        UpdatePitchValue(effect.Value);
-                        break;
-                    case EffectType.Distortion:
-                        UpdateDistortionValue(effect.Value);
-                        break;
-                    case EffectType.Delay:
-                        UpdateDelayValue(effect.Value);
-                        break;
-                }
+                //_effectSelector.SetSliderValue(effect.Effect, effect.Value);
+                _effectSelector.SetSliderValue(effect.Effect, effect.Value);
             }
-        }  
+        }
+
+
+        _dataUpdated = false;
     }
 
     private void OnNewBeat()
@@ -146,130 +150,106 @@ public class LabDisplayer : MonoBehaviour
             }
         }
     }
-    public void UpdatePitchValue(float value)
+    public void OnPitchSliderChange(float value)
     {
-        PitchValue = Mathf.Clamp(value, -1, 1);
+        var pitch = Mathf.Clamp(value, 0, 1);
+        
+        _dspController.SetPitch(pitch);
+        _squashAndStretchDeformer.Factor = pitch.Remap(0, 1, -.8f, .8f);
+        _squashAndStretchDeformer.Curvature = pitch.Remap(0, 1, 0f, -20f);
 
-        //_dspController.SetLivePitch(PitchValue.Remap(-1, 1, .5f, 2f));
-        _dspController.SetPitch(PitchValue.Remap(-1, 1, .5f, 2f));
-
-        _squashAndStretchDeformer.Factor = PitchValue.Remap(-1, 1, -.8f, .8f);
-        _squashAndStretchDeformer.Curvature = PitchValue.Remap(-1, 1, 0f, -20f);
-
-        bool closeToZero = Mathf.Round(PitchValue * 10.0f) * 0.1f == 0;
-
-        var pitchEffect = ActiveEffects.Find(e => e.Effect == EffectType.Pitch);
-
-        if (pitchEffect == null && !closeToZero)
-        {
-            ActiveEffects.Add(new EffectValuePair(EffectType.Pitch, PitchValue));
-        }
-        else if (pitchEffect != null && closeToZero)
-        {
-            
-            ActiveEffects.Remove(pitchEffect);
-        }
-        else if (pitchEffect != null)
-        {
-            pitchEffect.Value = PitchValue;
-        }
-
-        UpdateSampleData();
+        _dataUpdated = true;
+        //UpdateSampleData();
     }
 
-    public void UpdateDistortionValue(float value)
+    public void OnDistortionSliderChange(float value)
     {
-        DistortionValue = Mathf.Abs(Mathf.Clamp(value, -1, 1));
+        //var dist = Mathf.Abs(value.Remap(.5f, 1f, 0, 1));
 
-        _dspController.SetDistortion(DistortionValue);
-        //_dspController.SetDelay(DistortionValue.Remap(0, 1f, 0f, 1f));
-        _simplexNoiseDeformer.FrequencyScalar = DistortionValue.Remap(0, 1f, 0f, 7.5f);
+        _dspController.SetDistortion(value);
+        //_dspController.SetDelay(value.Remap(0, 1f, 0f, 1f));
+        _simplexNoiseDeformer.FrequencyScalar = value.Remap(.5f, 1, 0f, 7.5f);
 
-        bool closeToZero = Mathf.Round(DistortionValue * 10.0f) * 0.1f == 0;
 
-        var distortionEffect = ActiveEffects.Find(e => e.Effect == EffectType.Distortion);
-
-        if (distortionEffect == null && !closeToZero)
-        {
-            ActiveEffects.Add(new EffectValuePair(EffectType.Distortion, DistortionValue));
-        }
-        else if (distortionEffect != null && closeToZero)
-        {
-            ActiveEffects.Remove(distortionEffect);
-        }
-        else if (distortionEffect != null)
-        {
-            distortionEffect.Value = DistortionValue;
-        }
-
-        UpdateSampleData();
+        _dataUpdated = true;
     }
 
-    public void UpdateDelayValue(float value)
+    public void OnDelaySliderChange(float value)
     {
-        DelayValue = Mathf.Abs(Mathf.Clamp(value, -1, 1));
+        //var delay = Mathf.Abs(value.Remap(.5f, 1f, 0, 1));
 
         //_dspController.SetLiveDistortion(DistortionValue);
-        _dspController.SetDelay(DelayValue);
-        
-        _simplexNoiseDeformer.FrequencyScalar = DelayValue.Remap(0, 1f, 0f, 7.5f); // should be delayeffect visual
-
-        bool closeToZero = Mathf.Round(DelayValue * 10.0f) * 0.1f == 0;
-
-        var delayEffect = ActiveEffects.Find(e => e.Effect == EffectType.Delay);
-
-        if (delayEffect == null && !closeToZero)
-        {
-            ActiveEffects.Add(new EffectValuePair(EffectType.Delay, DelayValue));
-        }
-        else if (delayEffect != null && closeToZero)
-        {
-            ActiveEffects.Remove(delayEffect);
-        }
-        else if (delayEffect != null)
-        {
-            delayEffect.Value = DelayValue;
-        }
-
-        UpdateSampleData();
+        _dspController.SetDelay(value);
+        _simplexNoiseDeformer.FrequencyScalar = value.Remap(.5f, 1f, 0f, 7.5f); // should be delayeffect visual
+        _dataUpdated = true;
     }
 
-    void UpdateSampleData()
+    public void OnChorusSliderChange(float value)
     {
-        if (_selectedObject.SampleData.Effects != ActiveEffects)
-        {
-            _selectedObject.SampleData.Effects = ActiveEffects;
-        }
+        //_dspController.SetLiveDistortion(DistortionValue);
+        _dspController.SetChorus(value);
+        _twistDeformer.Factor = value.Remap(.5f, 1f, 0, 1);
+        _dataUpdated = true;
     }
+
+    //bool SampleDataUpdated()
+    //{
+    //    bool hasUpdated = false;
+
+    //    if (_loadedSampleData.Effects != _dspController.ActiveEffects)
+    //    {
+    //        //_loadedSampleData.Effects = _dspController.ActiveEffects;
+
+    //        hasUpdated = true;
+    //    }
+
+    //    if (!string.Equals(_loadedSampleData.Name, _nameInput.text))
+    //    {
+    //        //_loadedSampleData.Name = _nameInput.text;
+
+    //        hasUpdated = true;
+    //    }
+
+    //    return hasUpdated;
+    //}
 
     public async void SaveVariableData()
     {
-        Debug.Log("Saving variable data...");
-        _libraryController.ClearFromDictionary(FileManager.Instance.SelectedSampleGuid);
+        if(!saveOnSliderChange) return;
 
-        if (!string.Equals(_selectedObject.SampleData.Name, _nameInput.text))
+        Debug.Log("Saving variable data...");
+
+        if(NameUpdated())
+            _dataUpdated = true;
+        
+        _selectedObject.SampleData.Effects = _dspController.ActiveEffects;
+        
+        if (_dataUpdated)
         {
-            _selectedObject.SampleData.Name = _nameInput.text;
+            _libraryController.ClearFromDictionary(FileManager.Instance.SelectedSampleGuid);
+
+            Vector3[] vertices = _currentDeformable.GetCurrentMesh().vertices;
+            var meshPath = Path.Combine(FileManager.Instance.UniqueSampleDirectory, FileManager.Instance.SelectedSampleGuid, "verts.json");
+            var samplePath = Path.Combine(FileManager.Instance.UniqueSampleDirectory, FileManager.Instance.SelectedSampleGuid, "SampleData.json");
+            
+            AssetBuilder.Instance.AddToDictionary(FileManager.Instance.SelectedSampleGuid, vertices);
+
+            await Task.Run(() =>
+            {
+                SaveLoader.Instance.SaveData<Vector3[]>(meshPath, vertices);
+                SaveLoader.Instance.SaveData<SampleData>(samplePath, _selectedObject.SampleData);
+            });
+
+            _libraryController.RefreshInfoTiles();
+
+            Debug.Log("Variable data saved and library controller refreshed.");
+
+            return;
         }
 
+        Debug.Log("No update to data, no saving needed.");
 
-
-        Vector3[] vertices = _currentDeformable.GetCurrentMesh().vertices;
-        var meshPath = Path.Combine(FileManager.Instance.UniqueSampleDirectory, FileManager.Instance.SelectedSampleGuid, "verts.json");
-        var samplePath = Path.Combine(FileManager.Instance.UniqueSampleDirectory, FileManager.Instance.SelectedSampleGuid, "SampleData.json");
-        AssetBuilder.Instance.AddToDictionary(FileManager.Instance.SelectedSampleGuid, vertices);
-
-
-        await Task.Run(() =>
-        {
-            SaveLoader.Instance.SaveData<Vector3[]>(meshPath, vertices);
-            SaveLoader.Instance.SaveData<SampleData>(samplePath, _selectedObject.SampleData);
-            //_dspController.BakeLiveBassEffects(FileManager.Instance.SelectedSamplePath); 
-        });
-
-
-        _libraryController.RefreshInfoTiles();
-        Debug.Log("Variable data saved and library controller refreshed.");
+        //_effectSelector.ResetSliders(); // this should probably go somewhere else
     }
 
     public async void SaveDeformableMesh()
@@ -277,7 +257,7 @@ public class LabDisplayer : MonoBehaviour
         Vector3[] vertices = _currentDeformable.GetCurrentMesh().vertices;
 
         AssetBuilder.Instance.AddToDictionary(FileManager.Instance.SelectedSampleGuid, vertices);
-        
+
         await Task.Run(() =>
         {
             var meshPath = Path.Combine(FileManager.Instance.UniqueSampleDirectory, FileManager.Instance.SelectedSampleGuid, "verts.json");
@@ -288,24 +268,28 @@ public class LabDisplayer : MonoBehaviour
         });
     }
 
-    public void CheckName()
+
+    public bool NameUpdated()
     {
         if (!string.Equals(_selectedObject.SampleData.Name, _nameInput.text))
         {
 
             _selectedObject.SampleData.Name = _nameInput.text;
+            return true;
         }
-    }   
 
-    public async void SaveSampleData()
-    {
-        await Task.Run(() =>
-        {
-            var samplePath = Path.Combine(FileManager.Instance.UniqueSampleDirectory, FileManager.Instance.SelectedSampleGuid, "SampleData.json");
-            SaveLoader.Instance.SaveData<SampleData>(samplePath, _selectedObject.SampleData);
-        });
-
-        //_libraryController.RefreshInfoTiles();
-
+        return false;
     }
+
+    //public async void SaveSampleData()
+    //{
+    //    await Task.Run(() =>
+    //    {
+    //        var samplePath = Path.Combine(FileManager.Instance.UniqueSampleDirectory, FileManager.Instance.SelectedSampleGuid, "SampleData.json");
+    //        SaveLoader.Instance.SaveData<SampleData>(samplePath, _selectedObject.SampleData);
+    //    });
+
+    //    //_libraryController.RefreshInfoTiles();
+
+    //}
 }

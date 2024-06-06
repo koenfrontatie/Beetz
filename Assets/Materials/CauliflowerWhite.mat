@@ -142,7 +142,7 @@ Material:
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 0
     - _DiffuseStep: 0.038
-    - _DitherTexelSize: 1
+    - _DitherTexelSize: 2.45
     - _DitherThreshold: 1
     - _DstBlend: 0
     - _EnabledHairSpec: 0
@@ -180,15 +180,15 @@ Material:
     - _OcclusionStrength: 1
     - _OutlineEnabled: 1
     - _OutlineMode: 0
-    - _OutlineWidth: 5
+    - _OutlineWidth: 6.55
     - _OverrideShadowColor: 0
     - _Parallax: 0.005
     - _QueueOffset: 18
     - _ReceiveShadows: 1
     - _RimEnabled: 0
     - _RimLightAlign: 0
-    - _RimLightSmoothness: 0
-    - _RimPower: 0.55
+    - _RimLightSmoothness: 0.564
+    - _RimPower: 0.728
     - _Shininess: 0
     - _SizeFalloff: 0
     - _Smoothness: 0

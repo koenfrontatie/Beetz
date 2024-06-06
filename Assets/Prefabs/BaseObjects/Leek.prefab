@@ -164,7 +164,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SampleData:
     ID: 7
-    Name: Luna Leek
+    Name: Priscilla
     Template: 7
-    Effects: 
-    EffectValues: []
+    Effects: []

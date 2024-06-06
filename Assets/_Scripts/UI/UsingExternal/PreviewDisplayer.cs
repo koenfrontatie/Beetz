@@ -26,6 +26,7 @@ public class PreviewDisplayer : MonoBehaviour
     {
         FileManager.NewSampleSelected += OnSampleSelected;
         GameManager.StateChanged += OnStateChanged;
+        //FileManager.SampleUpdated += OnSampleSelected;
     }
 
     private void OnStateChanged(GameState state)
@@ -36,7 +37,7 @@ public class PreviewDisplayer : MonoBehaviour
             
             //_scalerParent.position = _scalerStartPosition;
             //_previewRect.anchoredPosition = _previewStartPosition;
-
+            OnSampleSelected(FileManager.Instance.SelectedSampleGuid);
 
         }
         else
@@ -99,5 +100,7 @@ public class PreviewDisplayer : MonoBehaviour
     {
         FileManager.NewSampleSelected -= OnSampleSelected;
         GameManager.StateChanged -= OnStateChanged;
+        //FileManager.SampleUpdated -= OnSampleSelected;
+
     }
 }

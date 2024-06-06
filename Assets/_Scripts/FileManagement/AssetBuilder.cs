@@ -146,11 +146,12 @@ public class AssetBuilder : MonoBehaviour
         {
             SampleData sampleData = await GetSampleData(guid);
             Vector3[] vertices = await GetMeshData(guid);
-            
+
+            //SampleObject copy = Instantiate(_templateSampleObjects.Collection[sampleData.Template]);
             SampleObject copy = Instantiate(_templateSampleObjects.Collection[sampleData.Template]);
-            
+
             //set unique mesh
-            if(vertices != null)
+            if (vertices != null)
             {
                 //await Task.Run(() => copy.transform.GetChild(0).GetChild(0).GetComponent<MeshFilter>().mesh.SetVertices(vertices));
                 copy.gameObject.transform.GetChild(0).GetChild(0).GetComponent<MeshFilter>().mesh.SetVertices(vertices);

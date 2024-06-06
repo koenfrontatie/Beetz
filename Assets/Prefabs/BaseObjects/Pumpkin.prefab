@@ -79,10 +79,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SampleData:
     ID: 0
-    Name: Peggy Pumpkin
+    Name: Petra
     Template: 0
-    Effects: 
-    EffectValues: []
+    Effects: []
 --- !u!1 &7963453120510234413
 GameObject:
   m_ObjectHideFlags: 0

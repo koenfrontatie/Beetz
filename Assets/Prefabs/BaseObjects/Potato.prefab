@@ -79,10 +79,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SampleData:
     ID: 3
-    Name: MC Potato
+    Name: Arie
     Template: 3
-    Effects: 
-    EffectValues: []
+    Effects: []
 --- !u!1 &9121250217854839605
 GameObject:
   m_ObjectHideFlags: 0

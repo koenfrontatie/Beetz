@@ -3,13 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FileManagement;
+using UnityEngine.Tilemaps;
 
 public class LibraryController : MonoBehaviour
 {
     [SerializeField] Transform _contentParent;
     [SerializeField] InfoTile _infoTilePrefab;
 
+    [SerializeField] List<InfoTile> _templateTiles = new List<InfoTile>();
     [SerializeField] List<InfoTile> _infoTiles = new List<InfoTile>();
+
     private Dictionary<string, InfoTile> _tileDictionary = new Dictionary<string, InfoTile>();
 
     private void OnEnable()
@@ -46,6 +49,10 @@ public class LibraryController : MonoBehaviour
     {
         var customSampleCount = FileManager.Instance.UniqueSamplePathCollection.Count;
 
+        //foreach(var tile in _templateTiles)
+        //{
+        //    tile.AssignSampleData(tile.GetGUID()); // quick hacky fix needs to be better
+        //}
         //// Clear existing tiles
         //foreach (var tile in _infoTiles)
         //{

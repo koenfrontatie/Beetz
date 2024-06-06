@@ -169,12 +169,13 @@ namespace FileManagement
             // --------------------------------------------------- get all unique sample folders
 
             var info = new DirectoryInfo(UniqueSampleDirectory);
+            
             await Task.Run(() =>
             {
 
-                var samplefolders = info.GetDirectories();
+                var samplefolders = info.GetDirectories().OrderBy(d => d.CreationTime).ToList();
 
-                for (int i = 0; i < samplefolders.Length; i++)
+                for (int i = 0; i < samplefolders.Count; i++)
                 {
                     var files = samplefolders[i].GetFiles();
 

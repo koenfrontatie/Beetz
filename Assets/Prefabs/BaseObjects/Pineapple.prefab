@@ -163,7 +163,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SampleData:
     ID: 9
-    Name: Polly Pineapple
+    Name: Ahmed
     Template: 9
-    Effects: 
-    EffectValues: []
+    Effects: []

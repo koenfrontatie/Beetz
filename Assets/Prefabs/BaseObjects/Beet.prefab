@@ -163,7 +163,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SampleData:
     ID: 2
-    Name: Bo Beat
+    Name: Bobby
     Template: 2
-    Effects: 
-    EffectValues: []
+    Effects: []

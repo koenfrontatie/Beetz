@@ -92,9 +92,13 @@ public class UIController : MonoBehaviour
                 break;
             case GameState.Library:
 
-                if (Metronome.Instance.Playing)
+                if(Metronome.Instance)
                 {
-                    _playPause.onClick.Invoke();
+
+                    if (Metronome.Instance.Playing)
+                    {
+                        _playPause.onClick.Invoke();
+                    }
                 }
                 _libraryDisplayObject.SetActive(true);
                 _library.ToggleCanvasGroup(true);

@@ -163,7 +163,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SampleData:
     ID: 5
-    Name: Cari Cauliflower
+    Name: Bertha
     Template: 5
-    Effects: 
-    EffectValues: []
+    Effects: []

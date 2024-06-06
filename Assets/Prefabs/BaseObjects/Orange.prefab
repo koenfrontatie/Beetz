@@ -162,7 +162,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SampleData:
     ID: 1
-    Name: Florence Orange
+    Name: Sarah
     Template: 1
-    Effects: 
-    EffectValues: []
+    Effects: []

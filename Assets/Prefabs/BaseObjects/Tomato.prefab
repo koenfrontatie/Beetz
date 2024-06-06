@@ -130,10 +130,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SampleData:
     ID: 6
-    Name: Big Tom
+    Name: Thom
     Template: 6
-    Effects: 
-    EffectValues: []
+    Effects: []
 --- !u!1 &8636031965784609339
 GameObject:
   m_ObjectHideFlags: 0
