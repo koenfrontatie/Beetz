@@ -33,6 +33,10 @@ namespace FileManagement
         public static Action<string> SampleCreated;
         public static Action<string> SampleUpdated;
 
+        //ProjectDataLoaded
+        public static Action<ProjectData> ProjectDataLoaded;
+
+
 
         public TextureCollection _customIcons;
 
@@ -193,6 +197,15 @@ namespace FileManagement
         #endregion
 
         #region Sample creation
+        public async void CheckBaseSampleEdit()
+        {
+            if (SelectedSamplePath.Contains("BaseSamples"))
+            {
+                await MakeSamplePathIntoUnique(SelectedSamplePath);
+
+            }
+            GameManager.Instance.OpenBioLab();
+        }
         public async void MakeSelectedIntoUnique()
         {
             await MakeSamplePathIntoUnique(SelectedSamplePath);
@@ -406,6 +419,11 @@ namespace FileManagement
                 _logger.Log(message, this);
         }
         #endregion
+        public async void OpenNewProjectVoid()
+        {
+
+           await OpenNewProject();
+        }
 
         #region Project loading
         public async Task OpenNewProject()
@@ -421,6 +439,8 @@ namespace FileManagement
             //Utils.CheckForCreateDirectory(UniqueSampleDirectory);
             await CheckOrMakeDirectory(ProjectDirectory);
             await CheckOrMakeDirectory(UniqueSampleDirectory);
+
+            SequencerManager.Instance.ClearAllSequencers();
             //create data from template
 
             //string text = "";
@@ -433,8 +453,11 @@ namespace FileManagement
             projectData.ID = newGuid;
             Debug.Log($"savind new projectdata path: {Path.Combine(ProjectDirectory, "ProjectData.json")}");
             SaveLoader.Instance.SaveData(Path.Combine(ProjectDirectory, "ProjectData.json"), projectData);
-
+            
             _dataStorage.SetProjectData(projectData);
+
+            //ProjectDataLoaded?.Invoke(projectData);
+
         }
         public async void OpenLastProject()
         {

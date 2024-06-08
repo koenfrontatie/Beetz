@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR;
 using FileManagement;
+using System.Xml.Schema;
 
 public class Toolbar : MonoBehaviour
 {
@@ -119,9 +120,14 @@ public class Toolbar : MonoBehaviour
         // clear existing items
         if (_toolbarSampleCollection.IDC.Count != 0)
         {
-            _toolbarSampleCollection.IDC.Clear();
+            var items = transform.GetComponentsInChildren<DragDropUI>();
+            foreach(var item in items)
+            {
+                Destroy(item.gameObject);
+            }
         }
 
+            _toolbarSampleCollection.IDC.Clear();
         // get project toolbar data
         var copy = new List<string>(projectData.ToolbarConfiguration.IDC);
        

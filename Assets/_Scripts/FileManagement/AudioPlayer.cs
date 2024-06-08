@@ -77,12 +77,10 @@ public class AudioPlayer : MonoBehaviour
 
     private async Task<AudioClip> LoadClipFromPath(string path)
     {
-        var searchPath = path;
         AudioClip Clip = null;
-#if !UNITY_EDITOR
-    searchPath = "File:///" + path;
-#endif
-        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(searchPath, AudioType.WAV))
+        if (Application.platform != RuntimePlatform.WindowsPlayer)
+            path = "File:///" + path;
+        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.WAV))
         {
             await www.SendWebRequest();
 

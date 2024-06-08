@@ -14,6 +14,8 @@ public class UIController : MonoBehaviour
     //[SerializeField] GridLayoutGroup _toolbarLayout;
     [SerializeField] private GameObject _libraryDisplayObject, _dnaObject;
 
+    [SerializeField] private ContentToggler metronomeBiolabContentoggler;
+
     private void Awake()
     {
         _editFG = _editSample.GetComponent<Image>();
@@ -35,12 +37,12 @@ public class UIController : MonoBehaviour
     {
         if(b)
         {
-            _editSample.interactable = false;
+            _editSample.interactable = true;
             _deleteSample.interactable = false;
             _newSample.interactable = true;
 
-            _editFG.CrossFadeAlpha(.1f, .1f, false);
-            _editBG.CrossFadeAlpha(.1f, .1f, false);
+            //_editFG.CrossFadeAlpha(.1f, .1f, false);
+            //_editBG.CrossFadeAlpha(.1f, .1f, false);
             
             _newFG.CrossFadeAlpha(1f, .1f, true);
 
@@ -109,18 +111,24 @@ public class UIController : MonoBehaviour
 
             case GameState.Biolab:
 
-                if (Metronome.Instance)
-                {
-                    if (Metronome.Instance.Playing)
-                    {
-                        _playPause.onClick.Invoke();
-                    }
-                }
                 _main.enabled = false;
                 _biolab.enabled = true;
                 _dnaObject.SetActive(true);
 
                 _biolabScene.ToggleCanvasGroup(true);
+                if (Metronome.Instance)
+                {
+                    //if (Metronome.Instance.Playing)
+                    //{
+                    //    _playPause.onClick.Invoke();
+                    //} else
+                    //{
+                    //    metronomeBiolabContentoggler.ToggleContentBool(true);
+                    //}
+
+                    metronomeBiolabContentoggler.ToggleContentBool(false);
+
+                }
                 //_toolbar.ToggleCanvasGroup(true);
                 break;
         }

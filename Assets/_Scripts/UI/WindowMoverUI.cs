@@ -39,7 +39,6 @@ public class WindowMoverUI : MonoBehaviour
     {
             var factor = _canvas.scaleFactor;
 
-        Debug.Log("canvasfactor:" + factor);
         if(!up)
         {
             //Events.AnimateRectToTarget?.Invoke(_rectTransform, _distance);

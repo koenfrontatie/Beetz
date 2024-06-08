@@ -72,9 +72,10 @@ public class SaveLoader : MonoBehaviour
 
     public async Task<ProjectData> DeserializeProjectData(string jsonPath)
     {
-#if !UNITY_EDITOR
-        jsonPath = "File:///" + jsonPath;
-#endif
+        if (Application.platform != RuntimePlatform.WindowsPlayer)
+            jsonPath = "File:///" + jsonPath;
+    
+    
         string jsonData = await FetchJsonDataAsync(jsonPath);
 
         ProjectData projectData = await Task.Run(() => JsonConvert.DeserializeObject<ProjectData>(jsonData));
@@ -93,9 +94,9 @@ public class SaveLoader : MonoBehaviour
 
     public async Task<SampleData> DeserializeSampleData(string jsonPath)
     {
-#if !UNITY_EDITOR
-        jsonPath = "File:///" + jsonPath;
-#endif
+        if (Application.platform != RuntimePlatform.WindowsPlayer)
+            jsonPath = "File:///" + jsonPath;
+
         string jsonData = await FetchJsonDataAsync(jsonPath);
 
         //SampleData sampleData = await Task.Run(() => JsonConvert.DeserializeObject<SampleData>(jsonData));
@@ -105,9 +106,9 @@ public class SaveLoader : MonoBehaviour
 
     public async Task<Vector3[]> DeserializeMeshData(string jsonPath)
     {
-#if !UNITY_EDITOR
-        jsonPath = "File:///" + jsonPath;
-#endif
+        if (Application.platform != RuntimePlatform.WindowsPlayer)
+            jsonPath = "File:///" + jsonPath;
+
         string jsonData = await FetchJsonDataAsync(jsonPath);
 
         //SampleData sampleData = await Task.Run(() => JsonConvert.DeserializeObject<SampleData>(jsonData));

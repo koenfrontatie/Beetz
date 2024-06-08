@@ -44,7 +44,7 @@ public class SequencerManager : MonoBehaviour
         BuildSequencer(worldPosition, newData);
     }
 
-    void ClearAllSequencers()
+    public void ClearAllSequencers()
     {
         if (ActiveSequencers.Count == 0) return;
         //ActiveSequencers.Clear();   

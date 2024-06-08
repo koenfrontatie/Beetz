@@ -23,7 +23,7 @@ public class SequencerCanvas : MonoBehaviour
 
     void UpdateRect()
     {
-        var offset = new Vector3(-Config.CellSize, 0f, Config.CellSize) * .5f;
+        var offset = new Vector3(-Config.CellSize, transform.localPosition.y, Config.CellSize) * .5f;
         
         _rect.sizeDelta = _sequencer.SequencerData.Dimensions * Config.CellSize;
         _rect.position = _sequencer.InstancePosition;
