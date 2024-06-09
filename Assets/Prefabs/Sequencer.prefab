@@ -128,6 +128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _canvas: {fileID: 6875710317581716582}
+  _selectedCanvas: {fileID: 5970378628485998320}
   _sequencer: {fileID: 5016859328250569982}
   _rect: {fileID: 8178054125231775752}
   _timeLinePrefab: {fileID: 5307617288552154032, guid: f3b470c7a8d25d541a294e39bf91f31b,
@@ -272,6 +273,7 @@ GameObject:
   - component: {fileID: 9156614539889081811}
   - component: {fileID: 6754293515222615147}
   - component: {fileID: 8847809566951898115}
+  - component: {fileID: 5970378628485998320}
   m_Layer: 7
   m_Name: Panel
   m_TagString: Untagged
@@ -313,20 +315,20 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7140376805111185032}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.29803923, g: 0.81960785, b: 0.21568628, a: 1}
-  m_RaycastTarget: 1
+  m_Material: {fileID: 2100000, guid: 615f7789d6d6dcb449e2bee8373088b8, type: 2}
+  m_Color: {r: 0.54901963, g: 0.47843137, b: 0.9019608, a: 1}
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1606582088, guid: aeb9903767ba0f046aa96e70ed9b8ca3, type: 3}
+  m_Sprite: {fileID: 1185788110, guid: dc33372315fc92249ac578bf3813002f, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -336,6 +338,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &5970378628485998320
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7140376805111185032}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &8505929518037936735
 GameObject:
   m_ObjectHideFlags: 0

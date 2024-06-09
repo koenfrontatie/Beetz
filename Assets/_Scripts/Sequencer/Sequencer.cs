@@ -1,5 +1,7 @@
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Sequencer : MonoBehaviour
 {
@@ -22,6 +24,34 @@ public class Sequencer : MonoBehaviour
         Metronome.ResetMetronome += UpdateStepPosition;
         Events.OnStepsPlaced += OnStepsPlaced;
         Events.MoveSequencer += OnMove;
+        Events.ResizeSequencer += OnResize;
+
+    }
+
+    private void OnResize(Vector2 position, SequencerData data)
+    {
+        if(data.ID != SequencerData.ID) return;
+
+        
+        //throw new NotImplementedException();
+        //Vector2 delta = InstanceCellPosition - position
+        this.StepAmount = (int)data.Dimensions.x;
+        this.RowAmount = (int)data.Dimensions.y;
+        this.InstancePosition = GridController.Instance.WorldFromCell(position) + new Vector3(Config.CellSize * .5f, 0f, Config.CellSize * .5f);
+        this.InstanceCellPosition = position;
+        //Debug.Log($"delta {delta}  instancecell {InstanceCellPosition}  position {position}");
+        transform.position = new Vector3(InstancePosition.x, transform.position.y, InstancePosition.z);
+
+        SequencerData = data;
+
+        Displayer.SpawnSteps();
+
+        var rockplacer = transform.GetComponentInChildren<RockPlacer>();
+
+        if(rockplacer != null)
+        {
+            rockplacer.Place(InstancePosition, new Vector2(StepAmount, RowAmount));
+        }
     }
 
     /// <summary>
@@ -131,5 +161,6 @@ public class Sequencer : MonoBehaviour
         Events.OnNewSongRange -= UpdateStepPosition;
         Events.OnStepsPlaced -= OnStepsPlaced;
         Events.MoveSequencer -= OnMove;
+        Events.ResizeSequencer -= OnResize;
     }
 }

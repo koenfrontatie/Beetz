@@ -64,6 +64,8 @@ public class PreviewDisplayer : MonoBehaviour
         SampleObject so = await AssetBuilder.Instance.GetSampleObject(guid);
 
         _currentObject = so;
+
+        if(_currentObject == null) return;
         //Task.Run( () =>
         //{
         //    so = await AssetBuilder.Instance.GetSampleObject(guid);

@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 public class SoilDrawer : MonoBehaviour
@@ -12,16 +11,34 @@ public class SoilDrawer : MonoBehaviour
 
     private Grid _grid;
 
+    Sequencer seq;
+
     void Start()
     {
         //if(FindObjectOfType<Grid>());
-        if (transform.parent.TryGetComponent<Sequencer>(out var seq))
+        if (transform.parent.TryGetComponent<Sequencer>(out seq))
         {
             DrawQuad(seq.transform.position, seq.SequencerData.Dimensions);
             _quadTransform.position -= new Vector3(Config.CellSize * .5f, 0f, Config.CellSize * .5f);
         }
+        Events.ResizeSequencer += OnResize;
     }
 
+    private void OnResize(Vector2 vector, SequencerData data)
+    {
+        if (data.ID != seq.SequencerData.ID) return;
+
+        transform.localPosition = Vector3.zero;
+        //var offset = new Vector3(Config.CellSize, 0, 0) * .5f;
+        DrawQuad(seq.transform.position - new Vector3(Config.CellSize * .5f, 0f, Config.CellSize * .5f), data.Dimensions);
+
+        //InitFromSequencer(vector, data.Dimensions);
+    }
+
+    private void OnDisable()
+    {
+        Events.ResizeSequencer -= OnResize;
+    }
     #region
     public void Init()
     {

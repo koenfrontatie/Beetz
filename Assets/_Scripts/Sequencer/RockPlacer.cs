@@ -14,18 +14,20 @@ public class RockPlacer : MonoBehaviour
     private List<Vector3> _pathVectors = new List<Vector3>();
     private float halfCell = Config.CellSize * .5f;
 
+    Sequencer _sequencer;
+
     private void Start()
     {
-        if (transform.parent.TryGetComponent<Sequencer>(out var seq))
+        if (transform.parent.TryGetComponent<Sequencer>(out _sequencer))
         {
-            Place(seq.transform.position, seq.SequencerData.Dimensions);
+            Place(_sequencer.transform.position, _sequencer.SequencerData.Dimensions);
         }
     }
 
     public void Place(Vector3 seqPosition, Vector2 seqDimensions)
     {
         _pathVectors.Clear();
-
+        transform.DestroyChildren();
         var offset = (Vector3.forward + Vector3.left) * halfCell;
         //var _paddingVector = new Vector3(-_paddingValue, 0, _paddingValue);
 
@@ -34,7 +36,7 @@ public class RockPlacer : MonoBehaviour
         //_pathVectors.Add(transform.InverseTransformPoint(seqPosition) + Vector3.right * seqDimensions.x * Config.CellSize + offset + new Vector3(_paddingValue, 0, _paddingValue));
         //_pathVectors.Add(transform.InverseTransformPoint(seqPosition) + Vector3.right * seqDimensions.x + Vector3.back * seqDimensions.y * Config.CellSize + offset + new Vector3(_paddingValue, 0, -_paddingValue));
         //_pathVectors.Add(transform.InverseTransformPoint(seqPosition) + Vector3.back * seqDimensions.y * Config.CellSize + offset + new Vector3(-_paddingValue, 0, -_paddingValue));
-        
+        _pathVectors = new List<Vector3>();
         _pathVectors.Add((seqPosition) + offset + new Vector3(-_paddingValue, transform.position.y, _paddingValue));
         _pathVectors.Add((seqPosition) + Vector3.right * seqDimensions.x * Config.CellSize + offset + new Vector3(_paddingValue, transform.position.y, _paddingValue));
         _pathVectors.Add((seqPosition) + Vector3.right * seqDimensions.x * Config.CellSize + Vector3.back * seqDimensions.y * Config.CellSize + offset + new Vector3(_paddingValue, transform.position.y, -_paddingValue));

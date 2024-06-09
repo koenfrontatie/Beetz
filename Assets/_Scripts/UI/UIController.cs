@@ -37,35 +37,36 @@ public class UIController : MonoBehaviour
     {
         if(b)
         {
-            _editSample.interactable = true;
+            //_editSample.interactable = true;
             _deleteSample.interactable = false;
-            _newSample.interactable = true;
+            //_newSample.interactable = true;
 
             //_editFG.CrossFadeAlpha(.1f, .1f, false);
             //_editBG.CrossFadeAlpha(.1f, .1f, false);
             
-            _newFG.CrossFadeAlpha(1f, .1f, true);
+            //_newFG.CrossFadeAlpha(1f, .1f, true);
 
             _deleteFG.CrossFadeAlpha(.1f, .1f, false);
             _deleteBG.CrossFadeAlpha(.1f, .1f, false);
 
-            _newBG.CrossFadeAlpha(1f, .1f, true);
+            //_newBG.CrossFadeAlpha(1f, .1f, true);
         }
         else
         {
            
-                _editSample.interactable = true;
+                //_editSample.interactable = true;
                 _deleteSample.interactable = true;
-                _newSample.interactable = false;
+                //_newSample.interactable = false;
 
-                _editFG.CrossFadeAlpha(1f, .1f, false);
-                _editBG.GetComponent<Image>().CrossFadeAlpha(1f, .1f, false);
+                //_editFG.CrossFadeAlpha(1f, .1f, false);
+                //_editBG.GetComponent<Image>().CrossFadeAlpha(1f, .1f, false);
                 _deleteFG.CrossFadeAlpha(1f, .1f, false);
-                _deleteSample.transform.parent.GetChild(0).GetComponent<Image>().CrossFadeAlpha(1f, .1f, false);
-                
-                _newFG.CrossFadeAlpha(.1f, .1f, true);
+            //_deleteSample.transform.parent.GetChild(0).GetComponent<Image>().CrossFadeAlpha(1f, .1f, false);
+                _deleteBG.CrossFadeAlpha(.1f, .1f, false);
 
-                _newBG.CrossFadeAlpha(.1f, .1f, true);
+                //_newFG.CrossFadeAlpha(.1f, .1f, true);
+
+                //_newBG.CrossFadeAlpha(.1f, .1f, true);
 
            
         }

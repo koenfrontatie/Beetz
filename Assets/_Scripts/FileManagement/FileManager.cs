@@ -204,7 +204,7 @@ namespace FileManagement
                 await MakeSamplePathIntoUnique(SelectedSamplePath);
 
             }
-            GameManager.Instance.OpenBioLab();
+                GameManager.Instance.OpenBioLab();
         }
         public async void MakeSelectedIntoUnique()
         {

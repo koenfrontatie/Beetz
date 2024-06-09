@@ -20,7 +20,14 @@ public class LinearDisplayer : MonoBehaviour, IDisplayer
     public void SpawnSteps()
     {
         float x = transform.localPosition.x;
-
+        if (Steps.Count > 0)
+        {
+            foreach (var step in Steps)
+            {
+                Destroy(step.gameObject);
+            }
+            Steps.Clear();
+        }
         for (int r = 0; r < _sequencer.RowAmount; r++)
         {
             for (int i = 0; i < _sequencer.StepAmount; i++)

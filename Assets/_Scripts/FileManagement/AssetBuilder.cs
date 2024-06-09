@@ -1,7 +1,10 @@
 
 using FileManagement;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,6 +36,7 @@ public class AssetBuilder : MonoBehaviour
 
     private Dictionary<string, Vector3[]> _meshDictionary = new Dictionary<string, Vector3[]>();
 
+    private bool _loadingSampleObject;
 
     private void Awake()
     {
@@ -50,7 +54,12 @@ public class AssetBuilder : MonoBehaviour
     {
 
         FileManager.SampleDeleted += OnDeleteSample;
+        FileManager.NewSampleSelected += OnNewSampleSelected;
+    }
 
+    private void OnNewSampleSelected(string guid)
+    {
+        // cancel getsampleobject and reinvoke with new guid
     }
 
     void OnDisable()
@@ -136,31 +145,44 @@ public class AssetBuilder : MonoBehaviour
 
     public async Task<SampleObject> GetSampleObject(string guid)
     {
-        if (guid.Length < 3) // if template
+        if (_loadingSampleObject)
         {
-            SampleObject copy = Instantiate(_templateSampleObjects.Collection[int.Parse(guid)]);
-            //Debug.Log("less than 3");
-            return copy;
+            return null;
         }
         else
         {
-            SampleData sampleData = await GetSampleData(guid);
-            Vector3[] vertices = await GetMeshData(guid);
+            _loadingSampleObject = true;
 
-            //SampleObject copy = Instantiate(_templateSampleObjects.Collection[sampleData.Template]);
-            SampleObject copy = Instantiate(_templateSampleObjects.Collection[sampleData.Template]);
-
-            //set unique mesh
-            if (vertices != null)
+            if (guid.Length < 3) // if template
             {
-                //await Task.Run(() => copy.transform.GetChild(0).GetChild(0).GetComponent<MeshFilter>().mesh.SetVertices(vertices));
-                copy.gameObject.transform.GetChild(0).GetChild(0).GetComponent<MeshFilter>().mesh.SetVertices(vertices);
+                SampleObject copy = Instantiate(_templateSampleObjects.Collection[int.Parse(guid)]);
+                //Debug.Log("less than 3");
+                _loadingSampleObject = false;
+                return copy;
+            }
+            else
+            {
+                SampleData sampleData = await GetSampleData(guid);
+                Vector3[] vertices = await GetMeshData(guid);
+
+                //SampleObject copy = Instantiate(_templateSampleObjects.Collection[sampleData.Template]);
+                SampleObject copy = Instantiate(_templateSampleObjects.Collection[sampleData.Template]);
+
+                //set unique mesh
+                if (vertices != null)
+                {
+                    //await Task.Run(() => copy.transform.GetChild(0).GetChild(0).GetComponent<MeshFilter>().mesh.SetVertices(vertices));
+                    copy.gameObject.transform.GetChild(0).GetChild(0).GetComponent<MeshFilter>().mesh.SetVertices(vertices);
+                }
+
+                // set unique data
+                copy.SampleData = sampleData;
+                
+                _loadingSampleObject = false;
+                return copy;
+                //throw new NotImplementedException();
             }
 
-            // set unique data
-            copy.SampleData = sampleData;
-            return copy;
-            //throw new NotImplementedException();
         }
     }
 

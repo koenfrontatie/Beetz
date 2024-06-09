@@ -51,6 +51,9 @@ public static class Events
     //--------------- new data stuff
 
     public static Action<Vector3, SequencerData> BuildingSequencer;
+    public static Action<Vector2, SequencerData> ResizeSequencer;
+
+    
     //public static Action SequencerBuilt;
     public static Action<Sequencer> SequencerBuilt;
     public static Action RemoveSequencer;

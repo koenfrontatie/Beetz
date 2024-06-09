@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SequencerCanvas : MonoBehaviour
 {
     [SerializeField] private Canvas _canvas;
+    [SerializeField] private CanvasGroup _selectedCanvas;
     [SerializeField] private Sequencer _sequencer;
 
     [SerializeField] private RectTransform _rect;
@@ -14,6 +14,8 @@ public class SequencerCanvas : MonoBehaviour
     void OnEnable()
     {
         Metronome.TempoChanged += UpdateRect;
+
+        Events.ResizeSequencer += (v2, data) => UpdateRect();
     }
 
     private void Start()
@@ -23,6 +25,8 @@ public class SequencerCanvas : MonoBehaviour
 
     void UpdateRect()
     {
+        if (_sequencer == null || _rect == null) return; // Check for null
+
         var offset = new Vector3(-Config.CellSize, transform.localPosition.y, Config.CellSize) * .5f;
         
         _rect.sizeDelta = _sequencer.SequencerData.Dimensions * Config.CellSize;
@@ -50,8 +54,22 @@ public class SequencerCanvas : MonoBehaviour
     
     }
 
+    public void ToggleSelect(bool selected)
+    {
+        ToggleCanvasGroup(_selectedCanvas, selected);
+    }
+
+    private void ToggleCanvasGroup(CanvasGroup canvasGroup, bool on)
+    {
+        canvasGroup.alpha = on ? 1 : 0;
+        //canvasGroup.interactable =false;
+        //canvasGroup.blocksRaycasts = false;
+    }
+
     private void OnDisable()
     {
         Metronome.TempoChanged -= UpdateRect;
+        Events.ResizeSequencer -= (v2, data) => UpdateRect();
+
     }
 }

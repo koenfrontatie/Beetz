@@ -11,6 +11,7 @@ TagManager:
   - ContextScarecrow
   - DragParent
   - OverlayCamera
+  - ContextResize
   layers:
   - Default
   - TransparentFX
