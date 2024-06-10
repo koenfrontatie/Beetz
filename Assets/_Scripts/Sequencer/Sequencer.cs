@@ -51,8 +51,8 @@ public class Sequencer : MonoBehaviour
         {
             rockplacer.Place(InstancePosition, new Vector2(StepAmount, RowAmount));
         }
-
         Displayer.SpawnSteps();
+        //Events.UpdateSongRange?.Invoke();
         //InitSamplesFromInfo(SequencerData);
     }
 
@@ -132,6 +132,9 @@ public class Sequencer : MonoBehaviour
                 }
             }
         }
+
+        Events.UpdateLinearRange?.Invoke();
+
     }
 
     public int GetStepIndexFromPosition(Vector2 position)

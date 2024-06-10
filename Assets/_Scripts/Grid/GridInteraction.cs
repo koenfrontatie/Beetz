@@ -255,16 +255,23 @@ public class GridInteraction : MonoBehaviour
                 SetState(InteractionState.Default);
                 break;
             case InteractionState.Resizing:
-                
+
+                var pid = new List<PositionID>();
+                var adjustedDimensions = new Vector2(Mathf.Abs(_drawerDimensions.x), Mathf.Abs(_drawerDimensions.y));
+
                 foreach (PositionID posid in _lastSequencer.SequencerData.PositionIDData)
                 {
-                    posid.Position += _posIdAdjustment;
-                    //posid.Position = (posid.Position + _posIdAdjustment).Abs();
-                }
+                    var adjusted = posid.Position + _posIdAdjustment;
 
+                    if (adjusted.x > 0 && adjusted.x <= adjustedDimensions.x &&
+                        adjusted.y > 0 && adjusted.y <= adjustedDimensions.y)
+                    {
+                        pid.Add(new PositionID(posid.ID, adjusted));
+                    }
+                }
+                var newData = new SequencerData(_lastSequencer.SequencerData.ID, new Vector2(Mathf.Abs(_drawerDimensions.x), Mathf.Abs(_drawerDimensions.y)), pid);
                 bool hInverted = _drawerDimensions.x < 0;
                 bool vInverted = _drawerDimensions.y < 0;
-                var newData = new SequencerData(_lastSequencer.SequencerData.ID, new Vector2(Mathf.Abs(_drawerDimensions.x), Mathf.Abs(_drawerDimensions.y)), _lastSequencer.SequencerData.PositionIDData);
 
                 if (hInverted || vInverted)
                 {
@@ -283,7 +290,7 @@ public class GridInteraction : MonoBehaviour
                         invertedStart = _quadStartPosition + new Vector2(0, -_drawerDimensions.y);
                     }
 
-                    newData.PositionIDData.Clear();
+                    //newData.PositionIDData.Clear();
 
                     Events.ResizeSequencer?.Invoke(invertedStart, newData);
                 }
@@ -306,12 +313,7 @@ public class GridInteraction : MonoBehaviour
                     if (!t.parent.parent.TryGetComponent<LinearDisplayer>(out _)) return;
                     
                         //------------------------------------------------------------------- open context menu 
-                        //var step = t.GetSiblingIndex() + 1;
-                        //var worldPosition = seq.transform.position + Vector3.forward * Config.CellSize * 2f + new Vector3(Config.CellSize * (seq.StepAmount - 1) * .5f, 0, 0);
-                        //var screenPosition = _cam.WorldToScreenPoint(worldPosition);//+ Vector3.forward * Config.CellSize
-                        //_draggerHitbox.transform.position = worldPosition;
-                        //_draggerHitbox.transform.parent = seq.transform;
-                        //_contextColliders.transform.position = screenPosition;
+
                         SequencerManager.Instance.LastInteracted = seq;
 
                     _lastSequencer = seq;

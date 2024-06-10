@@ -62,7 +62,7 @@ public class UIController : MonoBehaviour
                 //_editBG.GetComponent<Image>().CrossFadeAlpha(1f, .1f, false);
                 _deleteFG.CrossFadeAlpha(1f, .1f, false);
             //_deleteSample.transform.parent.GetChild(0).GetComponent<Image>().CrossFadeAlpha(1f, .1f, false);
-                _deleteBG.CrossFadeAlpha(.1f, .1f, false);
+                _deleteBG.CrossFadeAlpha(1f, .1f, false);
 
                 //_newFG.CrossFadeAlpha(.1f, .1f, true);
 

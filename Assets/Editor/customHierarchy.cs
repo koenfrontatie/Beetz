@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 
-/// <summary> Sets a background color for this game object in the Unity Hierarchy window </summary>
 [UnityEditor.InitializeOnLoad]
 #endif
 public class customHierarchy
@@ -27,19 +24,16 @@ public class customHierarchy
             Color textColor = Color.white;
             Texture2D texture = null;
 
-            //ADD CONDITIONS HERE TO COLOR MORE OBJECTS
-            // YOU CAN COLOR FOLLOWING NAME, TAG...
-            if (obj.name == "Player")
-            {
-                backgroundColor = new Color(0.2f, 0.6f, 0.1f);
-                textColor = new Color(0.9f, 0.9f, 0.9f);
-            }
-            //else if ((obj as GameObject).GetComponent<Canvas>())
+            //add conditions
+            // obj.name -- obj,tag
+            
+            //if (obj.name == "Player")
             //{
-            //    backgroundColor = new Color(0.7f, 0.45f, 0.0f);
+            //    backgroundColor = new Color(0.2f, 0.6f, 0.1f);
             //    textColor = new Color(0.9f, 0.9f, 0.9f);
             //}
-            else if ((obj as GameObject).GetComponent<ColorInHierarchy>())
+            
+            if ((obj as GameObject).GetComponent<ColorInHierarchy>())
             {
                 // CREATE A C# SCRIPT "ColorInHierarchy" with a public color variable
                 backgroundColor = (obj as GameObject).GetComponent<ColorInHierarchy>().color;
