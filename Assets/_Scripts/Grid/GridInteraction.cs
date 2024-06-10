@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FileManagement;
-using Codice.CM.Common.Merge;
+
 public class GridInteraction : MonoBehaviour
 {
     public InteractionState State;
@@ -16,7 +16,7 @@ public class GridInteraction : MonoBehaviour
     [SerializeField] private CanvasGroup _contextHelp, _patchHelp;
 
     private Sequencer _lastSequencer;
-    private Vector2  _startCell, _currentCell, _quadStartPosition, _lastCellPosition, _drawerDimensions;
+    private Vector2  _startCell, _currentCell, _quadStartPosition, _lastCellPosition, _drawerDimensions, _posIdAdjustment;
     private GridController _gridController;
     private SoilDrawer _drawInstance;
     private int _colliderIndex;
@@ -206,7 +206,6 @@ public class GridInteraction : MonoBehaviour
                     // 1 3 5 4 only one dimensional resize
                     // 0 2 4 6 diagonal
                     //if (_drawInstance != null) Destroy(_drawInstance.gameObject);
-
                     //_drawInstance = Instantiate(_soilDrawPrefab, transform);
                     _drawInstance = _lastSequencer.GetComponentInChildren<SoilDrawer>();
                     _startCell = _lastSequencer.InstanceCellPosition;
@@ -256,10 +255,43 @@ public class GridInteraction : MonoBehaviour
                 SetState(InteractionState.Default);
                 break;
             case InteractionState.Resizing:
+                
+                foreach (PositionID posid in _lastSequencer.SequencerData.PositionIDData)
+                {
+                    posid.Position += _posIdAdjustment;
+                    //posid.Position = (posid.Position + _posIdAdjustment).Abs();
+                }
 
-                var newData = new SequencerData(_lastSequencer.SequencerData.ID, _drawerDimensions, _lastSequencer.SequencerData.PositionIDData);
-                Events.ResizeSequencer?.Invoke(_quadStartPosition, newData);
-                SetState(InteractionState.Default);
+                bool hInverted = _drawerDimensions.x < 0;
+                bool vInverted = _drawerDimensions.y < 0;
+                var newData = new SequencerData(_lastSequencer.SequencerData.ID, new Vector2(Mathf.Abs(_drawerDimensions.x), Mathf.Abs(_drawerDimensions.y)), _lastSequencer.SequencerData.PositionIDData);
+
+                if (hInverted || vInverted)
+                {
+                    Vector2 invertedStart = Vector2.zero;
+                    
+                    if(hInverted && vInverted)
+                    {
+                        invertedStart = _quadStartPosition + new Vector2(_drawerDimensions.x, -_drawerDimensions.y);
+                    }
+                    else if (hInverted)
+                    {
+                        invertedStart = _quadStartPosition + new Vector2(_drawerDimensions.x, 0);
+                    }
+                    else if (vInverted)
+                    {
+                        invertedStart = _quadStartPosition + new Vector2(0, -_drawerDimensions.y);
+                    }
+
+                    newData.PositionIDData.Clear();
+
+                    Events.ResizeSequencer?.Invoke(invertedStart, newData);
+                }
+                else
+                {
+                    Events.ResizeSequencer?.Invoke(_quadStartPosition, newData);
+                }
+                    SetState(InteractionState.Default);
                 break;
         }
     }
@@ -381,15 +413,6 @@ public class GridInteraction : MonoBehaviour
 
                 if (_currentCell == _lastCellPosition) return;
 
-                //switch()
-                //{
-
-                //}
-                //_currentCell = _gridController.CellFromWorld(point);
-                //difference = new Vector2((_startCell.x + _lastSequencer.SequencerData.Dimensions.x) - _currentCell.x, (_startCell.y - _lastSequencer.SequencerData.Dimensions.y) - _currentCell.y);
-                //adjustment = new Vector2(difference.x + 1, difference.y + 1);
-                //_drawerDimensions = _lastSequencer.SequencerData.Dimensions + adjustment;
-                //DrawQuad(_drawerDimensions.x, _drawerDimensions.y, _startCell.x, _startCell.y);
                 Vector2 difference = Vector2.zero;
                 Vector2 adjustment = Vector2.zero;
                 var halfpixelAdjust = new Vector3((Config.CellSize * .5f), 0, (Config.CellSize * .5f));
@@ -403,9 +426,6 @@ public class GridInteraction : MonoBehaviour
                         DrawQuad(_drawerDimensions.x, _drawerDimensions.y, _currentCell.x, _currentCell.y);
                         _contextColliders.PositionHitboxes(new Vector3((_currentCell.x * Config.CellSize), 0, (_currentCell.y * Config.CellSize)) + halfpixelAdjust, _drawerDimensions);
 
-                        //_contextColliders.PositionHitboxes(new Vector3((_currentCell.x * Config.CellSize) + (Config.CellSize * .5f), 0, (_currentCell.y * Config.CellSize) + (Config.CellSize * .5f)), _drawerDimensions);
-
-                        //_contextColliders.
                         break;
                     case 2:
                         difference = new Vector2(_currentCell.x - (_startCell.x + _lastSequencer.SequencerData.Dimensions.x), _currentCell.y - _startCell.y);
@@ -431,7 +451,6 @@ public class GridInteraction : MonoBehaviour
                         _drawerDimensions = _lastSequencer.SequencerData.Dimensions + adjustment;
                         DrawQuad(_drawerDimensions.x, _drawerDimensions.y, _currentCell.x, _startCell.y);
                         _contextColliders.PositionHitboxes(new Vector3(_currentCell.x * Config.CellSize, 0, _startCell.y * Config.CellSize) + halfpixelAdjust, _drawerDimensions);
-
                         break;
 
                     // one dimensional resizing
@@ -441,7 +460,6 @@ public class GridInteraction : MonoBehaviour
                         _drawerDimensions = _lastSequencer.SequencerData.Dimensions + adjustment;
                         DrawQuad(_drawerDimensions.x, _drawerDimensions.y, _startCell.x, _currentCell.y);
                         _contextColliders.PositionHitboxes(new Vector3(_startCell.x * Config.CellSize, 0, _currentCell.y * Config.CellSize) + halfpixelAdjust, _drawerDimensions);
-
                         break;
                     case 3:
                         difference = new Vector2(_currentCell.x - (_startCell.x + _lastSequencer.SequencerData.Dimensions.x), 0);
@@ -449,15 +467,14 @@ public class GridInteraction : MonoBehaviour
                         _drawerDimensions = new Vector2(_lastSequencer.SequencerData.Dimensions.x + adjustment.x, _lastSequencer.SequencerData.Dimensions.y);
                         DrawQuad(_drawerDimensions.x, _drawerDimensions.y, _startCell.x, _startCell.y);
                         _contextColliders.PositionHitboxes(new Vector3(_startCell.x * Config.CellSize, 0, _startCell.y * Config.CellSize) + halfpixelAdjust, _drawerDimensions);
-
+                        
                         break;
-                    case 5:////////////////////////////////////
+                    case 5:
                         difference = new Vector2(0, (_startCell.y - _lastSequencer.SequencerData.Dimensions.y) - _currentCell.y);
                         adjustment = new Vector2(0, difference.y + 1);
                         _drawerDimensions = _lastSequencer.SequencerData.Dimensions + adjustment;
                         DrawQuad(_drawerDimensions.x, _drawerDimensions.y, _startCell.x, _startCell.y);
                         _contextColliders.PositionHitboxes(new Vector3(_startCell.x * Config.CellSize, 0, _startCell.y * Config.CellSize) + halfpixelAdjust, _drawerDimensions);
-
                         break;
                     case 7:
                         difference = new Vector2(_lastSequencer.InstanceCellPosition.x - _currentCell.x, 0);
@@ -465,21 +482,33 @@ public class GridInteraction : MonoBehaviour
                         _drawerDimensions = _drawerDimensions = _lastSequencer.SequencerData.Dimensions + adjustment;
                         DrawQuad(_drawerDimensions.x, _drawerDimensions.y, _currentCell.x, _startCell.y);
                         _contextColliders.PositionHitboxes(new Vector3(_currentCell.x * Config.CellSize, 0, _startCell.y * Config.CellSize) + halfpixelAdjust, _drawerDimensions);
-
-
                         break;
                 }
 
-                //_currentCell = _gridController.CellFromWorld(point);
-                //var lc = seqPos - new Vector2(0, _lastSequencer.SequencerData.Dimensions.y);
-                //difference = new Vector2(seqPos.x - _currentCell.x, lc.y - _currentCell.y);
-                //adjustment = new Vector2(difference.x, difference.y + 1);
-                //_drawerDimensions = _lastSequencer.SequencerData.Dimensions + adjustment;
-                //DrawQuad(_drawerDimensions.x, _drawerDimensions.y, _currentCell.x, _startCell.y);
+                var xShift = _drawerDimensions.x - _lastSequencer.SequencerData.Dimensions.x;
+                var yShift = _drawerDimensions.y - _lastSequencer.SequencerData.Dimensions.y;
 
-                //_drawerDimensions = new Vector3(Mathf.Clamp((_currentCell.x - _startCell.x) + 1, 1, 128), Mathf.Clamp(((_currentCell.y - _startCell.y) - 1) * -1, 1, 128), 0);
-                //// update preview
-                //_drawInstance.DrawQuad(_gridController.WorldFromCell(_startCell), new Vector2(_drawerDimensions.x, _drawerDimensions.y));
+                switch (_colliderIndex)
+                {
+                    case 0:
+                        _posIdAdjustment = new Vector3(xShift, yShift);
+                        break;
+                    case 1:
+                        _posIdAdjustment = new Vector3(xShift, yShift);
+                        break;
+                    case 2:
+                        _posIdAdjustment = new Vector3(0, yShift);
+                        break;
+                    case 6:
+                        _posIdAdjustment = new Vector3(xShift, 0);
+                        break;
+                    case 7:
+                        _posIdAdjustment = new Vector3(xShift, yShift);
+                        break;
+                    default:
+                        _posIdAdjustment = Vector2.zero;
+                        break;
+                }
 
                 _lastCellPosition = _currentCell;
                 break;
@@ -537,36 +566,9 @@ public class GridInteraction : MonoBehaviour
         // enable/disable state dependent objects
         _gridDisplay.gameObject.SetActive(state == InteractionState.Patching || state == InteractionState.Moving || state == InteractionState.Copying || state == InteractionState.Resizing ? true : false);
         //_contextColliders.SetContextMenu((state == InteractionState.Context || state == InteractionState.Moving) ? true : false);
-
-
-
         State = state;
     }
 
-    //public void SetState(int i)
-    //{
-    //    var state = (InteractionState)i;
-
-    //    switch (state)
-    //    {
-    //        case InteractionState.Default:
-    //            _contextColliders.SetContextMenu(false);
-    //            break;
-    //        case InteractionState.Context:
-    //            _contextColliders.SetContextMenu(true);
-    //            _contextColliders.PositionHitboxes(_lastSequencer);
-    //            break;
-    //        case InteractionState.Patching:
-    //            if (_drawInstance != null) _drawInstance = null;
-    //            break;
-    //    }
-
-    //    // enable/disable state dependent objects
-    //    _gridDisplay.gameObject.SetActive(state == InteractionState.Patching || state == InteractionState.Moving ? true : false);
-    //    //_contextColliders.SetContextMenu((state == InteractionState.Context || state == InteractionState.Moving) ? true : false);
-
-    //    State = state;
-    //}
     public void NextState()
     {
         var newState = State.NextEnumValue();

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +18,7 @@ public class LinearDisplayer : MonoBehaviour, IDisplayer
         return Steps[index];
     }
 
-    public void SpawnSteps()
+    public async void SpawnSteps()
     {
         float x = transform.localPosition.x;
         if (Steps.Count > 0)
@@ -38,6 +39,7 @@ public class LinearDisplayer : MonoBehaviour, IDisplayer
             }
         }
 
+        await Task.Delay(10);
         Events.OnStepsPlaced(gameObject);
     }
     public void UpdateStepColors()

@@ -44,7 +44,6 @@ public class Sequencer : MonoBehaviour
 
         SequencerData = data;
 
-        Displayer.SpawnSteps();
 
         var rockplacer = transform.GetComponentInChildren<RockPlacer>();
 
@@ -52,6 +51,9 @@ public class Sequencer : MonoBehaviour
         {
             rockplacer.Place(InstancePosition, new Vector2(StepAmount, RowAmount));
         }
+
+        Displayer.SpawnSteps();
+        //InitSamplesFromInfo(SequencerData);
     }
 
     /// <summary>
@@ -108,29 +110,26 @@ public class Sequencer : MonoBehaviour
         Events.UpdateLinearRange?.Invoke();
     }
 
-    public async void InitSamplesFromInfo(SequencerData sequencerData)
+    public async Task InitSamplesFromInfo(SequencerData sequencerData)
     {
         if (sequencerData.PositionIDData.Count == 0) return;
 
         for (int i = 0; i < sequencerData.PositionIDData.Count; i++)
         {
             var stepIndex = GetStepIndexFromPosition(sequencerData.PositionIDData[i].Position);
-            
             if (_stepParent.GetChild(stepIndex).TryGetComponent<Step>(out Step selectedStep))
             {
-                //var spawnedSampleObject = Prefabs.Instance.BaseObjects[int.Parse(sequencerData.PositionIDData[i].ID)];
-                //var spawnedSampleObject = await AssetBuilder.Instance.GetSampleObject(sequencerData.PositionIDData[i].ID);
-
-                //SampleObject so = Instantiate(spawnedSampleObject, selectedStep.transform);
-
-                var instance = await AssetBuilder.Instance.GetSampleObject(sequencerData.PositionIDData[i].ID);
-                //var instance = Instantiate(await AssetBuilder.Instance.GetSampleObject(selectedGuid), matchingStep.transform);
-                instance.transform.SetParent(selectedStep.transform);
-                instance.transform.position = selectedStep.transform.position;
-
-                //matchingStep.AssignSample(instance);
-                //Debug.Log($"this is i is {i} ,{selectedStep.BeatIndex}");
-                selectedStep.AssignSample(instance); // TODO - load proper sampleobject
+                try
+                {
+                    var instance = await AssetBuilder.Instance.GetSampleObject(sequencerData.PositionIDData[i].ID);
+                    instance.transform.SetParent(selectedStep.transform);
+                    instance.transform.position = selectedStep.transform.position;
+                    selectedStep.AssignSample(instance);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"Failed to initialize SampleObject for step index {stepIndex}: {ex.Message}");
+                }
             }
         }
     }

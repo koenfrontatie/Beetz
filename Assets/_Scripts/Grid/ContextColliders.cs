@@ -76,7 +76,7 @@ public class ContextColliders : MonoBehaviour
     {
         //var horizontalOffset = new Vector3(Config.CellSize * 2, 0, 0);
         var offset = (dimensions.x - 1) * .5f * Config.CellSize;
-        if (offset < Config.CellSize * 2) offset = Config.CellSize * 2;
+        if (offset < Config.CellSize * 2) offset = Config.CellSize * 1.5f;
 
         var xPixel = new Vector3(Config.CellSize, 0, 0);
         var horizontalOffset = new Vector3(offset, 0, 0);
@@ -103,14 +103,14 @@ public class ContextColliders : MonoBehaviour
 
 
 
-        _remove.transform.position = highestUp + horizontalOffset;
+        _remove.transform.position = highestUp + horizontalOffset * .5f;
         //_removeUI.position = _cam.WorldToScreenPoint(upperRight);
-        _removeUI.position = highestUp + horizontalOffset;
+        _removeUI.position = highestUp + horizontalOffset * .5f;
 
 
-        _copy.transform.position = highestUp - horizontalOffset;
+        _copy.transform.position = highestUp - horizontalOffset * .5f;
         //_copyUI.position = _cam.WorldToScreenPoint(upperLeft);
-        _copyUI.position = highestUp - horizontalOffset;
+        _copyUI.position = highestUp - horizontalOffset * .5f;
 
         _UL.transform.position = _ULUI.position = upperCenter - horizontalOffset - xPixel;
         _UC.transform.position = _UCUI.position = upperCenter;
