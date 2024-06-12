@@ -193,9 +193,9 @@ public class GridInteraction : MonoBehaviour
                 if (t.gameObject.tag == "ContextScarecrow")
                 {
                     Events.MakingScarecrow?.Invoke();
-                    Events.MovingCameraToScarecrow.Invoke();
+                    //Events.MovingCameraToScarecrow.Invoke();
                     SetState(InteractionState.Default);
-
+                    GameManager.Instance.UpdateState(GameState.CircularEdit);
                     return;
                 }
 

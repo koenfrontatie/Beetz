@@ -109,7 +109,7 @@ public class Sequencer : MonoBehaviour
 
     public void UpdateStepPosition()
     {
-        if (GameManager.Instance.State != GameState.Gameplay) return;
+        if (GameManager.Instance.State != GameState.Gameplay && GameManager.Instance.State != GameState.CircularEdit) return;
 
         if (PlaybackListener == null || Displayer == null) return;
         CurrentStep = PlaybackListener.GetStepPosition();

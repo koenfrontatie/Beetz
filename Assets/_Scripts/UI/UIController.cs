@@ -16,6 +16,12 @@ public class UIController : MonoBehaviour
 
     [SerializeField] private ContentToggler metronomeBiolabContentoggler;
 
+    // orbit ccomponents
+    [SerializeField] GameObject _orbitComponents, _backButton;
+
+    [SerializeField] Vector3 _initOrbit, _initMain;
+    Quaternion _initOrbitRotation, _initMainRotation;
+
     private void Awake()
     {
         _editFG = _editSample.GetComponent<Image>();
@@ -27,11 +33,40 @@ public class UIController : MonoBehaviour
         _newFG = _newSample.GetComponent<Image>();
         _newBG = _newSample.transform.parent.GetChild(0).GetComponent<Image>();
     }
+
+    private void Start()
+    {
+        _initOrbit = _orbitComponents.transform.position;
+        _initMain = _main.transform.localPosition;
+        _initMainRotation = _main.transform.rotation;
+        _initOrbitRotation = _orbitComponents.transform.rotation;
+    }
     private void OnEnable()
     {
         GameManager.StateChanged += OnStateChanged;
         Events.BaseSampleSelected += OnBaseSampleSelected;
         DataStorage.ProjectDataSet += OnProjectDataSet;
+    }
+
+    void ToggleOrbitComponents(bool b)
+    {
+        if(b)
+        {
+            MonoBehaviour[] comps = _orbitComponents.GetComponents<MonoBehaviour>();
+
+            foreach (MonoBehaviour c in comps)
+            {
+                c.enabled = true;
+            }
+        } else
+        {
+            MonoBehaviour[] comps = _orbitComponents.GetComponents<MonoBehaviour>();
+
+            foreach (MonoBehaviour c in comps)
+            {
+                c.enabled = false;
+            }
+        }
     }
 
     private void OnBaseSampleSelected(bool b)
@@ -74,7 +109,7 @@ public class UIController : MonoBehaviour
     }
     void OnProjectDataSet(ProjectData data)
     {
-        _main.transform.position = new Vector3(0f, _main.transform.position.y, -3.7f);
+        _orbitComponents.transform.position = new Vector3(0f, _orbitComponents.transform.position.y, 0f);
     }
     public void OnStateChanged(GameState state)
     {
@@ -83,7 +118,7 @@ public class UIController : MonoBehaviour
         _biolab.enabled = false;
         _libraryDisplayObject.SetActive(false);
         _dnaObject.SetActive(false);
-
+        _backButton.gameObject.SetActive(false);
         switch (state)
         {
             case GameState.Menu:
@@ -96,6 +131,11 @@ public class UIController : MonoBehaviour
             case GameState.Gameplay:
                 _mainScene.ToggleCanvasGroup(true);
                 _toolbar.ToggleCanvasGroup(true);
+                ToggleOrbitComponents(false);
+                _orbitComponents.transform.position = _initOrbit;
+                _main.transform.localPosition = _initMain;
+                //_main.transform.localRotation = _initMainRotation;
+                _orbitComponents.transform.rotation = _initOrbitRotation;
                 break;
             case GameState.Library:
 
@@ -139,6 +179,17 @@ public class UIController : MonoBehaviour
             case GameState.ProjectSelection:
                 _projectLibrary.ToggleCanvasGroup(true);
                 //FindObjectOfType<ProjectLibraryController>().RefreshInfoTiles();
+                break;
+
+            case GameState.CircularEdit:
+                _orbitComponents.transform.position = new Vector3(-200f, _orbitComponents.transform.position.y, 0f);
+                _main.transform.localPosition = new Vector3(0f, _main.transform.localPosition.y,-9f);
+                _backButton.gameObject.SetActive(true);
+
+                _mainScene.ToggleCanvasGroup(true);
+                _toolbar.ToggleCanvasGroup(true);
+                ToggleOrbitComponents(true);
+
                 break;
         }
     }

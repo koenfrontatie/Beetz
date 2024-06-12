@@ -45,6 +45,8 @@ public class GameManager : MonoBehaviour
             case GameState.Menu:
                 break;
             case GameState.Gameplay:
+                Events.UpdateLinearRange?.Invoke();
+                PlaybackController.Instance.PlaybackMode = PlaybackMode.Linear;
 
                 break;
             case GameState.Library:
@@ -55,6 +57,11 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.ProjectSelection:
 
+                break;
+            case GameState.CircularEdit:
+                Events.UpdateCircularRange?.Invoke();
+                //PlaybackController.Instance.PlaybackMode = PlaybackMode.Circular;
+                PlaybackController.Instance.TogglePlaybackMode();
                 break;
         }
 
@@ -104,6 +111,18 @@ public class GameManager : MonoBehaviour
         {
             UpdateState(GameState.Menu);
         }
+    }
+
+    public void OpenGameplay() // for button
+    {
+        if (State != GameState.Gameplay)
+        {
+            UpdateState(GameState.Gameplay);
+        }
+        //else
+        //{
+        //    UpdateState(GameState.Menu);
+        //}
     }
 
     public void ToggleBetweenStates(GameState state1, GameState state2)
