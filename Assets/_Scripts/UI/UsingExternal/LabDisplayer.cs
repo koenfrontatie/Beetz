@@ -192,6 +192,14 @@ public class LabDisplayer : MonoBehaviour
         _dataUpdated = true;
     }
 
+    public void OnReverbSliderChange(float value)
+    {
+        //_dspController.SetLiveDistortion(DistortionValue);
+        _dspController.SetReverb(value);
+        _twistDeformer.Factor = value.Remap(.5f, 1f, 0, 1);
+        _dataUpdated = true;
+    }
+
     //bool SampleDataUpdated()
     //{
     //    bool hasUpdated = false;

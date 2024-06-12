@@ -35,13 +35,15 @@ public class AudioPlayer : MonoBehaviour
     {
         AudioClip clip;
 
-        if (GameManager.Instance.State != GameState.Biolab)
-        {
+        //if (GameManager.Instance.State != GameState.Biolab)
+        //{
             clip = await GetClip(sampleData.ID);
-        } else
-        {
-            clip = await GetClip(sampleData.Template.ToString());
-        }
+        //} 
+        
+        //else
+        //{
+        //    clip = await GetClip(sampleData.Template.ToString());
+        //}
 
         if (GameManager.Instance.State == GameState.Biolab)
         {
@@ -52,7 +54,7 @@ public class AudioPlayer : MonoBehaviour
 
         for (int i = 0; i < sampleData.Effects.Count; i++)
         {
-            if (sampleData.Effects[i].Effect == EffectType.Chorus)
+            if (sampleData.Effects[i].Effect == EffectType.Reverb)
             {
                 SendReverb = true;
                 effectValue = sampleData.Effects[i].Value;
