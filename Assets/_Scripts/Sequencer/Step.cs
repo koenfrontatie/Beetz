@@ -34,6 +34,8 @@ public class Step : MonoBehaviour
     public void AssignSample(SampleObject so)
     {
         _sampleObject = so;
+
+        Events.OnGrowAnim?.Invoke(_sampleObject.gameObject);
     }
 
     public SampleObject GetSampleObject()
@@ -93,7 +95,8 @@ public class Step : MonoBehaviour
 
     void SendScoreEvent()
     {
-        Events.LoadPlayGuid?.Invoke(_sampleObject.SampleData.ID);
+        //Events.LoadPlayGuid?.Invoke(_sampleObject.SampleData.ID);
+        Events.LoadPlaySample?.Invoke(_sampleObject.SampleData);
         //CsoundController.Instance.SendEventToQueue
 
     }

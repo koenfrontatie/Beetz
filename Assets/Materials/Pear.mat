@@ -28,15 +28,15 @@ Material:
   - _HALFTONESHAPE_STRIPE
   - _OUTLINE
   - _RECEIVE_SHADOWS_OFF
+  - _RIMLIGHTING_ON
   - _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
-  - _SPECULAR_COLOR
   m_InvalidKeywords:
   - _RECEIVESHADOWS_OFF
-  - _SPECULARHIGHLIGHTS_OFF
   - _SPECULAR_SETUP
+  - _STEPVIARAMPTEXTURE_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 1
+  m_DoubleSidedGI: 0
   m_CustomRenderQueue: 2050
   stringTagMap:
     RenderType: Opaque
@@ -86,7 +86,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RampTex:
-        m_Texture: {fileID: 2800000, guid: e6b1c91b0e97a314c818ef0e2fb78ec4, type: 3}
+        m_Texture: {fileID: 2800000, guid: 520749948bed3ce4a97bd56ea36f1e4d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -116,9 +116,9 @@ Material:
     - _BrushLowerCut: 0
     - _BrushSize: 0.8
     - _BumpScale: 1
-    - _Cull: 0
+    - _Cull: 2
     - _Cutoff: 1
-    - _DiffuseStep: -0.08
+    - _DiffuseStep: -0.297
     - _DitherTexelSize: 1
     - _DitherThreshold: 1
     - _DstBlend: 0
@@ -126,7 +126,7 @@ Material:
     - _FaceShadowMapEnabled: 0
     - _FaceShadowMapPow: 0.2
     - _FaceShadowSmoothness: 0
-    - _FlattenGI: 1
+    - _FlattenGI: 0
     - _GlossinessSource: 0
     - _HairSpecExponent: 128
     - _HairSpecNoiseStrength: 1
@@ -151,35 +151,35 @@ Material:
     - _NoiseStrength: 0.01
     - _OutlineEnabled: 1
     - _OutlineMode: 0
-    - _OutlineWidth: 4.62
+    - _OutlineWidth: 8.39
     - _OverrideShadowColor: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 0
-    - _RimEnabled: 0
+    - _RimEnabled: 1
     - _RimLightAlign: 0.2
-    - _RimLightSmoothness: 0
-    - _RimPower: 0.533
+    - _RimLightSmoothness: 0.209
+    - _RimPower: 0.635
     - _Shininess: 0
     - _SizeFalloff: 0
     - _Smoothness: 0.5
-    - _SmoothnessSource: 0
+    - _SmoothnessSource: 1
     - _SpecClipMaskScale: 1
     - _SpecShadowStrength: 0.517
     - _SpecSource: 0
     - _SpecularClipStrength: 0.509
     - _SpecularFalloff: 0.53
-    - _SpecularHighlights: 0
+    - _SpecularHighlights: 1
     - _SpecularSize: 0.287
     - _SpherizeNormalEnabled: 0
     - _SrcBlend: 1
     - _StencilComp: 0
     - _StencilRef: 0
-    - _StepViaRampTexture: 0
+    - _StepViaRampTexture: 1
     - _Surface: 0
-    - _UseRampColor: 0
+    - _UseRampColor: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.051886797, g: 1, b: 0.53336364, a: 1}
+    - _BaseColor: {r: 0.051886648, g: 1, b: 0.53336364, a: 0.5}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0.01886791, g: 0.004301581, b: 0, a: 1}
     - _FaceFrontDirection: {r: 0, g: 0, b: 1, a: 0}
@@ -189,7 +189,7 @@ Material:
     - _HatchingColor: {r: 0, g: 0, b: 0, a: 0.479}
     - _OutlineColor: {r: 0.122641504, g: 0.122641504, b: 0.122641504, a: 1}
     - _OutlineDistancFade: {r: -50, g: 50, b: 0, a: 0}
-    - _RimColor: {r: 1, g: 1, b: 1, a: 0.147}
+    - _RimColor: {r: 0, g: 0.28235295, b: 0.08486609, a: 0.474}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
     - _SpherizeNormalOrigin: {r: 0, g: 0, b: 0, a: 0}

@@ -21,6 +21,7 @@ public class DragDropUI : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         var screenPoint = (Vector3)eventData.position;
         screenPoint.z = 10.0f; //distance of the plane from the camera
         transform.position = Prefabs.Instance.CanvasCamera.ScreenToWorldPoint(screenPoint);
+
     }
     public void OnBeginDrag(PointerEventData eventData)
     {

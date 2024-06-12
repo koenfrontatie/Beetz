@@ -85,9 +85,33 @@ public class Sequencer : MonoBehaviour
         Events.SequencerBuilt?.Invoke(this);
     }
 
+    //public void Load(Vector3 position, SequencerData data)
+    //{
+    //    Displayer = GetComponent<IDisplayer>();
+    //    PlaybackListener = GetComponent<IListener>();
+
+    //    SequencerData = data;
+
+    //    this.StepAmount = (int)SequencerData.Dimensions.x;
+    //    this.RowAmount = (int)SequencerData.Dimensions.y;
+
+    //    this.InstancePosition = position;
+    //    this.InstanceCellPosition = GridController.Instance.CellFromWorld(position);
+
+    //    //DataStorage.Instance.AddSequencer(this);
+
+    //    Displayer.SpawnSteps();
+
+    //    SequencerManager.Instance.ActiveSequencers.Add(this);
+
+    //    Events.SequencerBuilt?.Invoke(this);
+    //}
+
     public void UpdateStepPosition()
     {
         if (GameManager.Instance.State != GameState.Gameplay) return;
+
+        if (PlaybackListener == null || Displayer == null) return;
         CurrentStep = PlaybackListener.GetStepPosition();
         CurrentBeat = PlaybackListener.GetBeatPosition();
         CurrentBar = PlaybackListener.GetBarPosition();

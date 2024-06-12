@@ -421,8 +421,10 @@ namespace FileManagement
         #endregion
         public async void OpenNewProjectVoid()
         {
+            if(!string.IsNullOrEmpty(ProjectGuid))
+                SaveProjectData();
 
-           await OpenNewProject();
+            await OpenNewProject();
         }
 
         #region Project loading
@@ -459,6 +461,30 @@ namespace FileManagement
             //ProjectDataLoaded?.Invoke(projectData);
 
         }
+
+        public async void GetProjectTileNames()
+        {
+            var projectsFolder = Path.Combine(Application.persistentDataPath, "Projects");
+            //await CheckOrMakeDirectory(projectsFolder);
+            var projectDirectories = new DirectoryInfo(projectsFolder).GetDirectories().OrderByDescending(d => d.LastWriteTime).ToList();
+            
+            var strings = new List<string>();
+            await Task.Run(()=> { 
+                for(int i = 0; i < projectDirectories.Count; i++)
+                {
+                    //var projectDataPath = Path.Combine(projectDirectories[i].FullName, "ProjectData.json");
+                    var tileName = projectDirectories[i].Name + " " + projectDirectories[i].CreationTime.ToString();
+                    strings.Add(tileName);
+                    
+                    //Debug.Log(tileName);
+                }
+            } );
+
+            //await Task.Delay(10);
+
+            Events.ProjectTileNamesLoaded?.Invoke(strings);
+        }
+
         public async void OpenLastProject()
         {
             var projectsFolder = Path.Combine(Application.persistentDataPath, "Projects");
@@ -516,6 +542,77 @@ namespace FileManagement
 
             //Events.ProjectDataLoaded?.Invoke(ProjectData);
         }
+
+        public async void OpenProjectByGuid(string guid)
+        {
+            var projectsFolder = Path.Combine(Application.persistentDataPath, "Projects");
+
+
+            var folderpathToSearch = Path.Combine(projectsFolder, guid);
+
+            Log("Opening existing project...");
+
+
+            //ProjectGuid = guid;
+
+
+            //ProjectDirectory = Path.Combine(Utils.ProjectSavepath, guid);
+
+            var datapath = Path.Combine(folderpathToSearch, "ProjectData.json");
+
+            Log($"Attempting to load projectdata from: {datapath}");
+
+            if (!File.Exists(datapath))
+            {
+                Log($"Can't find project data file, opening new project.");
+                OpenNewProject();
+                return;
+            }
+            else
+            {
+
+                var projectData = await SaveLoader.Instance.DeserializeProjectData(datapath);
+
+                //ProjectGuid = guid;
+                ProjectDirectory = folderpathToSearch;
+
+
+                Log("Project data loaded.");
+
+
+                if (projectData != null)
+                {
+
+                    _dataStorage.SetProjectData(projectData);
+                }
+            }
+            //}
+            ////else
+            ////{
+
+            ////    Log($"Can't find project directories, opening new project.");
+            ////    OpenNewProject();
+            ////    return;
+
+            ////}
+
+
+            //Events.ProjectDataLoaded?.Invoke();
+        }
+
+
+        //private void OnDestroy()
+        //{
+        //    SaveProjectData();
+        //}
+        public void SaveProjectData()
+        {
+            var projectDataPath = Path.Combine(ProjectDirectory, "ProjectData.json");
+
+            SaveLoader.Instance.SaveData(projectDataPath, _dataStorage.ProjectData);
+        }
+
+
         #endregion
     }
 }

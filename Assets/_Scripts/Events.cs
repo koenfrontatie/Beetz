@@ -21,6 +21,7 @@ public static class Events
     public static UnityAction OnBaseSamplesLoaded;
 
     public static Action<GameObject> OnScaleBounce;
+    public static Action<GameObject> OnGrowAnim;
     public static Action<RectTransform, float> AnimateRectToTarget;
 
     // lean touch input events
@@ -78,6 +79,9 @@ public static class Events
     public static Action BioMakeUniqueComplete;
     public static Action<string> LoadPlayPath;
     public static Action<string> LoadPlayGuid;
+    public static Action<SampleData> LoadPlaySample;
+
+    public static Action<List<string>> ProjectTileNamesLoaded;
     public static Action<SampleObject> SetSelectedSample;
     public static Action<string> SetSelectedGuid;
     //public static Action<RectTransform, Vector2> AnimateRectToTarget;

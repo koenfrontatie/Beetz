@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
-    [SerializeField] private CanvasGroup _settingsMenu, _mainScene, _biolabScene, _library, _toolbar, _fileManager;
+    [SerializeField] private CanvasGroup _settingsMenu, _mainScene, _biolabScene, _library, _toolbar, _fileManager, _projectLibrary;
     [SerializeField] private Camera _main, _biolab;
     //[SerializeField] private 
 
@@ -31,6 +31,7 @@ public class UIController : MonoBehaviour
     {
         GameManager.StateChanged += OnStateChanged;
         Events.BaseSampleSelected += OnBaseSampleSelected;
+        DataStorage.ProjectDataSet += OnProjectDataSet;
     }
 
     private void OnBaseSampleSelected(bool b)
@@ -71,7 +72,10 @@ public class UIController : MonoBehaviour
            
         }
     }
-
+    void OnProjectDataSet(ProjectData data)
+    {
+        _main.transform.position = new Vector3(0f, _main.transform.position.y, -3.7f);
+    }
     public void OnStateChanged(GameState state)
     {
         ToggleAllCanvases(false);
@@ -132,6 +136,10 @@ public class UIController : MonoBehaviour
                 }
                 //_toolbar.ToggleCanvasGroup(true);
                 break;
+            case GameState.ProjectSelection:
+                _projectLibrary.ToggleCanvasGroup(true);
+                //FindObjectOfType<ProjectLibraryController>().RefreshInfoTiles();
+                break;
         }
     }
 
@@ -143,7 +151,7 @@ public class UIController : MonoBehaviour
         _mainScene.ToggleCanvasGroup(b);
         _biolabScene.ToggleCanvasGroup(b);
         _library.ToggleCanvasGroup(b);
-
+        _projectLibrary.ToggleCanvasGroup(b);
         _toolbar.ToggleCanvasGroup(b);
 
         _fileManager.ToggleCanvasGroup(b);
@@ -166,6 +174,7 @@ public class UIController : MonoBehaviour
     {
         GameManager.StateChanged -= OnStateChanged;
         Events.BaseSampleSelected -= OnBaseSampleSelected;
+        DataStorage.ProjectDataSet -= OnProjectDataSet;
 
     }
 }

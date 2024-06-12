@@ -28,16 +28,30 @@ public class DataStorage : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        Events.SequencerBuilt += AddSequencer;
+    }
+
     public void SetProjectData(ProjectData data)
     {
         ProjectData = data;
         ProjectDataSet?.Invoke(ProjectData);
         //AssetBuilder.Instance.SearchForCustomSamples();
         //AssetBuilder.Instance.FindCustomTextures();
+        //SequencerManager.Instance.OnProjectDataLoaded(ProjectData);
     }
 
     public void AddSequencer(Sequencer sequencer)
     {
+        for(int i = 0; i < ProjectData.SequencerDataCollection.Count; i++)
+        {
+            if(sequencer.SequencerData.ID == ProjectData.SequencerDataCollection[i].ID)
+            {
+                return;
+            }
+        }
+        
         var cell = sequencer.InstanceCellPosition;
 
         var sp = new PositionID(sequencer.SequencerData.ID, cell);
@@ -88,6 +102,12 @@ public class DataStorage : MonoBehaviour
     {
         if(_logger)
             _logger.Log(message, this);
+    }
+
+    private void OnDisable()
+    {
+        Events.SequencerBuilt -= AddSequencer;
+
     }
 }
 

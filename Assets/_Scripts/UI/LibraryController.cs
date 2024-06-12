@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FileManagement;
-using UnityEngine.Tilemaps;
 
 public class LibraryController : MonoBehaviour
 {
@@ -20,7 +19,7 @@ public class LibraryController : MonoBehaviour
         //Events.CustomDataLoaded += RefreshInfoTiles;
         FileManager.SampleDeleted += OnSampleDeleted;
         FileManager.SampleCreated += OnSampleCreated;
-
+        DataStorage.ProjectDataSet += OnProjectDataSet;
         GameManager.StateChanged += OnStateChanged;
     }
 
@@ -33,7 +32,19 @@ public class LibraryController : MonoBehaviour
             Destroy(tile.gameObject);
         }
     }
+    void OnProjectDataSet(ProjectData data)
+    {
+        _tileDictionary.Clear();
 
+        if(_infoTiles.Count > 0)
+        {
+            foreach(var tile in _infoTiles)
+            {
+                Destroy(tile.gameObject);
+            }
+            _infoTiles.Clear();
+        }
+    }
     private void OnSampleCreated(string guid)
     {
         if (!_tileDictionary.ContainsKey(guid))
@@ -88,6 +99,7 @@ public class LibraryController : MonoBehaviour
     {
         FileManager.SampleDeleted -= OnSampleDeleted;
         FileManager.SampleCreated -= OnSampleCreated;
+        DataStorage.ProjectDataSet -= OnProjectDataSet;
 
         GameManager.StateChanged -= OnStateChanged;
     }

@@ -18,6 +18,12 @@ public class PointerSelect : MonoBehaviour, IPointerDownHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         FileManager.SelectNewSample?.Invoke(obj.SampleData.ID);
-        Events.LoadPlayGuid?.Invoke(obj.SampleData.ID);
+        Events.LoadPlaySample?.Invoke(obj.SampleData);
+
+        //for(int i = 0; i < obj.SampleData.Effects.Count; i++)
+        //{
+        //    Debug.Log($"{obj.SampleData.Effects[i].Effect.ToString()} : {obj.SampleData.Effects[i].Value.ToString()}");
+        //}
+        //Debug.Log(obj.SampleData.Effects.ToString());
     }
 }

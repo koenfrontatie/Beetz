@@ -53,6 +53,9 @@ public class GameManager : MonoBehaviour
             case GameState.Biolab:
 
                 break;
+            case GameState.ProjectSelection:
+
+                break;
         }
 
         StateChanged?.Invoke(state);
@@ -91,6 +94,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void OpenProjectSelection() // for button
+    {
+        if (State != GameState.ProjectSelection)
+        {
+            UpdateState(GameState.ProjectSelection);
+        }
+        else
+        {
+            UpdateState(GameState.Menu);
+        }
+    }
+
     public void ToggleBetweenStates(GameState state1, GameState state2)
     {
         if (State != state1)
@@ -115,5 +130,7 @@ public enum GameState
     Menu,
     Gameplay,
     Library,
-    Biolab
+    Biolab,
+    ProjectSelection,
+    CircularEdit
 }

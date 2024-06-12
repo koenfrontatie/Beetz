@@ -10,6 +10,8 @@ public class LeanTweenManager : MonoBehaviour
     private void OnEnable()
     {
         Events.OnScaleBounce += ScaleBounce;
+        Events.OnGrowAnim += GrowAnim;
+
         Events.MovingCameraToScarecrow += AnimateCamToScarecrow;
 
         Events.AnimateButton += AnimateButton;
@@ -24,6 +26,9 @@ public class LeanTweenManager : MonoBehaviour
         Events.MovingCameraToScarecrow -= AnimateCamToScarecrow;
         Events.AnimateButton -= AnimateButton;
         Events.AnimateRectToTarget -= AnimateRect;
+
+        Events.OnGrowAnim -= GrowAnim;
+
     }
 
     void Start()
@@ -42,7 +47,22 @@ public class LeanTweenManager : MonoBehaviour
         }
         var startScale = obj.transform.localScale;
         if (obj.LeanIsTweening()) return;
-        var tween = LeanTween.scale(obj, startScale * 1.2f, .15f).setEaseInBounce().setLoopPingPong(1);
+        var tween = LeanTween.scale(obj, startScale * 1.3f, .015f).setOnComplete(() => LeanTween.scale(obj, startScale, .3f).setEaseInOutSine()) ;
+        //Tweens.Add(tween);
+        //TweenId.Add(tween.id);
+    }
+
+    void GrowAnim(GameObject obj)
+    {
+        if (obj == null)
+        {
+            Debug.LogWarning("GrowAnim() called with a null GameObject.");
+            return;
+        }
+        var startScale = obj.transform.localScale;
+        if (obj.LeanIsTweening()) return;
+        obj.transform.localScale *= .01f;
+        var tween = LeanTween.scale(obj, startScale, .3f).setEaseOutElastic();
         //Tweens.Add(tween);
         //TweenId.Add(tween.id);
     }
