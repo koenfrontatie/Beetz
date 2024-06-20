@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FileManagement;
+using System.Threading.Tasks;
 
 public class LibraryController : MonoBehaviour
 {
@@ -56,8 +57,9 @@ public class LibraryController : MonoBehaviour
         }
     }   
 
-    public void RefreshInfoTiles()
+    public async void RefreshInfoTiles()
     {
+        await Task.Delay(150);
         var customSampleCount = FileManager.Instance.UniqueSamplePathCollection.Count;
 
         //foreach(var tile in _templateTiles)

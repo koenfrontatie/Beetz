@@ -35,13 +35,13 @@ public class AudioPlayer : MonoBehaviour
     {
         AudioClip clip;
 
-        if (GameManager.Instance.State != GameState.Biolab)
-        {
+        //if (GameManager.Instance.State != GameState.Biolab)
+        //{
             clip = await GetClip(sampleData.ID);
-        } else
-        {
-            clip = await GetClip(sampleData.Template.ToString());
-        }
+        //} else
+        //{
+        //    clip = await GetClip(sampleData.Template.ToString());
+        //}
 
         if (GameManager.Instance.State == GameState.Biolab)
         {

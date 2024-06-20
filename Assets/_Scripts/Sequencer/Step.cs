@@ -72,6 +72,14 @@ public class Step : MonoBehaviour
         //Debug.Log($"step:{_sequencer.CurrentStep} sibling+1:{transform.GetSiblingIndex() + 1} rowamt:{_sequencer.RowAmount} s1%amt:{(_sequencer.CurrentStep) % _sequencer.StepAmount}");
         bool shouldPlay = _sequencer.CurrentStep - 1 == BeatIndex;
         
+        if(GameManager.Instance.State == GameState.CircularEdit)
+        {
+            if(SequencerManager.Instance.LastInteracted.SequencerData.ID != _sequencer.SequencerData.ID)
+            {
+                shouldPlay = false;
+            }
+
+        }
         //if(!_sequencer.IsLooping) // global playback
         //{
         //    shouldPlay = false;

@@ -197,7 +197,7 @@ namespace FileManagement
         #endregion
 
         #region Sample creation
-        public async void CheckBaseSampleEdit()
+        public async void StartSampleEditor()
         {
             if (SelectedSamplePath.Contains("BaseSamples"))
             {
@@ -262,7 +262,7 @@ namespace FileManagement
 
             if (dirName.Contains("BaseSamples"))
             {
-                Debug.Log("Attempted to delete base sample");
+                Log("Attempted to delete base sample");
                 return;
             }
 
@@ -274,7 +274,7 @@ namespace FileManagement
 
             catch (Exception e)
             {
-                Debug.Log(e.Message);
+                Log(e.Message);
                 
             }
 
@@ -515,7 +515,7 @@ namespace FileManagement
                 if(!File.Exists(projectDataPath))
                 {
                     Log($"Can't find project data file, opening new project.");
-                    OpenNewProject();
+                    await OpenNewProject();
                     return;
                 } else { 
                 
@@ -534,7 +534,7 @@ namespace FileManagement
             {
                 
                 Log($"Can't find project directories, opening new project.");
-                OpenNewProject();
+                await OpenNewProject();
                 return;
             
             }
@@ -552,10 +552,6 @@ namespace FileManagement
 
             Log("Opening existing project...");
 
-
-            //ProjectGuid = guid;
-
-
             //ProjectDirectory = Path.Combine(Utils.ProjectSavepath, guid);
 
             var datapath = Path.Combine(folderpathToSearch, "ProjectData.json");
@@ -565,14 +561,17 @@ namespace FileManagement
             if (!File.Exists(datapath))
             {
                 Log($"Can't find project data file, opening new project.");
-                OpenNewProject();
+                await OpenNewProject();
                 return;
             }
             else
             {
+                ProjectGuid = guid;
+                UniqueSampleDirectory = Path.Combine(folderpathToSearch, "UniqueSamples");
 
                 var projectData = await SaveLoader.Instance.DeserializeProjectData(datapath);
 
+                RefreshUnique();
                 //ProjectGuid = guid;
                 ProjectDirectory = folderpathToSearch;
 
@@ -584,8 +583,11 @@ namespace FileManagement
                 {
 
                     _dataStorage.SetProjectData(projectData);
+
                 }
             }
+
+            
             //}
             ////else
             ////{

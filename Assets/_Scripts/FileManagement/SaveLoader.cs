@@ -85,7 +85,7 @@ public class SaveLoader : MonoBehaviour
 
     public async Task<ProjectData> DeserializeTemplateProjectData(string jsonPath)
     {
-        string jsonData = await FetchJsonDataAsync(jsonPath);
+        string jsonData = await FetchJsonDataAsync(Path.Combine(Application.streamingAssetsPath, "ProjectData.json"));
 
         ProjectData projectData = await Task.Run(() => JsonConvert.DeserializeObject<ProjectData>(jsonData));
 
@@ -119,6 +119,9 @@ public class SaveLoader : MonoBehaviour
 
     private async Task<string> FetchJsonDataAsync(string url)
     {
+        //if (Application.platform != RuntimePlatform.WindowsPlayer)
+        //    url = "File:///" + url;
+
         using (UnityWebRequest www = UnityWebRequest.Get(url))
         {
             await www.SendWebRequest();

@@ -54,6 +54,10 @@ public class Sequencer : MonoBehaviour
         Displayer.SpawnSteps();
         //Events.UpdateSongRange?.Invoke();
         //InitSamplesFromInfo(SequencerData);
+        Events.UpdateLinearRange?.Invoke();
+
+        DataStorage.Instance.UpdateSequencerData(this);
+
     }
 
     /// <summary>
@@ -119,10 +123,10 @@ public class Sequencer : MonoBehaviour
         Displayer.UpdateStepColors();
     }
 
-    void OnStepsPlaced(GameObject obj)
+     void OnStepsPlaced(GameObject obj)
     {
         if (obj != gameObject) return;
-        InitSamplesFromInfo(SequencerData);
+         InitSamplesFromInfo(SequencerData);
     }
 
     void OnMove(Sequencer s, Vector2 delta)
@@ -130,13 +134,57 @@ public class Sequencer : MonoBehaviour
         if (s.gameObject != transform.gameObject) return;
         InstanceCellPosition += delta;
         InstancePosition = transform.position;
-        //DataStorage.Instance.UpdateSequencerPosition(s);
+        DataStorage.Instance.UpdateSequencerPosition(s);
         Events.UpdateLinearRange?.Invoke();
     }
+
+    //public async Task InitSamplesFromInfo(SequencerData sequencerData)
+    //{
+    //    if (sequencerData.PositionIDData.Count == 0) return;
+
+    //    // handle spawning
+    //    string[] guids = new string[sequencerData.PositionIDData.Count];
+    //    for(int i = 0; i < sequencerData.PositionIDData.Count; i++)
+    //    {
+    //        guids[i] = sequencerData.PositionIDData[i].ID;
+    //    }
+
+
+    //    for (int i = 0; i < sequencerData.PositionIDData.Count; i++)
+    //    {
+    //        var stepIndex = GetStepIndexFromPosition(sequencerData.PositionIDData[i].Position);
+    //        if (_stepParent.GetChild(stepIndex).TryGetComponent<Step>(out Step selectedStep))
+    //        {
+    //            try
+    //            {
+    //                SampleObject instance = await AssetBuilder.Instance.GetSampleObject(sequencerData.PositionIDData[i].ID);
+    //                instance.transform.SetParent(selectedStep.transform);
+    //                instance.transform.position = selectedStep.transform.position;
+    //                selectedStep.AssignSample(instance);
+    //            }
+    //            catch (Exception ex)
+    //            {
+    //                Debug.LogError($"Failed to initialize SampleObject for step index {stepIndex}: {ex.Message}");
+    //            }
+    //        }
+    //    }
+
+    //    Events.UpdateLinearRange?.Invoke();
+
+    //}
 
     public async Task InitSamplesFromInfo(SequencerData sequencerData)
     {
         if (sequencerData.PositionIDData.Count == 0) return;
+
+        // handle spawning
+        string[] guids = new string[sequencerData.PositionIDData.Count];
+        for (int i = 0; i < sequencerData.PositionIDData.Count; i++)
+        {
+            guids[i] = sequencerData.PositionIDData[i].ID;
+        }
+
+        var spawnedObjects = await AssetBuilder.Instance.GetSampleObjectCollection(guids);
 
         for (int i = 0; i < sequencerData.PositionIDData.Count; i++)
         {
@@ -145,10 +193,10 @@ public class Sequencer : MonoBehaviour
             {
                 try
                 {
-                    var instance = await AssetBuilder.Instance.GetSampleObject(sequencerData.PositionIDData[i].ID);
+                    var instance = spawnedObjects[i];
                     instance.transform.SetParent(selectedStep.transform);
                     instance.transform.position = selectedStep.transform.position;
-                    selectedStep.AssignSample(instance);
+                    selectedStep.AssignSample(instance.GetComponent<SampleObject>());
                 }
                 catch (Exception ex)
                 {
@@ -160,6 +208,7 @@ public class Sequencer : MonoBehaviour
         Events.UpdateLinearRange?.Invoke();
 
     }
+
 
     public int GetStepIndexFromPosition(Vector2 position)
     {
@@ -177,7 +226,7 @@ public class Sequencer : MonoBehaviour
     void OnDestroy()
     {
         SequencerManager.Instance.ActiveSequencers.Remove(this);
-        //DataStorage.Instance.RemoveSequencer(this);
+        DataStorage.Instance.RemoveSequencer(this);
     }
 
     private void OnDisable()

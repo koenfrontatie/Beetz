@@ -54,12 +54,12 @@ public class DataStorage : MonoBehaviour
         
         var cell = sequencer.InstanceCellPosition;
 
-        var sp = new PositionID(sequencer.SequencerData.ID, cell);
+        var sequencerCellPosition = new PositionID(sequencer.SequencerData.ID, cell);
         // corners should prob b in sequencerdata 
-        var sc = new Vector2Pair(cell, new Vector2(cell.x + sequencer.StepAmount - 1, cell.y + sequencer.RowAmount - 1));
+        var sequencerCorners = new Vector2Pair(cell, new Vector2(cell.x + sequencer.StepAmount - 1, cell.y + sequencer.RowAmount - 1));
 
-        ProjectData.PlaylistData.PositionIDData.Add(sp);
-        ProjectData.PlaylistData.SequencerCorners.Add(sc);
+        ProjectData.PlaylistData.PositionIDData.Add(sequencerCellPosition);
+        ProjectData.PlaylistData.SequencerCorners.Add(sequencerCorners);
         ProjectData.SequencerDataCollection.Add(sequencer.SequencerData);
     }
 
@@ -77,6 +77,27 @@ public class DataStorage : MonoBehaviour
 
                 ProjectData.PlaylistData.SequencerCorners[i] = sc;
                 
+                return;
+            }
+        }
+    }
+
+    public void UpdateSequencerData(Sequencer sequencer)
+    {
+        var list = ProjectData.SequencerDataCollection;
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (list[i].ID == sequencer.SequencerData.ID)
+            {
+                list[i] = sequencer.SequencerData;
+                
+                //list[i].Position = sequencer.InstanceCellPosition;
+                //// corners should prob b in sequencerdata 
+                //var sc = new Vector2Pair(sequencer.InstanceCellPosition, new Vector2(sequencer.InstanceCellPosition.x + sequencer.StepAmount - 1, sequencer.InstanceCellPosition.y + sequencer.RowAmount - 1));
+
+                //ProjectData.PlaylistData.SequencerCorners[i] = sc;
+
                 return;
             }
         }

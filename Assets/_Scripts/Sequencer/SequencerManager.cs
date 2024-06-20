@@ -41,7 +41,7 @@ public class SequencerManager : MonoBehaviour
 
         for (int i = 0; i < data.SequencerDataCollection.Count; i++)
         {
-            positions.Add(GridController.Instance.WorldFromCell(data.PlaylistData.PositionIDData[i].Position));
+            positions.Add(new Vector3(-Config.CellSize * .5f, 0f, -Config.CellSize * .5f) + GridController.Instance.WorldFromCell(data.PlaylistData.PositionIDData[i].Position));
 
             var seqData = data.SequencerDataCollection[i];
 
