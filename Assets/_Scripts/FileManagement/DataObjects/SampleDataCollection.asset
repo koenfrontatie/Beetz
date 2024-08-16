@@ -53,3 +53,7 @@ MonoBehaviour:
     Name: Ahmed
     Template: 9
     Effects: []
+  - ID: 10
+    Name: Kabyera
+    Template: 10
+    Effects: []

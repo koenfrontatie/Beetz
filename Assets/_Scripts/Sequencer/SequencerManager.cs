@@ -32,34 +32,27 @@ public class SequencerManager : MonoBehaviour
     public async void OnProjectDataLoaded(ProjectData data)
     {
         ClearAllSequencers();
-        await Task.Delay(100);
+        //await Task.Delay(100);
 
         if (data == null || GridController.Instance == null) return;
 
-        List<Vector3> positions = new List<Vector3>();
+        List<Vector3> worldPositions = new List<Vector3>();
         List<SequencerData> newData = new List<SequencerData>();
 
         for (int i = 0; i < data.SequencerDataCollection.Count; i++)
         {
-            positions.Add(new Vector3(-Config.CellSize * .5f, 0f, -Config.CellSize * .5f) + GridController.Instance.WorldFromCell(data.PlaylistData.PositionIDData[i].Position));
+            worldPositions.Add(GridController.Instance.GetCenterFromCell(data.PlaylistData.PositionIDData[i].Position)); // instantiation of sequencers is done from center of cell
 
             var seqData = data.SequencerDataCollection[i];
 
             var seq = new SequencerData(seqData.ID, seqData.Dimensions, seqData.PositionIDData);
 
             newData.Add(seq);
-
-            //Debug.Log(seqData);
-            //CloneSequencer(GridController.Instance.WorldFromCell(data.PlaylistData.PositionIDData[i].Position), seqData);
-
         }
 
         for( int i = 0; i < newData.Count; i++)
         {
-            //var newSequencer = Instantiate(Prefabs.Instance.Sequencer, positions[i], Quaternion.identity, transform);
-            
-            //LastInteracted = newSequencer;
-            BuildSequencer(positions[i], newData[i]);
+            BuildSequencer(worldPositions[i], newData[i]);
         }
     }
 
